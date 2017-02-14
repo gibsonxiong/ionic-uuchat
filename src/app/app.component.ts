@@ -1,6 +1,6 @@
-import { Component} from '@angular/core';
-import { Platform, AlertController} from 'ionic-angular';
-import { StatusBar, Splashscreen, Contacts, Contact, ContactField,  ContactName, ContactFieldType } from 'ionic-native';
+import { Component } from '@angular/core';
+import { Platform, AlertController } from 'ionic-angular';
+import { StatusBar, Splashscreen, Contacts, Contact, ContactField, ContactName, ContactFieldType } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 
 
@@ -13,53 +13,53 @@ import { SigninPage } from '../pages/signin/signin';
 import { UserService } from '../services/user';
 import { MsgService } from '../services/msg';
 
-import {MyHttp} from '../providers/my-http';
-import {SocketIO} from '../providers/socket-io';
+import { MyHttp } from '../providers/my-http';
+import { SocketIO } from '../providers/socket-io';
 
 @Component({
-  templateUrl: 'app.html',
+	templateUrl: 'app.html',
 })
 export class MyApp {
 
-  rootPage;
+	rootPage;
 
-  constructor(
-     public platform: Platform,
-     public storage : Storage,
-     public alertCtrl: AlertController,
-  ) {
+	constructor(
+		private platform: Platform,
+		private storage: Storage,
+		private alertCtrl: AlertController,
+	) {
 
-    //通过token判断是否登录过
-    storage.get('token').then(token =>{
-      if(token) {
-        this.rootPage = IndexPage;
-      }else{
-        this.rootPage = SigninPage;
-      }
+		//通过token判断是否登录过
+		storage.get('token').then(token => {
+			if (token) {
+				this.rootPage = IndexPage;
+			} else {
+				this.rootPage = SigninPage;
+			}
 
-    });
+		});
 
-    platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      StatusBar.styleDefault();
-      Splashscreen.hide();
+		platform.ready().then(() => {
+			// Okay, so the platform is ready and our plugins are available.
+			// Here you can do any higher level native things you might need.
+			StatusBar.styleDefault();
+			Splashscreen.hide();
 
-    });
-  }
+		});
+	}
 
-  ngOnInit(){
+	ngOnInit() {
 
-  }
+	}
 
-  showAlert(value) {
-    let alert = this.alertCtrl.create({
-      title: 'New Friend!',
-      subTitle: value,
-      buttons: ['OK']
-    });
-    alert.present();
-  }
+	showAlert(value) {
+		let alert = this.alertCtrl.create({
+			title: 'New Friend!',
+			subTitle: value,
+			buttons: ['OK']
+		});
+		alert.present();
+	}
 
 
 }
@@ -168,21 +168,21 @@ import { Observable, Subject, ReplaySubject, BehaviorSubject } from 'rxjs';
 
 
 //test7
-let age$ = Observable.create((observer)=>{
-  setTimeout(()=>{
-    observer.next(true);
-  },15000);
+let age$ = Observable.create((observer) => {
+	setTimeout(() => {
+		observer.next(true);
+	}, 15000);
 });
-let isDev$ = Observable.create((observer)=>{
-  setTimeout(()=>{
-    observer.next(true);
-  },2000);
+let isDev$ = Observable.create((observer) => {
+	setTimeout(() => {
+		observer.next(true);
+	}, 2000);
 });
 
 Observable
-    .zip(age$,
-         isDev$)
-    .subscribe(x => console.log(x));
+	.zip(age$,
+	isDev$)
+	.subscribe(x => console.log(x));
 
 
 
