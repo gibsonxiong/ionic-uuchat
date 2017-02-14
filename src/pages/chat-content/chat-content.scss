@@ -1,0 +1,19 @@
+cy-chat-content-page{
+	.msg-input-wrapper{
+		display: flex;
+		align-items: center;
+
+		input{
+			flex:1;
+			margin:0 10px;
+			height:30px;
+			font-size: 16px;
+			border:	$hairlines-width solid #bbb;
+			border-radius:4px;
+		}
+
+		button{
+			height: 40px;
+		}
+	}
+}

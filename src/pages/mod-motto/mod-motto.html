@@ -1,0 +1,22 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>个性签名</ion-title>
+
+    <ion-buttons end >
+      <button ion-button icon-only [disabled]="form.invalid || !form.dirty" (click)="submit()">
+          完成
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+<ion-content>
+	<form [formGroup]="form" (ngSubmit)="submit()">
+		<ion-list>
+			<ion-item>
+				<ion-textarea type="text" placeholder="个性签名" formControlName="motto"></ion-textarea>
+			</ion-item>
+		</ion-list>
+	</form>
+</ion-content>

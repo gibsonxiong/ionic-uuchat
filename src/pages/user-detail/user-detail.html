@@ -1,0 +1,27 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>详细资料</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+	<ion-list>
+		<ion-item>
+			<ion-thumbnail item-left>
+		        <ion-img [src]="user.avatarSrc"></ion-img>
+		     </ion-thumbnail>
+             <h2>{{user.nickname}}</h2>
+      		 <p>用户名：{{user.username}}</p>
+		</ion-item>
+	</ion-list>
+
+	<div padding>
+		<button ion-button block *ngIf="!isFriend" (click)="gotoFriendRequestPage()">添加好友</button>
+
+		<button ion-button block *ngIf="isFriend" (click)="gotoChatContentPage()">开始聊天</button>
+
+	</div>
+</ion-content>

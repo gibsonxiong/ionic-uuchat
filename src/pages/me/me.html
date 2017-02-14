@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Me</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+	<ion-list>
+		<button ion-item (click)="gotoMeDetailPage()">
+			<ion-thumbnail item-left>
+	           <ion-img [src]="user.avatarSrc"></ion-img>
+	        </ion-thumbnail>
+	        <h2>{{user.nickname}}</h2>
+        </button>
+	</ion-list>
+
+
+
+	<img #img/>
+
+	<ion-list>
+		<button ion-item highlight="#f00">click</button>		
+
+		<button ion-item (click)="photograph()">拍照</button>
+
+		<button ion-item (click)="clearStorage()">清空缓存</button>
+	</ion-list>
+
+	<button ion-button full color="danger" (click)="signout()">登出</button>
+
+</ion-content>

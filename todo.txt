@@ -1,0 +1,3 @@
+friendList 不刷新
+
+chat-msg

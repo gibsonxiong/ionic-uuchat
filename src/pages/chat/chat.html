@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-navbar>
+
+    <!-- <ion-buttons start >
+      <button ion-button icon-only (click)="gotoFriendListPage()">
+          <ion-icon name="contacts"></ion-icon>
+      </button>
+    </ion-buttons> -->
+
+    <ion-title>聊天</ion-title>
+
+    <ion-buttons end >
+      <button ion-button icon-only (click)="gotoFriendAddPage()">
+          <ion-icon name="person-add"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+  
+   <ion-list>
+     <button ion-item detail-none *ngFor="let chat of chatList" (click)="gotoChatContentPage(chat.relationId)">
+      <ion-thumbnail item-left>
+        <img [src]="chat.avatarSrc">
+      </ion-thumbnail>
+      
+      <h2>{{chat.name}} <ion-note>{{chat.lastSendTime | date}}</ion-note></h2>
+      <p>{{chat.lastContent}}</p>
+
+      <ion-badge color="danger" *ngIf="chat.unread > 0">{{chat.unread}}</ion-badge>
+    </button>
+
+
+
+   </ion-list>
+
+</ion-content>

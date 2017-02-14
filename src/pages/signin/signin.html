@@ -1,0 +1,32 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>登录</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+	<form [formGroup]="form" (ngSubmit)="signin()">
+		<ion-list>
+			<ion-item>
+				<ion-input type="text" placeholder="用户名/手机号" formControlName="username"></ion-input>
+				<span item-right *ngIf="form.controls.username.pending && form.controls.username.dirty">...</span>
+				<span item-right *ngIf="form.controls.username.valid && form.controls.username.dirty">√</span>
+				<span item-right *ngIf="form.controls.username.invalid && form.controls.username.dirty">×</span>
+			</ion-item>
+			
+			<ion-item>
+				<ion-input type="password" placeholder="密码" formControlName="password"></ion-input>
+				<span item-right *ngIf="form.controls.password.pending && form.controls.password.dirty">...</span>
+				<span item-right *ngIf="form.controls.password.valid && form.controls.password.dirty">√</span>
+				<span item-right *ngIf="form.controls.password.invalid && form.controls.password.dirty">×</span>
+			</ion-item>
+		</ion-list>
+
+		<div padding-horizontal><button ion-button block [disabled]="form.invalid">登录</button></div>
+	</form>
+
+	<div padding-horizontal><button ion-button block color="secondary" (click)="gotoSignupPage()">注册</button></div>
+</ion-content>
