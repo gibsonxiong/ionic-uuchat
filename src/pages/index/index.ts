@@ -10,140 +10,170 @@ import { SigninPage } from '../signin/signin';
 
 import { UserService } from '../../services/user';
 import { MsgService } from '../../services/msg';
-import {MyHttp} from '../../providers/my-http';
-import {SocketIO} from '../../providers/socket-io';
+import { MyHttp } from '../../providers/my-http';
+import { SocketIO } from '../../providers/socket-io';
 
 @Component({
-	selector:'cy-index-page',
+    selector: 'cy-index-page',
     templateUrl: 'index.html'
 })
 export class IndexPage {
 
-  tab1Root = ChatPage;
-  tab2Root = FriendListPage;
-  tab3Root = DiscoverPage;
-  tab4Root = MePage;
+    tab1Root = ChatPage;
+    tab2Root = FriendListPage;
+    tab3Root = DiscoverPage;
+    tab4Root = MePage;
 
-  chatUnread:number=0;
+    private chatUnread: number = 0;
+    private forceQuitSubscription;
+    private chatListSubscription;
 
-  constructor(
-     private navCtrl:NavController, 
-     private storage:Storage,
-     private alertCtrl: AlertController,
-     private userService:UserService,
-     private msgService:MsgService,
-     private myHttp:MyHttp,
-     private socketIO:SocketIO,
-  ) {
+    constructor(
+        private navCtrl: NavController,
+        private storage: Storage,
+        private alertCtrl: AlertController,
+        private userService: UserService,
+        private msgService: MsgService,
+        private myHttp: MyHttp,
+        private socketIO: SocketIO,
+    ) {
 
-  	  this.connectServer();
+    }
 
-      //强迫下线通知
-      this.socketIO.forceQuit$.subscribe(()=>{
-          this.presentAlert();
-      });  
+    ngOnInit() {
+        this.connectServer();
+    }
 
-      //没读消息数
-      msgService.chatList$
-          .map(chatList=>{
-              var chatUnread = 0;
+    ngOnDestroy() {
+        this.destroyData();
+    }
 
-              chatList.forEach(chat=>{
-                  chatUnread += chat.unread;
-              })
+    connectServer() {
+        this.storage.get('token').then(token => {
+            if (token) {
+                //连接http
+                this.myHttp.setToken(token);
+                //连接socket
+                this.socketIO.signin(token);
+                //初始化数据
+                this.initData();
 
-              return chatUnread;
-          })
-          .subscribe(chatUnread=>{
-              this.chatUnread = chatUnread;
-          })    
-  }
-
-  connectServer(){
-      this.storage.get('token').then(token =>{
-          if(token) {
-              //连接http
-              this.myHttp.setToken(token);
-              //连接socket
-              this.socketIO.signin(token);
-              //初始化数据
-              this.initData();
-
-          }else{
-             this.gotoSigninPage();
-          }
-      });
-  }
-
-  initData():void{
-        this.userService.initData();
-        this.msgService.initData();
-  }
-
-  presentAlert() {
-    let alert = this.alertCtrl.create({
-      title: '强迫下线',
-      message:'账号在另一地方登录，如果不是本人操作，请及时修改密码！',
-      enableBackdropDismiss:false,
-      buttons: [
-          {
-            text: '重新登录',
-            handler: data => {
-               this.connectServer();
+            } else {
+                this.gotoSigninPage();
             }
-          },
-          {
-            text: '切换账号',
-            handler: data => {
-               this.gotoSigninPage();
-            }
-          },
+        });
+    }
 
-      ]
-    });
-    alert.present();
-  }
+    initData(): void {
+        this.userService.init();
+        this.msgService.init();
 
-  gotoSigninPage(){
-      this.navCtrl.setRoot(SigninPage);
-  }
+        //强迫下线通知
+        this.forceQuitSubscription = this.socketIO.forceQuit$.subscribe(() => {
+            this.destroyData();
+            this.presentAlert();
+        });
+
+        //没读消息数
+        this.chatListSubscription = this.msgService.chatList$
+            .map(chatList => {
+                var chatUnread = 0;
+
+                chatList.forEach(chat => {
+                    chatUnread += chat.unread;
+                })
+
+                return chatUnread;
+            })
+            .subscribe(chatUnread => {
+                this.chatUnread = chatUnread;
+            });
+    }
+
+    destroyData(): void {
+        this.userService.destroy();
+        this.msgService.destroy();
+
+        this.forceQuitSubscription.unsubscribe();
+        this.chatListSubscription.unsubscribe();
+    }
+
+    presentAlert() {
+        let alert = this.alertCtrl.create({
+            title: '强迫下线',
+            message: '账号在另一地方登录，如果不是本人操作，请及时修改密码！',
+            enableBackdropDismiss: false,
+            buttons: [
+                {
+                    text: '重新登录',
+                    handler: data => {
+                        this.connectServer();
+                    }
+                },
+                {
+                    text: '切换账号',
+                    handler: data => {
+                        this.gotoSigninPage();
+                    }
+                },
+
+            ]
+        });
+        alert.present();
+    }
+
+    gotoSigninPage() {
+        this.navCtrl.setRoot(SigninPage);
+    }
 
 
-  // //比 ngOnInit 快
-  // ionViewWillLoad(){
-  //     console.log('ionViewWillLoad');
-  // }
+    //   //比 ngOnInit 快
+    //   ionViewWillLoad(){
+    //       console.log('ionViewWillLoad');
+    //   }
 
-  // ngOnInit(){
-  //     console.log('ngOnInit');
-  // }
+    //   ngOnInit(){
+    //       console.log('ngOnInit');
+    //   }
+
+    //   ngAfterContentInit(){
+    //       console.log('ngAfterContentInit');
+    //   }
 
 
-  // ionViewDidLoad(){
-  //     console.log('ionViewDidLoad');
-  // }
+    //   ngAfterViewInit(){
+    //       console.log('ngAfterViewInit');
+    //   }
 
-  // ionViewWillEnter(){
-  //     console.log('ionViewWillEnter');
-  // }
+    // ngOnDestroy() {
+    //     console.log('ngOnDestroy');
+    // }
 
-  // ionViewDidEnter(){
-  //     console.log('ionViewDidEnter');
-  // }
+    //   ionViewDidLoad(){
+    //       console.log('ionViewDidLoad');
+    //   }
 
-  // ionViewWillLeave(){
-  //     console.log('ionViewWillLeave');
-  // }
+    //   ionViewWillEnter(){
+    //       console.log('ionViewWillEnter');
+    //   }
 
-  // ionViewDidLeave(){
-  //     console.log('ionViewDidLeave');
-  // }
+    //   ionViewDidEnter(){
+    //       console.log('ionViewDidEnter');
+    //   }
 
-  //  ionViewWillUnload(){
-  //     console.log('ionViewWillUnload');
-  // }
+    //   ionViewWillLeave(){
+    //       console.log('ionViewWillLeave');
+    //   }
 
-  // ionViewDidUnload(){
-  //     console.log('ionViewDidUnload');
-  // }
+    //   ionViewDidLeave(){
+    //       console.log('ionViewDidLeave');
+    //   }
+
+    //    ionViewWillUnload(){
+    //       console.log('ionViewWillUnload');
+    //   }
+
+    //   ionViewDidUnload(){
+    //       console.log('ionViewDidUnload');
+    //   }
 }
