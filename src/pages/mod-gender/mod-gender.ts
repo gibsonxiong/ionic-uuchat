@@ -27,8 +27,6 @@ export class ModGenderPage implements OnInit{
 
   }
 
-  get genders(): FormArray { return this.form.get('genders') as FormArray; }
-
   ngOnInit(){
   	
   	
@@ -40,6 +38,7 @@ export class ModGenderPage implements OnInit{
   	console.log('submit',this.form);
 
   	let gender = this.form.value.gender;
+	  
   	this.userService.modGender(gender).subscribe(
   		res => {
   			if(res.code) return console.log(res.msg);

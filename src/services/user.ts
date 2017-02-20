@@ -11,23 +11,15 @@ import { SocketIO } from '../providers/socket-io';
 @Injectable()
 export class UserService {
 
-	// private userSubject = new BehaviorSubject<any>({});
-	// public user$ = this.userSubject.asObservable();
+	private ownSubject = new BehaviorSubject<any>({});
+	public own$ = this.ownSubject.asObservable();
 
-	// private relationListSubject = new BehaviorSubject<any[]>([]);
-	// public relationList$ = this.relationListSubject.asObservable();
+	private relationListSubject = new BehaviorSubject<any[]>([]);
+	public relationList$ = this.relationListSubject.asObservable();
 
-	// private friendListSubject = new BehaviorSubject<any[]>([]);
-	// public friendList$ = this.friendListSubject.asObservable();
+	private friendListSubject = new BehaviorSubject<any[]>([]);
+	public friendList$ = this.friendListSubject.asObservable();
 
-	private userSubject;
-	public user$;
-
-	private relationListSubject;
-	public relationList$;
-
-	private friendListSubject;
-	public friendList$;
 
 	private pushUserModedSubscription;
 	private relationListSubscription;
@@ -39,16 +31,7 @@ export class UserService {
 
 	}
 
-	init(): void {
-		this.userSubject = new BehaviorSubject<any>({});
-		this.user$ = this.userSubject.asObservable();
-
-		this.relationListSubject = new BehaviorSubject<any[]>([]);
-		this.relationList$ = this.relationListSubject.asObservable();
-
-		this.friendListSubject = new BehaviorSubject<any[]>([]);
-		this.friendList$ = this.friendListSubject.asObservable();
-
+	initData(): void {
 
 		this.pushUserModedSubscription = this.socketIO.pushUserModed$.subscribe(user => {
 
@@ -79,9 +62,9 @@ export class UserService {
 		}).subscribe(friendList => this.friendListSubject.next(friendList));
 
 		//test
-		// this.user$.subscribe(
-		//     user =>{
-		//         console.log('user$',user);
+		// this.own$.subscribe(
+		//     own =>{
+		//         console.log('own$',own);
 		//     }
 		// )
 
@@ -98,7 +81,7 @@ export class UserService {
 		// )
 
 
-		this.getSelf();
+		this.getOwn();
 		this.getRelationList();
 	}
 
@@ -107,16 +90,17 @@ export class UserService {
 		this.relationListSubscription.unsubscribe();
 	}
 
-	getSelf(): void {
-		this.myHttp.get(HOST + '/user/self')
+	getOwn(): void {
+		this.myHttp.get(HOST + '/user/getOwn')
 			.map((res: any) => {
 				return res.json().data;
 			})
-			.subscribe(self => this.userSubject.next(self));
+			.subscribe(self => this.ownSubject.next(self));
 	}
 
 	//获取关系列表
 	getRelationList(): void {
+
 		this.myHttp.get(HOST + '/user/getRelationList')
 			.map((res: any) => {
 				return res.json().data;
@@ -124,8 +108,35 @@ export class UserService {
 			.subscribe(relationList => this.relationListSubject.next(relationList));
 	}
 
+
+	//通过手机通讯录查找好友
+	getUserListByMobiles(mobiles:Number[]): Observable<any> {
+		return this.myHttp.post(HOST + '/user/getUserListByMobiles',{mobiles})
+			.map((res: any) => {
+				return res.json();
+			});
+	}
+
 	signin(postData): Observable<any> {
+		this.myHttp.get('http://www.baidu.com').map((res: any) => {
+			debugger;
+			return res.json();
+		}).subscribe();
+
 		return this.myHttp.post(HOST + '/user/signin', postData).map((res: any) => {
+			return res.json();
+		});
+	}
+
+	getVerificationCode(mobile): Observable<any> {
+		return this.myHttp.get(HOST + '/user/getVerificationCode/' + mobile).map((res: any) => {
+			return res.json();
+		});
+	}
+
+	checkVerificationCode(mobile, code): Observable<any> {
+		var postData = { mobile, code };
+		return this.myHttp.post(HOST + '/user/checkVerificationCode', postData).map((res: any) => {
 			return res.json();
 		});
 	}
@@ -139,7 +150,7 @@ export class UserService {
 
 	//获取用户资料
 	getUser(userId): Observable<any> {
-		return this.myHttp.get(HOST + '/user/' + userId).map((res: any) => {
+		return this.myHttp.get(HOST + '/user/getUser/' + userId).map((res: any) => {
 			return res.json();
 		});
 	}
@@ -184,7 +195,7 @@ export class UserService {
 
 		observable.subscribe(
 			res => {
-				this.userSubject.next(res.data);
+				this.ownSubject.next(res.data);
 			}
 
 		);
@@ -200,7 +211,7 @@ export class UserService {
 
 		observable.subscribe(
 			res => {
-				this.userSubject.next(res.data);
+				this.ownSubject.next(res.data);
 			}
 
 		);
@@ -217,7 +228,7 @@ export class UserService {
 
 		observable.subscribe(
 			res => {
-				this.userSubject.next(res.data);
+				this.ownSubject.next(res.data);
 			}
 
 		);

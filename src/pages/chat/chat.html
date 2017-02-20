@@ -21,7 +21,7 @@
 <ion-content>
   
    <ion-list>
-     <button ion-item detail-none *ngFor="let chat of chatList" (click)="gotoChatContentPage(chat.relationId)">
+     <button ion-item detail-none *ngFor="let chat of chatList" (click)="gotoChatContentPage(chat.relationId,chat.name)">
       <ion-thumbnail item-left>
         <img [src]="chat.avatarSrc">
       </ion-thumbnail>

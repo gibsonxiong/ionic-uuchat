@@ -10,20 +10,20 @@
 		<button ion-item (click)="gotoModAvatarPage()">
 			<span>个人头像</span>
 			<ion-thumbnail item-right>
-	           <ion-img [src]="user.avatarSrc"></ion-img>
+	           <ion-img [src]="own.avatarSrc"></ion-img>
 	        </ion-thumbnail>
 		</button>
 		<button ion-item (click)="gotoModNicknamePage()">
 			<span >昵称</span>
-			<ion-note item-right>{{user.nickname}}</ion-note>
+			<ion-note item-right>{{own.nickname}}</ion-note>
 		</button>
 		<button ion-item>
 			<span>用户名</span>
-			<ion-note item-right>{{user.username}}</ion-note>
+			<ion-note item-right>{{own.username}}</ion-note>
 		</button>
 		<button ion-item (click)="gotoModGenderPage()">
 			<span>性别</span>
-			<ion-note item-right>{{user.gender | gender}}</ion-note>
+			<ion-note item-right>{{own.gender | gender}}</ion-note>
 		</button>
 		<button ion-item>
 			<span>地区</span>
@@ -31,7 +31,7 @@
 		</button>
 		<button ion-item (click)="gotoModMottoPage()">
 			<span>个性签名</span>
-			<ion-note item-right>{{user.motto || '没填写'}}</ion-note>
+			<ion-note item-right>{{own.motto || '没填写'}}</ion-note>
 		</button>
 	</ion-list>
 

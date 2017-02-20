@@ -1,5 +1,5 @@
 import { NgModule, ErrorHandler } from '@angular/core';
-import { XHRBackend ,RequestOptions} from '@angular/http';
+import { XHRBackend, RequestOptions } from '@angular/http';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { MyApp } from './app.component';
@@ -27,9 +27,10 @@ import { SigninPage } from '../pages/signin/signin';
 import { FriendListPage } from '../pages/friend-list/friend-list';
 import { FriendNewPage } from '../pages/friend-new/friend-new';
 import { FriendRequestPage } from '../pages/friend-request/friend-request';
+import { FriendByContactPage } from '../pages/friend-by-contact/friend-by-contact';
 import { ImgCutterPage } from '../pages/img-cutter/img-cutter';
 import { ReorderPage } from '../pages/reorder/reorder';
-
+import { myHttpFactory } from '../factorys'
 
 /*components*/
 import { ChatMsg } from '../components/chat-msg/chat-msg';
@@ -38,105 +39,106 @@ import { ChatMsg } from '../components/chat-msg/chat-msg';
 import { UserService } from '../services/user';
 import { MsgService } from '../services/msg';
 
-import {MyHttp} from '../providers/my-http';
-import {SocketIO} from '../providers/socket-io';
+import { MyHttp } from '../providers/my-http';
+import { SocketIO } from '../providers/socket-io';
 
 /*pipes*/
 import { GenderPipe } from '../pipes/gender';
 
 @NgModule({
-  declarations: [
-    MyApp,
+	declarations: [
+		MyApp,
 
-    /*pages*/
-    IndexPage,
-    ChatPage,
-    ChatContentPage,
-    DailyPage,
-    DiscoverPage,
-    MePage,
-    MeDetailPage,
-    ModAvatarPage,
-    ModNicknamePage,
-    ModGenderPage,
-    ModMottoPage,
-    QuestionPage,
-    JokePage,
-    ShopPage,
-    FriendAddPage,
-    FriendRequestPage,
-    UserDetailPage,
-    SignupPage,
-    SigninPage,
-    FriendListPage,
-    FriendNewPage,
-    ImgCutterPage,
-    ReorderPage,
+		/*pages*/
+		IndexPage,
+		ChatPage,
+		ChatContentPage,
+		DailyPage,
+		DiscoverPage,
+		MePage,
+		MeDetailPage,
+		ModAvatarPage,
+		ModNicknamePage,
+		ModGenderPage,
+		ModMottoPage,
+		QuestionPage,
+		JokePage,
+		ShopPage,
+		FriendAddPage,
+		FriendRequestPage,
+		FriendByContactPage,
+		UserDetailPage,
+		SignupPage,
+		SigninPage,
+		FriendListPage,
+		FriendNewPage,
+		ImgCutterPage,
+		ReorderPage,
 
-    /*components*/
-    ChatMsg,
-    Highlight,
+		/*components*/
+		ChatMsg,
+		Highlight,
 
-    /*pipes*/
-    GenderPipe,
-  ],
-  imports: [
-    IonicModule.forRoot(MyApp,{
-      // activator:"highlight",     //activator:"ripple",
-      // tabsHideOnSubPages : true,
-      // tabsHighlight:true,
-      mode:'ios'
+		/*pipes*/
+		GenderPipe,
+	],
+	imports: [
+		IonicModule.forRoot(MyApp, {
+			// activator:"highlight",     //activator:"ripple",
+			// tabsHideOnSubPages : true,
+			// tabsHighlight:true,
+			backButtonText: '返回',
+			mode: 'ios'
 
-    })
-  ],
-  bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
+		})
+	],
+	bootstrap: [IonicApp],
+	entryComponents: [
+		MyApp,
 
-    /*pages*/
-    IndexPage,
-    ChatPage,
-    ChatContentPage,
-    DailyPage,
-    DiscoverPage,
-    MePage,
-    MeDetailPage,
-    ModAvatarPage,
-    ModNicknamePage,
-    ModMottoPage,
-    ModGenderPage,
-    QuestionPage,
-    JokePage,
-    ShopPage,
-    FriendAddPage,
-    FriendRequestPage,
-    UserDetailPage,
-    SignupPage,
-    SigninPage,
-    FriendListPage,
-    FriendNewPage,
-    ImgCutterPage,
-    ReorderPage,
+		/*pages*/
+		IndexPage,
+		ChatPage,
+		ChatContentPage,
+		DailyPage,
+		DiscoverPage,
+		MePage,
+		MeDetailPage,
+		ModAvatarPage,
+		ModNicknamePage,
+		ModMottoPage,
+		ModGenderPage,
+		QuestionPage,
+		JokePage,
+		ShopPage,
+		FriendAddPage,
+		FriendRequestPage,
+		FriendByContactPage,
+		UserDetailPage,
+		SignupPage,
+		SigninPage,
+		FriendListPage,
+		FriendNewPage,
+		ImgCutterPage,
+		ReorderPage,
 
-    /*components*/
-    // ChatMsg,
-    // Highlight,
-  ],
-  providers: [
-     Storage,
-     {provide: ErrorHandler, useClass: IonicErrorHandler},
+		/*components*/
+		// ChatMsg,
+		// Highlight,
+	],
+	providers: [
+		Storage,
+		{ provide: ErrorHandler, useClass: IonicErrorHandler },
 
-     MsgService,
-     UserService,
-     SocketIO,
-     {
-          provide: MyHttp,
-          useFactory: (backend: XHRBackend, defaultOptions: RequestOptions) =>{
-            return new MyHttp(backend, defaultOptions);
-          },
-          deps: [XHRBackend, RequestOptions]
-      },
-    
-  ]
+		MsgService,
+		UserService,
+		SocketIO,
+		{
+			provide: MyHttp,
+			useFactory: myHttpFactory,
+			deps: [XHRBackend, RequestOptions]
+		},
+
+	]
 })
-export class AppModule {}
+export class AppModule { }

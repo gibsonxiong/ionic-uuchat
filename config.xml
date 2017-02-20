@@ -1,54 +1,70 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.ionicframework.ionicapp404878" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>ionic_app</name>
-    <description>An awesome Ionic/Cordova app.</description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content src="index.html" />
-    <access origin="*" />
-    <allow-intent href="http://*/*" />
-    <allow-intent href="https://*/*" />
-    <allow-intent href="tel:*" />
-    <allow-intent href="sms:*" />
-    <allow-intent href="mailto:*" />
-    <allow-intent href="geo:*" />
-    <platform name="android">
-        <allow-intent href="market:*" />
-    </platform>
-    <platform name="ios">
-        <allow-intent href="itms:*" />
-        <allow-intent href="itms-apps:*" />
-    </platform>
-    <preference name="webviewbounce" value="false" />
-    <preference name="UIWebViewBounce" value="false" />
-    <preference name="DisallowOverscroll" value="true" />
-    <preference name="android-minSdkVersion" value="16" />
-    <preference name="BackupWebStorage" value="none" />
-    <preference name="ShowSplashScreen" value="true" />
-    <preference name="SplashScreen" value="screen" />
-    <preference name="SplashScreenDelay" value="3000" />
-    <preference name="AutoHideSplashScreen" value="false" />
-    <preference name="SplashShowOnlyFirstTime" value="false" />
-    <preference name="FadeSplashScreen" value="false" />
-    <feature name="SplashScreen">
-        <param name="android-package" value="org.apache.cordova.splashscreen.SplashScreen" />
-    </feature>
-    <feature name="StatusBar">
-        <param name="ios-package" onload="true" value="CDVStatusBar" />
-    </feature>
-    <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
-    <plugin name="cordova-plugin-whitelist" spec="1.3.1" />
-    <plugin name="cordova-plugin-console" spec="1.0.5" />
-    <plugin name="cordova-plugin-statusbar" spec="2.2.1" />
-    <plugin name="cordova-plugin-device" spec="1.1.4" />
-    <plugin name="cordova-plugin-splashscreen" spec="~4.0.1" />
-    <plugin name="cordova-plugin-crosswalk-webview" spec="~2.3.0">
-        <variable name="XWALK_VERSION" value="23+" />
-        <variable name="XWALK_LITEVERSION" value="xwalk_core_library_canary:17+" />
-        <variable name="XWALK_COMMANDLINE" value="--disable-pull-to-refresh-effect" />
-        <variable name="XWALK_MODE" value="embedded" />
-        <variable name="XWALK_MULTIPLEAPK" value="true" />
-    </plugin>
-    <plugin name="cordova-plugin-camera" spec="~2.3.1" />
-    <allow-navigation href="http://192.168.1.102:8100" />
-    <plugin name="cordova-plugin-contacts" spec="~2.2.1" />
+  <name>uuchat</name>
+  <description>An chat app.</description>
+  <author email="hi@ionicframework" href="http://ionicframework.com/">gibsonxion</author>
+  <content src="index.html"/>
+  <allow-navigation href="http://*/*"/>
+  <allow-navigation href="https://*/*"/>
+  <allow-navigation href="data:*"/>
+  <allow-navigation href="http://192.168.1.104:8100"/>
+  <allow-navigation href="http://192.168.1.104:8101"/>
+  <access origin="*"/>
+  <access origin="http://classscript.com"/>
+  <allow-intent href="http://*/*"/>
+  <allow-intent href="https://*/*"/>
+  <allow-intent href="tel:*"/>
+  <allow-intent href="sms:*"/>
+  <allow-intent href="mailto:*"/>
+  <allow-intent href="geo:*"/>
+  <platform name="android">
+    <allow-intent href="market:*"/>
+  </platform>
+  <platform name="ios">
+    <allow-intent href="itms:*"/>
+    <allow-intent href="itms-apps:*"/>
+  </platform>
+  <preference name="webviewbounce" value="false"/>
+  <preference name="UIWebViewBounce" value="false"/>
+  <preference name="DisallowOverscroll" value="true"/>
+  <preference name="android-minSdkVersion" value="16"/>
+  <preference name="BackupWebStorage" value="none"/>
+  <preference name="AutoHideSplashScreen" value="false"/>
+  <preference name="auto-hide-splash-screen" value="false"/>
+  <preference name="FadeSplashScreen" value="true"/>
+  <preference name="FadeSplashScreenDuration" value="300"/>
+  <preference name="SplashScreenDelay" value="3000"/>
+  <preference name="ShowSplashScreenSpinner" value="false"/>
+  <feature name="SplashScreen">
+    <param name="android-package" value="org.apache.cordova.splashscreen.SplashScreen"/>
+  </feature>
+  <feature name="StatusBar">
+    <param name="ios-package" onload="true" value="CDVStatusBar"/>
+  </feature>
+  <plugin name="ionic-plugin-keyboard" spec="~2.2.1"/>
+  <plugin name="cordova-plugin-whitelist" spec="1.3.1"/>
+  <plugin name="cordova-plugin-console" spec="1.0.5"/>
+  <plugin name="cordova-plugin-device" spec="1.1.4"/>
+  <plugin name="cordova-plugin-crosswalk-webview" spec="~2.3.0">
+    <variable name="XWALK_VERSION" value="23+"/>
+    <variable name="XWALK_LITEVERSION" value="xwalk_core_library_canary:17+"/>
+    <variable name="XWALK_COMMANDLINE" value="--disable-pull-to-refresh-effect"/>
+    <variable name="XWALK_MODE" value="embedded"/>
+    <variable name="XWALK_MULTIPLEAPK" value="true"/>
+  </plugin>
+  <plugin name="cordova-plugin-camera" spec="~2.3.1"/>
+  <plugin name="cordova-plugin-contacts" spec="~2.2.1"/>
+  <plugin name="phonegap-plugin-push" spec="~1.9.3">
+    <variable name="SENDER_ID" value="85075801930"/>
+  </plugin>
+  <plugin name="cordova-plugin-statusbar" spec="~2.2.1"/>
+  <plugin name="cordova-plugin-badge" spec="~0.7.4"/>
+  <plugin name="cordova-plugin-splashscreen" spec="~2.0.0"/>
+  <plugin name="cordova-plugin-vibration" spec="~2.1.3"/>
+  <plugin name="de.appplant.cordova.plugin.local-notification" spec="~0.8.4"/>
+  <plugin name="phonegap-plugin-barcodescanner" spec="~6.0.5"/>
+  <plugin name="cordova-plugin-crop" spec="~0.3.1"/>
+  <plugin name="cordova-plugin-geolocation" spec="~2.4.1"/>
+  <plugin name="cordova-plugin-media" spec="~2.4.1"/>
+  <plugin name="com.megster.cordova.FileChooser" spec="http://github.com/don/cordova-filechooser.git"/>
 </widget>

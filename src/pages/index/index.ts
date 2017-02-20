@@ -1,5 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
+import { Vibration } from 'ionic-native';
+import { LocalNotifications } from 'ionic-native';
+
 import { Storage } from '@ionic/storage';
 
 import { ChatPage } from '../chat/chat';
@@ -37,7 +40,6 @@ export class IndexPage {
         private myHttp: MyHttp,
         private socketIO: SocketIO,
     ) {
-
     }
 
     ngOnInit() {
@@ -65,8 +67,8 @@ export class IndexPage {
     }
 
     initData(): void {
-        this.userService.init();
-        this.msgService.init();
+        this.userService.initData();
+        this.msgService.initData();
 
         //强迫下线通知
         this.forceQuitSubscription = this.socketIO.forceQuit$.subscribe(() => {
@@ -88,6 +90,12 @@ export class IndexPage {
             .subscribe(chatUnread => {
                 this.chatUnread = chatUnread;
             });
+
+            //消息通知
+        this.msgService.newMsg$
+            .subscribe(msg => {
+                this.notify(msg);
+            });
     }
 
     destroyData(): void {
@@ -97,6 +105,19 @@ export class IndexPage {
         this.forceQuitSubscription.unsubscribe();
         this.chatListSubscription.unsubscribe();
     }
+
+    notify(msg) {
+        LocalNotifications.schedule({
+            id: msg._id,
+            title: msg._fromUser.nickname,
+            text: msg.content,
+            icon: 'http://www.classscript.com/static/img/avatar2.png',
+            smallIcon: 'http://www.classscript.com/static/img/avatar2.png',
+        });
+
+        Vibration.vibrate(100);
+    }
+
 
     presentAlert() {
         let alert = this.alertCtrl.create({

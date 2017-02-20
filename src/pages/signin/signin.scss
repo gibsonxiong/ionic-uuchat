@@ -1,4 +1,13 @@
 cy-signin-page{
+	.logo-wrap{
+		padding: 2.5rem;
+		text-align: center;
+
+		img{
+			width: 8rem;
+		}
+	}
+	
 	form {
 		padding-bottom: .2rem;
 	}

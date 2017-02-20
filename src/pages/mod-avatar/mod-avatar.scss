@@ -12,4 +12,8 @@ cy-mod-avatar-page{
 			width:100%;
 		}
 	}
+
+	input[type="file"]{
+		display: block;
+	}
 }

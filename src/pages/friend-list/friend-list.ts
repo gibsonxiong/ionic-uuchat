@@ -1,40 +1,47 @@
-import { Component,OnInit } from '@angular/core';
-import { NavController } from 'ionic-angular';
-import {FriendAddPage} from '../friend-add/friend-add';
-import {FriendNewPage} from '../friend-new/friend-new';
+import { Component, OnInit } from '@angular/core';
+import { NavController, App } from 'ionic-angular';
+import { FriendAddPage } from '../friend-add/friend-add';
+import { FriendNewPage } from '../friend-new/friend-new';
 import { UserDetailPage } from '../user-detail/user-detail';
 import { UserService } from '../../services/user';
 
 @Component({
-  selector:'cy-friend-list-page',
-  templateUrl: 'friend-list.html'
+	selector: 'cy-friend-list-page',
+	templateUrl: 'friend-list.html'
 })
-export class FriendListPage implements OnInit{
-  list:any[] = [];
+export class FriendListPage implements OnInit {
+	list: any[] = [];
 
-  constructor(
-  	public navCtrl:NavController,
-    public userService:UserService
-  	) {}
+	private friendListSubscription;
+
+	constructor(
+		private app: App,
+		private navCtrl: NavController,
+		private userService: UserService
+	) { }
 
 
-  ngOnInit(){
-    this.userService.friendList$.subscribe(
-      friendList => {
-        this.list = friendList;
-      }
-    );
-  }
+	ngOnInit() {
+		this.friendListSubscription = this.userService.friendList$.subscribe(
+			friendList => {
+				this.list = friendList;
+			}
+		);
+	}
 
-  gotoUserDetailPage(userId){
-    this.navCtrl.push(UserDetailPage,{userId: userId });
-  }
+	ngOnDestroy(){
+		this.friendListSubscription.unsubscribe();
+	}
 
-  gotoFriendAddPage(){
-  	this.navCtrl.push(FriendAddPage);
-  }
+	gotoUserDetailPage(userId) {
+		this.app.getRootNav().push(UserDetailPage, { userId: userId });
+	}
 
-  gotoFriendNewPage(){
-  	this.navCtrl.push(FriendNewPage);
-  }
+	gotoFriendAddPage() {
+		this.app.getRootNav().push(FriendAddPage);
+	}
+
+	gotoFriendNewPage() {
+		this.app.getRootNav().push(FriendNewPage);
+	}
 }

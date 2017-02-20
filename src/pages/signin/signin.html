@@ -1,16 +1,11 @@
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>登录</ion-title>
-  </ion-navbar>
-
-</ion-header>
-
-
-<ion-content>
+<ion-content >
 	<form [formGroup]="form" (ngSubmit)="signin()">
+		<div class="logo-wrap">
+			<img src="assets/img/logo.png"/>
+		</div>
 		<ion-list>
 			<ion-item>
+				<ion-label>帐号</ion-label>
 				<ion-input type="text" placeholder="用户名/手机号" formControlName="username"></ion-input>
 				<span item-right *ngIf="form.controls.username.pending && form.controls.username.dirty">...</span>
 				<span item-right *ngIf="form.controls.username.valid && form.controls.username.dirty">√</span>
@@ -18,6 +13,7 @@
 			</ion-item>
 			
 			<ion-item>
+				<ion-label>密码</ion-label>
 				<ion-input type="password" placeholder="密码" formControlName="password"></ion-input>
 				<span item-right *ngIf="form.controls.password.pending && form.controls.password.dirty">...</span>
 				<span item-right *ngIf="form.controls.password.valid && form.controls.password.dirty">√</span>
@@ -25,6 +21,7 @@
 			</ion-item>
 		</ion-list>
 
+		<!--<div padding-horizontal><button ion-button block [disabled]="form.invalid" @flyInOut>登录</button></div>-->
 		<div padding-horizontal><button ion-button block [disabled]="form.invalid">登录</button></div>
 	</form>
 

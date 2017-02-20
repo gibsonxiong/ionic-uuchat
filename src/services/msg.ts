@@ -17,28 +17,28 @@ import { UserService } from '../services/user';
 @Injectable()
 export class MsgService {
 
-    private userId: string;
+    private ownId: string;
     private readingId: string = '';
 
-    // private newMsgSubject = new ReplaySubject<any>();
-    // public newMsg$ = this.newMsgSubject.asObservable();
+    private newMsgSubject = new ReplaySubject<any>();
+    public newMsg$ = this.newMsgSubject.asObservable();
 
-    // private msgListSubject = new BehaviorSubject<any[]>([]);
-    // public msgList$ = this.msgListSubject.asObservable();
+    private msgListSubject = new BehaviorSubject<any[]>([]);
+    public msgList$ = this.msgListSubject.asObservable();
 
-    // private chatListSubject = new BehaviorSubject<any[]>([]);
-    // public chatList$ = this.chatListSubject.asObservable();
+    private chatListSubject = new BehaviorSubject<any[]>([]);
+    public chatList$ = this.chatListSubject.asObservable();
 
-    private newMsgSubject;
-    public newMsg$;
+    // private newMsgSubject;
+    // public newMsg$;
 
-    private msgListSubject;
-    public msgList$;
+    // private msgListSubject;
+    // public msgList$;
 
-    private chatListSubject;
-    public chatList$;
+    // private chatListSubject;
+    // public chatList$;
 
-    private userSubscription;
+    private ownSubscription;
     private pushMsgSubscription;
     private msgListSubscription;
     private chatListSubscription;
@@ -52,22 +52,14 @@ export class MsgService {
 
     }
 
-    init(): void {
-        this.newMsgSubject = new ReplaySubject<any>();
-        this.newMsg$ = this.newMsgSubject.asObservable();
+    initData(): void {
 
-        this.msgListSubject = new BehaviorSubject<any[]>([]);
-        this.msgList$ = this.msgListSubject.asObservable();
-
-        this.chatListSubject = new BehaviorSubject<any[]>([]);
-        this.chatList$ = this.chatListSubject.asObservable();
-
-        this.userSubscription = this.userService.user$.subscribe(
-            user => {
-                this.userId = user._id;
+        this.ownSubscription = this.userService.own$.subscribe(
+            own => {
+                this.ownId = own._id;
 
                 //todo 因为initMsgList依赖userId，所以要在userId存在时执行，待优化
-                if (user._id) {
+                if (own._id) {
                     this.initMsgList();
                     this.initChatList();
                 }
@@ -78,28 +70,28 @@ export class MsgService {
             msg => this.newMsgSubject.next(msg)
         );
 
-        // //test
-        this.newMsg$.subscribe(
-            newMsg => {
-                console.log('newMsg$', newMsg);
-            }
-        )
+        // // //test
+        // this.newMsg$.subscribe(
+        //     newMsg => {
+        //         console.log('newMsg$', newMsg);
+        //     }
+        // )
 
-        this.msgList$.subscribe(
-            msgList => {
-                console.log('msgList$', msgList);
-            }
-        )
+        // this.msgList$.subscribe(
+        //     msgList => {
+        //         console.log('msgList$', msgList);
+        //     }
+        // )
 
-        this.chatList$.subscribe(
-            chatList => {
-                console.log('chatList$', chatList);
-            }
-        )
+        // this.chatList$.subscribe(
+        //     chatList => {
+        //         console.log('chatList$', chatList);
+        //     }
+        // )
     }
 
     destroy() {
-        this.userSubscription.unsubscribe();
+        this.ownSubscription.unsubscribe();
         this.pushMsgSubscription.unsubscribe();
     }
 
@@ -111,16 +103,13 @@ export class MsgService {
             msgList = msgList || [];
             this.msgListSubject.next(msgList);
 
-            this.msgListSubscription = this.newMsgSubject.scan((msgList, msg) => {
+        });
 
-                msgList.push(msg);
-                return msgList;
-
-            }, msgList)
-                .do((msgList) => { this.storageMsgList(msgList) })
-                .subscribe(msgList => this.msgListSubject.next(msgList));
-
-
+        this.msgListSubscription = this.newMsgSubject.subscribe(msg => {
+            let msgList = this.msgListSubject.getValue();
+            msgList.push(msg);
+            this.storageMsgList(msgList)
+            this.msgListSubject.next(msgList);
         });
     }
 
@@ -131,8 +120,6 @@ export class MsgService {
         //从本地获取聊天列表
         this.getChatListFromStorage().then(chatList => {
 
-            // this.chatListSubject = new BehaviorSubject<any[]> (chatList|| []);
-            // this.chatList$ = this.chatListSubject.asObservable();
             chatList = chatList || [];
 
             this.chatListSubject.next(chatList);
@@ -248,11 +235,11 @@ export class MsgService {
     }
 
     getInPrivateStorage(name): Promise<any> {
-        return this.storage.get(name + '/' + this.userId);
+        return this.storage.get(name + '/' + this.ownId);
     }
 
     setInPrivateStorage(name, value): Promise<any> {
-        return this.storage.set(name + '/' + this.userId, value);
+        return this.storage.set(name + '/' + this.ownId, value);
     }
 
     // getChatList():Observable<any>{

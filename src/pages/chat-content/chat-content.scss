@@ -1,19 +1,83 @@
-cy-chat-content-page{
-	.msg-input-wrapper{
-		display: flex;
-		align-items: center;
-
-		input{
-			flex:1;
-			margin:0 10px;
-			height:30px;
-			font-size: 16px;
-			border:	$hairlines-width solid #bbb;
-			border-radius:4px;
-		}
-
-		button{
-			height: 40px;
-		}
-	}
+$color-msg-content-bg: #3c3 #eee;
+$color-msg-content: #fff #111;
+cy-chat-content-page {
+  .send-time-wrap {
+    text-align: center;
+    .send-time {
+      display: inline-block;
+      padding: 4px;
+      background-color: rgba(0, 0, 0, 0.05);
+      color: #fff;
+      border-radius: 4px;
+    }
+  }
+  .msg-wrap {
+    display: flex;
+    align-items: center;
+    &.me-msg {
+      flex-direction: row-reverse;
+      p {
+        background-color: nth($color-msg-content-bg, 1);
+        color: nth($color-msg-content, 1);
+        margin: 10px 5px 10px 40px;
+        &:after {
+          border: 5px solid nth($color-msg-content-bg, 1);
+          right: -4px;
+          transform: translateY(-50%) rotate(-45deg);
+        }
+      }
+    }
+    &.other-msg {
+      flex-direction: row;
+      p {
+        background-color: nth($color-msg-content-bg, 2);
+        color: nth($color-msg-content, 2);
+        margin: 10px 40px 10px 5px;
+        &:after {
+          border: 5px solid nth($color-msg-content-bg, 2);
+          left: -4px;
+          transform: translateY(-50%) rotate(135deg);
+        }
+      }
+    }
+    ion-img {
+      margin: 5px 10px;
+      min-width: 45px;
+      width: 45px;
+      height: 45px;
+      border-radius: 4px;
+    }
+    p {
+      position: relative;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 16px;
+      min-width: 50px;
+      &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 50%;
+        width: 0;
+        height: 0;
+        border-top-color: transparent;
+        border-left-color: transparent;
+      }
+    }
+  }
+  .msg-input-wrapper {
+    display: flex;
+    align-items: center;
+    input {
+      flex: 1;
+      margin: 0 10px;
+      height: 30px;
+      font-size: 16px;
+      border: $hairlines-width solid #bbb;
+      border-radius: 4px;
+    }
+    button {
+      height: 40px;
+    }
+  }
 }

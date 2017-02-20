@@ -47,7 +47,14 @@ export class UserDetailPage implements OnInit{
 
   gotoChatContentPage(){
     if(!this.relationId)  return alert('你们还不是朋友！');
+
+    //如果是从聊天内容页进来的话，就直接pop
+    if(this.navCtrl.getPrevious().component === ChatContentPage){
+        this.navCtrl.pop();
+    }else{
+        this.navCtrl.push(ChatContentPage,{relationId: this.relationId, chatName:this.user.nickname}); 
+    }
     
-    this.navCtrl.push(ChatContentPage,{relationId: this.relationId}); 
+    
   }
 }

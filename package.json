@@ -1,7 +1,7 @@
 {
-  "name": "ionic-hello-world",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
+  "name": "uuchat-ionic-master",
+  "author": "gibsonxiong",
+  "homepage": "http://uuchat.com/",
   "private": true,
   "scripts": {
     "clean": "ionic-app-scripts clean",
@@ -39,5 +39,5 @@
     "ionic-plugin-keyboard"
   ],
   "cordovaPlatforms": [],
-  "description": "ionic_app: An Ionic project"
+  "description": "uuchat-ionic-master"
 }

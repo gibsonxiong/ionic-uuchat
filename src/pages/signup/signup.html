@@ -1,19 +1,21 @@
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>注册</ion-title>
+<ion-header no-border>
+  <ion-navbar color="transparent">
   </ion-navbar>
-
 </ion-header>
-	
-
 <ion-content>
-	<h2 class="tip">请输入你的手机号</h2>
-
-	<ion-item>
-		<ion-input type="tel" placeholder="手机号"></ion-input>
-	</ion-item>
-
-	<button ion-button block>注册</button>
-
+  <h2 class="tip">请输入你的手机号</h2>
+  <form [formGroup]="form" (ngSubmit)="checkVerificationCode()">
+    <ion-list>
+      <ion-item>
+        <ion-label>手机号</ion-label>
+        <ion-input type="tel" formControlName="mobile"  placeholder="手机号"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>验证码</ion-label>
+        <ion-input type="number" formControlName="code" placeholder="验证码"></ion-input>
+        <button ion-button item-right (click)="getVerificationCode($event)">获取验证码</button>
+      </ion-item>
+    </ion-list>
+    <button ion-button block>注册</button>
+  </form>
 </ion-content>

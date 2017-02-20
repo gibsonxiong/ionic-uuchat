@@ -1,1 +1,1 @@
-export const HOST = 'http://192.168.1.103:3000';
+export const HOST = 'http://www.classscript.com';

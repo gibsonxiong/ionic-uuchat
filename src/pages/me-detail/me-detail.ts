@@ -5,7 +5,6 @@ import { ModNicknamePage } from '../mod-nickname/mod-nickname';
 import { ModGenderPage } from '../mod-gender/mod-gender';
 import { ModMottoPage } from '../mod-motto/mod-motto';
 import { UserService } from '../../services/user';
-import { MyHttp } from '../../providers/my-http';
 
 @Component({
   selector:'cy-me-detail-page',
@@ -13,7 +12,7 @@ import { MyHttp } from '../../providers/my-http';
 })
 export class MeDetailPage implements OnInit{
 
-	user:any = {};
+	own:any = {};
 
   constructor(
   		public navCtrl : NavController,
@@ -22,26 +21,24 @@ export class MeDetailPage implements OnInit{
 
   ngOnInit(){
 
-    this.userService.user$.subscribe(
-      user=> this.user = user
-    );
+    this.userService.own$.subscribe( own=> this.own = own );
 
   }
 
   gotoModAvatarPage(){
-  	this.navCtrl.push(ModAvatarPage,{avatarSrc:this.user.avatarSrc});
+  	this.navCtrl.push(ModAvatarPage,{avatarSrc:this.own.avatarSrc});
   }
 
   gotoModNicknamePage(){
-    this.navCtrl.push(ModNicknamePage,{nickname:this.user.nickname});
+    this.navCtrl.push(ModNicknamePage,{nickname:this.own.nickname});
   }
 
   gotoModGenderPage(){
-    this.navCtrl.push(ModGenderPage,{gender:this.user.gender});
+    this.navCtrl.push(ModGenderPage,{gender:this.own.gender});
   }
 
   gotoModMottoPage(){
-    this.navCtrl.push(ModMottoPage,{motto:this.user.motto});
+    this.navCtrl.push(ModMottoPage,{motto:this.own.motto});
   }
   
 }

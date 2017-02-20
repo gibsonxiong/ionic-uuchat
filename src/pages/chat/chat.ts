@@ -32,11 +32,10 @@ export class ChatPage implements OnInit {
 
   }
 
-  gotoChatContentPage(relationId):void{
+  gotoChatContentPage(relationId, chatName):void{
      this.appCtrl.getRootNav().push(
        ChatContentPage,
-       { relationId:relationId },
-       { animation: 'md-transition'}
+       { relationId, chatName }
      );
   }
 

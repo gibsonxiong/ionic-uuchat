@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { UserDetailPage } from '../user-detail/user-detail';
+import { FriendByContactPage } from '../friend-by-contact/friend-by-contact';
 import { UserService } from '../../services/user';
 
 @Component({
@@ -30,8 +31,12 @@ export class FriendAddPage {
 		);
 	}
 
-	gotoUserDetailPage(userId){
-	   this.navCtrl.push(UserDetailPage,{userId: userId });
+	gotoFriendByContactPage(){
+	   this.navCtrl.push( FriendByContactPage );
+	}
+
+	gotoUserDetailPage(userId):void{
+	   this.navCtrl.push( FriendByContactPage,{userId});
 	}
 
 }

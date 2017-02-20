@@ -1,3 +1,25 @@
 friendList 不刷新
 
 chat-msg
+
+//震动
+
+$ ionic plugin add cordova-plugin-vibration
+
+https://github.com/apache/cordova-plugin-vibration
+
+import { Vibration } from 'ionic-native';
+
+// Vibrate the device for a second
+// Duration is ignored on iOS.
+Vibration.vibrate(1000);
+
+// Vibrate 2 seconds
+// Pause for 1 second
+// Vibrate for 2 seconds
+// Patterns work on Android and Windows only
+Vibration.vibrate([2000,1000,2000]);
+
+// Stop any current vibrations immediately
+// Works on Android and Windows only
+Vibration.vibrate(0);

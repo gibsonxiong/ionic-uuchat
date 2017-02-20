@@ -23,9 +23,9 @@ export class ChatMsg {
 
   ngOnInit(){
 
-     this.userService.user$.subscribe(
-      user=>{
-        this.userId = user._id;
+     this.userService.own$.subscribe(
+      own=>{
+        this.userId = own._id;
       }
     );
 

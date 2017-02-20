@@ -1,6 +1,6 @@
-import { Component,ViewChild,OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { App } from 'ionic-angular';
-import { Camera } from 'ionic-native';
+import { BarcodeScanner } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 import { SigninPage } from '../signin/signin';
 import { MeDetailPage } from '../me-detail/me-detail';
@@ -9,60 +9,61 @@ import { MyHttp } from '../../providers/my-http';
 import { SocketIO } from '../../providers/socket-io';
 
 @Component({
-  selector:'cy-me-page',
-  templateUrl: 'me.html'
+	selector: 'cy-me-page',
+	templateUrl: 'me.html'
 })
-export class MePage implements OnInit{
+export class MePage implements OnInit {
 
-  user = {};
+	private own = {};
 
-	@ViewChild('img') img
+	constructor(
+		public appCtrl: App,
+		public storage: Storage,
+		public userService: UserService,
+		public myHttp: MyHttp,
+		public socketIO: SocketIO,
+	) {
 
-  constructor(
-  	public appCtrl: App,
-  	public storage : Storage,
-    public userService :UserService,
-    public myHttp: MyHttp,
-    public socketIO: SocketIO,
-  ) {
-    
-  }
+	}
 
-  ngOnInit(){
-    this.userService.user$.subscribe(user=>this.user=user);
+	ngOnInit() {
+		this.userService.own$.subscribe(own => this.own = own);
+	}
 
-  }
+	
+	scanBarCode() {
+		// let options = {
+		// 	showFlipCameraButton: true,
+		// 	showTorchButton: true,
+		// 	orientation: 'portrait'
+		// }
+		// BarcodeScanner.scan(options).then((barcodeData) => {
+		// 	console.log('barcodeData', barcodeData);
+		// 	// Success! Barcode data is here
+		// }, (err) => {
+		// 	// An error occurred
+		// 	console.log('[err] barcodeData', err);
+		// });
+	}
 
-  photograph(){
-  	var that = this;
+	clearStorage() {
+		this.storage.clear();
+	}
 
-  	console.log(that.img);
-  	Camera.getPicture().then((imageData) => {
-  		 that.img.nativeElement.src=imageData;
-  	}, (err) => {
+	//登出
+	signout(): void {
+		var that = this;
 
-  	 	// Handle error
-  	});
-  }
+		this.storage.remove('token').then(() => {
+			that.myHttp.removeToken();
+			that.socketIO.signout();
+			that.appCtrl.getRootNav().setRoot(SigninPage);
+		});
+	}
 
-  clearStorage(){
-    this.storage.clear();
-  }
-
-  //登出
-  signout():void{
-  	var that = this;
-
-  	this.storage.remove('token').then(()=>{
-      that.myHttp.removeToken();
-      that.socketIO.signout();
-  		that.appCtrl.getRootNav().setRoot(SigninPage);
-  	});
-  }
-
-  gotoMeDetailPage(){
-    this.appCtrl.getRootNav().push(MeDetailPage);
-  }
+	gotoMeDetailPage() {
+		this.appCtrl.getRootNav().push(MeDetailPage);
+	}
 
 
 
