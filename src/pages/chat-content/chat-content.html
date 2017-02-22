@@ -17,25 +17,38 @@
 
   <div *ngFor="let msg of msgList" class="msg-wrap {{ msg.fromUserId === ownId?'me-msg':'other-msg' }}">
     <ion-img [src]="msg._fromUser && msg._fromUser.avatarSrc" (click)="gotoUserDetailPage(msg.fromUserId)"></ion-img>
-    <p>{{msg.content}}</p>
+    <!--文本消息-->
+    <p class="msg-content" *ngIf="msg.type===0">{{msg.content}}</p>
+
+    <!--文本消息-->
+    <p class="msg-content" *ngIf="msg.type===3" (click)="playRecord(msg.content)">
+      <ion-icon class="audio-icon" name="wifi"></ion-icon>
+    </p>
   </div>
+  <audio #audio autoplay="autoplay"></audio>
 </ion-content>
 
 <ion-footer>
   <ion-toolbar>
+    <div class="foot-wrapper">
+      <!--切换按钮-->
+      <button ion-button icon-only outline small (click)="switchInput()">
+        <ion-icon *ngIf="!isAudio" name="wifi" class="switch-toggle"></ion-icon>
+        <ion-icon *ngIf="isAudio" name="barcode"></ion-icon>
+      </button>
+      <!--文本-->
+      <div *ngIf="!isAudio" class="msg-input-wrapper">
+        <form [formGroup]="form" (ngSubmit)="sendMsg()">
+          <input type="text" formControlName="content" (focus)="scrollToBottom()" />
+          <!--<button ion-button [disabled]="form.invalid">发送</button>-->
+        </form>
+      </div>
+      <!--语音-->
+      <div *ngIf="isAudio" class="audio-msg-wrapper">
+        <button ion-button block outline small (click)="recordToggle()">{{recording? '停止录音':'开始录音'}}</button>
+      </div>
 
-    <ion-item>
-      <button ion-button icon-only item-left><ion-icon name="mic"></ion-icon></button>
-      <div><button ion-button block outline (click)="recordToggle()">{{recording? '停止录音':'开始录音'}}</button></div>
-
-      <form [formGroup]="form" (ngSubmit)="sendMsg()">
-        <!--<div class="msg-input-wrapper">
-			<input type="text" formControlName="content" (focus)="scrollToBottom()"/>
-			<button ion-button [disabled]="form.invalid">发送</button>
-		</div>-->
-      </form>
-    </ion-item>
-
-
+      <button ion-button icon-only outline small><ion-icon name="add-outline"></ion-icon></button>
+    </div>
   </ion-toolbar>
 </ion-footer>

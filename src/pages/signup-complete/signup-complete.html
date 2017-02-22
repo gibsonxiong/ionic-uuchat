@@ -1,0 +1,42 @@
+<ion-header no-border>
+  <ion-navbar color="transparent">
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <h2 class="title">完善你的帐号</h2>
+  <form [formGroup]="form" (ngSubmit)="signup()">
+    <ion-list>
+      <ion-item>
+        <ion-label>用户名</ion-label>
+        <ion-input type="text" formControlName="username" placeholder="用户名"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>密码</ion-label>
+        <ion-input type="password" formControlName="password" placeholder="密码"></ion-input>
+      </ion-item>
+    </ion-list>
+
+    <h3 class="sub-title">个人资料</h3>
+    <div class="avatar-wrap">
+      <img [src]="avatarSrc" (click)="presentActionSheet()"/>
+      <p class="avatar-tip">点击图片，上传头像</p>
+    </div>
+    <ion-list>
+      <ion-item>
+        <ion-label>昵称</ion-label>
+        <ion-input type="text" formControlName="nickname" placeholder="昵称"></ion-input>
+      </ion-item>
+      <button ion-item (click)="selectGender($event)">
+        <ion-label>性别</ion-label>
+        <ion-note item-right>{{form.value.gender | gender}}</ion-note>
+      </button>
+      <ion-item>
+        <ion-label>个性签名</ion-label>
+        <ion-textarea type="text" placeholder="个性签名" formControlName="motto"></ion-textarea>
+      </ion-item>
+    </ion-list>
+    <div padding-horizontal>
+      <button ion-button block [disabled]="form.invalid">注册</button>
+    </div>
+  </form>
+</ion-content>

@@ -10,8 +10,8 @@
     <ion-title>聊天</ion-title>
 
     <ion-buttons end >
-      <button ion-button icon-only (click)="gotoFriendAddPage()">
-          <ion-icon name="person-add"></ion-icon>
+      <button ion-button icon-only (click)="presentPopover($event)">
+          <ion-icon name="more"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -26,7 +26,7 @@
         <img [src]="chat.avatarSrc">
       </ion-thumbnail>
       
-      <h2>{{chat.name}} <ion-note>{{chat.lastSendTime | date}}</ion-note></h2>
+      <h2>{{chat.name}} <ion-note>{{chat.lastSendTime | timediff}}</ion-note></h2>
       <p>{{chat.lastContent}}</p>
 
       <ion-badge color="danger" *ngIf="chat.unread > 0">{{chat.unread}}</ion-badge>

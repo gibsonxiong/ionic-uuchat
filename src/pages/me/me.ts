@@ -1,12 +1,12 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { App } from 'ionic-angular';
 import { BarcodeScanner } from 'ionic-native';
-import { Storage } from '@ionic/storage';
-import { SigninPage } from '../signin/signin';
+
+import { DownloadPage } from '../download/download';
+import { SettingPage } from '../setting/setting';
 import { MeDetailPage } from '../me-detail/me-detail';
 import { UserService } from '../../services/user';
-import { MyHttp } from '../../providers/my-http';
-import { SocketIO } from '../../providers/socket-io';
+import { BackEnd } from '../../providers/backend';
 
 @Component({
 	selector: 'cy-me-page',
@@ -18,10 +18,8 @@ export class MePage implements OnInit {
 
 	constructor(
 		public appCtrl: App,
-		public storage: Storage,
 		public userService: UserService,
-		public myHttp: MyHttp,
-		public socketIO: SocketIO,
+		public backend: BackEnd,
 	) {
 
 	}
@@ -46,25 +44,20 @@ export class MePage implements OnInit {
 		// });
 	}
 
-	clearStorage() {
-		this.storage.clear();
-	}
 
-	//登出
-	signout(): void {
-		var that = this;
 
-		this.storage.remove('token').then(() => {
-			that.myHttp.removeToken();
-			that.socketIO.signout();
-			that.appCtrl.getRootNav().setRoot(SigninPage);
-		});
-	}
 
 	gotoMeDetailPage() {
 		this.appCtrl.getRootNav().push(MeDetailPage);
 	}
 
+	gotoDownloadPage() {
+		this.appCtrl.getRootNav().push(DownloadPage);
+	}
+
+	gotoSettingPage(){
+		this.appCtrl.getRootNav().push(SettingPage);
+	}
 
 
 }

@@ -8,14 +8,16 @@
     <ion-list>
       <ion-item>
         <ion-label>手机号</ion-label>
-        <ion-input type="tel" formControlName="mobile"  placeholder="手机号"></ion-input>
+        <ion-input type="tel" formControlName="mobile" placeholder="手机号"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>验证码</ion-label>
         <ion-input type="number" formControlName="code" placeholder="验证码"></ion-input>
-        <button ion-button item-right (click)="getVerificationCode($event)">获取验证码</button>
+        <button ion-button item-right (click)="getVerificationCode($event)" [disabled]="disableButton || form.controls.mobile.invalid">{{buttonName}}</button>
       </ion-item>
     </ion-list>
-    <button ion-button block>注册</button>
+    <div padding-horizontal>
+      <button ion-button block [disabled]="form.invalid">注册</button>
+    </div>
   </form>
 </ion-content>

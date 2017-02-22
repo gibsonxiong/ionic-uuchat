@@ -14,7 +14,9 @@ import { SigninPage } from '../signin/signin';
 import { UserService } from '../../services/user';
 import { MsgService } from '../../services/msg';
 import { MyHttp } from '../../providers/my-http';
-import { SocketIO } from '../../providers/socket-io';
+import { BackEnd } from '../../providers/backend';
+
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'cy-index-page',
@@ -28,8 +30,8 @@ export class IndexPage {
     tab4Root = MePage;
 
     private chatUnread: number = 0;
-    private forceQuitSubscription;
-    private chatListSubscription;
+
+    private subscriptions = new Subscription();
 
     constructor(
         private navCtrl: NavController,
@@ -38,81 +40,104 @@ export class IndexPage {
         private userService: UserService,
         private msgService: MsgService,
         private myHttp: MyHttp,
-        private socketIO: SocketIO,
+        private backEnd: BackEnd,
     ) {
     }
 
     ngOnInit() {
         this.connectServer();
+
+        //强迫下线通知
+        this.subscriptions.add(
+
+            this.backEnd.onForceQuit.subscribe(() => {
+                this.forceQuit();
+            })
+
+        )
+
+        //没读消息数
+        this.subscriptions.add(
+
+            this.msgService.chatList$
+                .map(chatList => {
+                    var chatUnread = 0;
+
+                    chatList.forEach(chat => {
+                        chatUnread += chat.unread;
+                    })
+
+                    return chatUnread;
+                })
+                .subscribe(chatUnread => {
+                    this.chatUnread = chatUnread;
+                })
+        )
+
+        //消息通知
+        this.subscriptions.add(
+
+            this.msgService.newMsg$
+                .subscribe(msg => {
+                    this.notify(msg);
+                })
+        )
+
     }
 
     ngOnDestroy() {
+        this.backEnd.disconnect();
+        this.backEnd.clearSource();
         this.destroyData();
+        this.unsubscribe();
     }
 
     connectServer() {
         this.storage.get('token').then(token => {
             if (token) {
-                //连接http
-                this.myHttp.setToken(token);
-                //连接socket
-                this.socketIO.signin(token);
-                //初始化数据
+                this.backEnd.connect(token);
                 this.initData();
 
             } else {
+                alert('请先登录');
+
                 this.gotoSigninPage();
             }
         });
     }
 
     initData(): void {
-        this.userService.initData();
-        this.msgService.initData();
-
-        //强迫下线通知
-        this.forceQuitSubscription = this.socketIO.forceQuit$.subscribe(() => {
-            this.destroyData();
-            this.presentAlert();
-        });
-
-        //没读消息数
-        this.chatListSubscription = this.msgService.chatList$
-            .map(chatList => {
-                var chatUnread = 0;
-
-                chatList.forEach(chat => {
-                    chatUnread += chat.unread;
-                })
-
-                return chatUnread;
-            })
-            .subscribe(chatUnread => {
-                this.chatUnread = chatUnread;
-            });
-
-            //消息通知
-        this.msgService.newMsg$
-            .subscribe(msg => {
-                this.notify(msg);
-            });
+        this.userService.init();
+        this.msgService.init();
     }
 
     destroyData(): void {
         this.userService.destroy();
         this.msgService.destroy();
+    }
 
-        this.forceQuitSubscription.unsubscribe();
-        this.chatListSubscription.unsubscribe();
+    unsubscribe() {
+        this.subscriptions.unsubscribe();
+    }
+
+    //强迫下线
+    forceQuit() {
+        //断开连接
+        this.backEnd.disconnect();
+        //取消所有订阅
+        this.unsubscribe();
+
+        this.presentAlert();
     }
 
     notify(msg) {
+        var content = msg.type === 0 ? msg.content : '[语音]';
         LocalNotifications.schedule({
             id: msg._id,
             title: msg._fromUser.nickname,
-            text: msg.content,
-            icon: 'http://www.classscript.com/static/img/avatar2.png',
-            smallIcon: 'http://www.classscript.com/static/img/avatar2.png',
+            text: content,
+            // icon: 'http://www.classscript.com/static/img/avatar2.png',
+            // smallIcon: 'http://www.classscript.com/static/img/avatar2.png',
         });
 
         Vibration.vibrate(100);
@@ -128,6 +153,11 @@ export class IndexPage {
                 {
                     text: '重新登录',
                     handler: data => {
+                        this.backEnd.disconnect();
+                        this.backEnd.clearSource();
+                        this.destroyData();
+                        this.unsubscribe();
+
                         this.connectServer();
                     }
                 },

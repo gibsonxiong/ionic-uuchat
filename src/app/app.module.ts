@@ -1,6 +1,6 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { XHRBackend, RequestOptions } from '@angular/http';
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { IonicApp, IonicModule, IonicErrorHandler, LoadingController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { MyApp } from './app.component';
 
@@ -18,19 +18,21 @@ import { ModNicknamePage } from '../pages/mod-nickname/mod-nickname';
 import { ModGenderPage } from '../pages/mod-gender/mod-gender';
 import { ModMottoPage } from '../pages/mod-motto/mod-motto';
 import { QuestionPage } from '../pages/question/question';
-import { JokePage } from '../pages/joke/joke';
 import { ShopPage } from '../pages/shop/shop';
 import { FriendAddPage } from '../pages/friend-add/friend-add';
 import { UserDetailPage } from '../pages/user-detail/user-detail';
 import { SignupPage } from '../pages/signup/signup';
+import { SignupCompletePage } from '../pages/signup-complete/signup-complete';
 import { SigninPage } from '../pages/signin/signin';
 import { FriendListPage } from '../pages/friend-list/friend-list';
 import { FriendNewPage } from '../pages/friend-new/friend-new';
 import { FriendRequestPage } from '../pages/friend-request/friend-request';
 import { FriendByContactPage } from '../pages/friend-by-contact/friend-by-contact';
-import { ImgCutterPage } from '../pages/img-cutter/img-cutter';
 import { ReorderPage } from '../pages/reorder/reorder';
-import { myHttpFactory } from '../factorys'
+import { DownloadPage } from '../pages/download/download';
+import { SettingPage } from '../pages/setting/setting';
+
+import { myHttpFactory } from '../factorys';
 
 /*components*/
 import { ChatMsg } from '../components/chat-msg/chat-msg';
@@ -40,10 +42,11 @@ import { UserService } from '../services/user';
 import { MsgService } from '../services/msg';
 
 import { MyHttp } from '../providers/my-http';
-import { SocketIO } from '../providers/socket-io';
+import { BackEnd } from '../providers/backend';
 
 /*pipes*/
 import { GenderPipe } from '../pipes/gender';
+import { TimediffPipe } from '../pipes/timediff';
 
 @NgModule({
 	declarations: [
@@ -62,18 +65,19 @@ import { GenderPipe } from '../pipes/gender';
 		ModGenderPage,
 		ModMottoPage,
 		QuestionPage,
-		JokePage,
 		ShopPage,
 		FriendAddPage,
 		FriendRequestPage,
 		FriendByContactPage,
 		UserDetailPage,
+		SignupCompletePage,
 		SignupPage,
 		SigninPage,
 		FriendListPage,
 		FriendNewPage,
-		ImgCutterPage,
 		ReorderPage,
+		DownloadPage,
+		SettingPage,
 
 		/*components*/
 		ChatMsg,
@@ -81,6 +85,7 @@ import { GenderPipe } from '../pipes/gender';
 
 		/*pipes*/
 		GenderPipe,
+		TimediffPipe
 	],
 	imports: [
 		IonicModule.forRoot(MyApp, {
@@ -109,18 +114,19 @@ import { GenderPipe } from '../pipes/gender';
 		ModMottoPage,
 		ModGenderPage,
 		QuestionPage,
-		JokePage,
 		ShopPage,
 		FriendAddPage,
 		FriendRequestPage,
 		FriendByContactPage,
 		UserDetailPage,
+		SignupCompletePage,
 		SignupPage,
 		SigninPage,
 		FriendListPage,
 		FriendNewPage,
-		ImgCutterPage,
 		ReorderPage,
+		DownloadPage,
+		SettingPage,
 
 		/*components*/
 		// ChatMsg,
@@ -132,11 +138,12 @@ import { GenderPipe } from '../pipes/gender';
 
 		MsgService,
 		UserService,
-		SocketIO,
+		BackEnd,
+
 		{
 			provide: MyHttp,
 			useFactory: myHttpFactory,
-			deps: [XHRBackend, RequestOptions]
+			deps: [XHRBackend, RequestOptions, LoadingController]
 		},
 
 	]

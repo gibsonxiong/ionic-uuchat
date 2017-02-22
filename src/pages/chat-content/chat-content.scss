@@ -16,7 +16,7 @@ cy-chat-content-page {
     align-items: center;
     &.me-msg {
       flex-direction: row-reverse;
-      p {
+      .msg-content {
         background-color: nth($color-msg-content-bg, 1);
         color: nth($color-msg-content, 1);
         margin: 10px 5px 10px 40px;
@@ -26,10 +26,13 @@ cy-chat-content-page {
           transform: translateY(-50%) rotate(-45deg);
         }
       }
+      .audio-icon {
+        transform: rotate(-90deg);
+      }
     }
     &.other-msg {
       flex-direction: row;
-      p {
+      .msg-content {
         background-color: nth($color-msg-content-bg, 2);
         color: nth($color-msg-content, 2);
         margin: 10px 40px 10px 5px;
@@ -39,6 +42,9 @@ cy-chat-content-page {
           transform: translateY(-50%) rotate(135deg);
         }
       }
+      .audio-icon {
+        transform: rotate(90deg);
+      }
     }
     ion-img {
       margin: 5px 10px;
@@ -47,7 +53,7 @@ cy-chat-content-page {
       height: 45px;
       border-radius: 4px;
     }
-    p {
+    .msg-content {
       position: relative;
       padding: 10px;
       border-radius: 4px;
@@ -65,19 +71,45 @@ cy-chat-content-page {
       }
     }
   }
-  .msg-input-wrapper {
+  audio {
+    display: none;
+  }
+  .foot-wrapper {
     display: flex;
-    align-items: center;
-    input {
-      flex: 1;
-      margin: 0 10px;
-      height: 30px;
-      font-size: 16px;
-      border: $hairlines-width solid #bbb;
-      border-radius: 4px;
+    .switch-toggle {
+      transform: translateX(-2px) rotate(90deg);
     }
-    button {
-      height: 40px;
+
+    .msg-input-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      form {
+        flex: 1;
+        
+        input {
+          flex: 1;
+          width: 100%;
+          // margin: 0 10px;
+          height: 30px;
+          font-size: 16px;
+          border: $hairlines-width solid #bbb;
+          border-radius: 4px;
+        }
+        button {
+          height: 40px;
+        }
+      }
+    }
+
+    .audio-msg-wrapper {
+      flex: 1;
+      display: flex;
+      padding: 0 10px;
+      button{
+        flex:1
+      }
     }
   }
 }

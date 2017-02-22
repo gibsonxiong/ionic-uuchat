@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { NavController,App } from 'ionic-angular';
 
 import { QuestionPage } from '../question/question';
-import { JokePage } from '../joke/joke';
 import { ShopPage } from '../shop/shop';  
 
 @Component({
@@ -12,7 +11,6 @@ import { ShopPage } from '../shop/shop';
 export class DiscoverPage {
 	
 	private QuestionPage = QuestionPage;
-	private JokePage  = JokePage;
 	private ShopPage = ShopPage;
 
   constructor(

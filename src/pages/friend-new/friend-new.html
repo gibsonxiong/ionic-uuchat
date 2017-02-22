@@ -8,7 +8,7 @@
 	
 
 <ion-content>
-	<div *ngIf="!list.length">没有新好友请求</div>
+	<div *ngIf="!list.length" class="no-friend-request-tip">没有新好友请求</div>
 
 	<ion-list *ngIf="list.length">
 		<ion-item *ngFor="let item of list">

@@ -1,12 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, ActionSheetController } from 'ionic-angular';
+import { ImagePicker } from 'ionic-native';
 import { FileChooser } from 'ionic-native';
 import { Camera } from 'ionic-native';
 import { Crop } from 'ionic-native';
 import { Transfer } from 'ionic-native';
 import { Storage } from '@ionic/storage';
-import { ImgCutterPage } from '../img-cutter/img-cutter';
 import { HOST } from '../../config';
+import { UserService } from '../../services/user';
 
 
 @Component({
@@ -23,7 +24,8 @@ export class ModAvatarPage {
 		public navCtrl: NavController,
 		public navParams: NavParams,
 		public storage: Storage,
-		public actionSheetCtrl: ActionSheetController
+		public actionSheetCtrl: ActionSheetController,
+		private userService: UserService
 	) {
 		this.avatarSrc = navParams.data['avatarSrc'];
 
@@ -63,13 +65,10 @@ export class ModAvatarPage {
 				return this.cropImg(imageData);
 			})
 			.then(newImagePath => {
-				return this.uploadImg(newImagePath);
+				return this.userService.modAvatar(newImagePath);
 			})
-			.then(result => {
-				var res = JSON.parse( result.response );
-				// var responseCode = result.responseCode;
-
-				if (res.code) return console.log('拍照失败！');
+			.then(res => {
+				if (res.code) throw new Error('上传头像失败！');
 
 				this.avatarSrc = res.data.avatarSrc;
 			})
@@ -85,14 +84,10 @@ export class ModAvatarPage {
 				return this.cropImg(uri);
 			})
 			.then(newImagePath => {
-				console.log('1');
-				return this.uploadImg(newImagePath);
+				return this.userService.modAvatar(newImagePath);
 			})
-			.then(result => {
-				var res = JSON.parse( result.response );
-				// var responseCode = result.responseCode;
-
-				if (res.code) return console.log('访问手机相册失败！');
+			.then(res => {
+				if (res.code) throw new Error('上传头像失败！');
 
 				this.avatarSrc = res.data.avatarSrc;
 			})
@@ -116,32 +111,22 @@ export class ModAvatarPage {
 		return Crop.crop(uri, { quality: 75 });
 	}
 
-	uploadImg(path): Promise<any> {
-		return this.storage.get('token')
-			.then((token) => {
-				if (!token) Promise.reject(new Error('找不到token！'));
 
-				const fileTransfer = new Transfer();
-				var options = {
-					fileKey: 'file',
-					fileName: 'avatar.png',
-					headers: {
-						'X-Access-Token': token
-					}
-				};
-
-				return fileTransfer.upload(path, HOST + '/user/modAvatar', options);
-			})
-
-	}
-
+	// openAlbum(): Promise<string> {
+	// 	//打开手机相册
+	// 	return FileChooser.open();
+	// }
 
 	openAlbum(): Promise<string> {
 		//打开手机相册
-		return FileChooser.open();
+		var options ={
+			maximumImagesCount:1
+		};
+		return ImagePicker.getPictures(options).then(res=>{
+			// console.log(JSON.stringify(res));
+			return res[0];
+		})
 	}
-
-
 
 
 

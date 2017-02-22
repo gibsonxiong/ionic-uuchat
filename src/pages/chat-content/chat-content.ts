@@ -19,6 +19,7 @@ import { ReorderPage } from '../reorder/reorder';
 
 })
 export class ChatContentPage {
+    private isAudio = false;
 
     private relationId: string;
     private msgList: any[] = [];
@@ -37,12 +38,13 @@ export class ChatContentPage {
     private recording = false;
 
     @ViewChild(Content) contentComponent;
+    @ViewChild('audio') audio;
 
     constructor(
         private navCtrl: NavController,
         private params: NavParams,
         private fb: FormBuilder,
-        private storage:Storage,
+        private storage: Storage,
         private userService: UserService,
         private msgService: MsgService
     ) {
@@ -81,15 +83,7 @@ export class ChatContentPage {
                 this.scrollToBottom();
             });
 
-        //语音
-        this.recordFile = new MediaPlugin(this.recordFileSrc,
-            (status) => console.log('recordFileStatus:', status));
 
-        this.recordFile.init.then(() => {
-            console.log('Playback Finished');
-        }).catch(err => {
-            console.log('somthing went wrong! error code: ' + err.code + ' message: ' + err.message);
-        });
     }
 
     ngOnDestroy() {
@@ -100,41 +94,42 @@ export class ChatContentPage {
 
     //语音
     recordToggle() {
+        //语音
+        if (this.recordFile) {
+            this.recordFile.release();
+        }
+
+        this.recordFile = new MediaPlugin(this.recordFileSrc);
+
         if (!this.recording) {
             this.recording = true;
             this.recordFile.startRecord();
         } else {
             this.recording = false;
             this.recordFile.stopRecord();
-            this.recordFile.play();
-            this.uploadImg(this.recordFileSrc).then(result=>{
-                
-            }).catch(err=>{
-
-            })
+            this.msgService.sendAudioMsg(this.relationId, this.recordFileSrc);
+            
         }
     }
 
-    uploadImg(path): Promise<any> {
-        return this.storage.get('token')
-            .then((token) => {
-                if (!token) Promise.reject(new Error('找不到token！'));
-
-                const fileTransfer = new Transfer();
-                var options = {
-                    fileKey: 'file',
-                    fileName: this.recordFileSrc,
-                    headers: {
-                        'X-Access-Token': token
-                    }
-                };
-
-                return fileTransfer.upload('/sdcard/'+ path, HOST + '/user/modAvatar', options);
-            })
-
+    //取消录音
+    cancelRecord(){
+        if(this.recordFile && this.recording ){
+            this.recording = false;
+            this.recordFile.stopRecord();
+            this.recordFile.release();
+        }
     }
 
+    playRecord(audioSrc) {
+        this.audio.nativeElement.src = audioSrc;
+    }
 
+    //切换语音或文本
+    switchInput() {
+        this.isAudio = !this.isAudio;
+        this.cancelRecord();
+    }
 
     ionViewWillEnter() {
         //读取消息

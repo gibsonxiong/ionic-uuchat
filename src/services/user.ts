@@ -3,10 +3,11 @@ import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
 import { HOST } from '../config';
 import { MyHttp } from '../providers/my-http';
-import { SocketIO } from '../providers/socket-io';
+import { BackEnd } from '../providers/backend';
 
 @Injectable()
 export class UserService {
@@ -17,23 +18,26 @@ export class UserService {
 	private relationListSubject = new BehaviorSubject<any[]>([]);
 	public relationList$ = this.relationListSubject.asObservable();
 
+	//source: relationListSubject
 	private friendListSubject = new BehaviorSubject<any[]>([]);
 	public friendList$ = this.friendListSubject.asObservable();
 
-
-	private pushUserModedSubscription;
-	private relationListSubscription;
+	//订阅
+	private pushUserModed_Subscription;
+	private relationList_Subscription;
 
 	constructor(
 		private myHttp: MyHttp,
-		private socketIO: SocketIO
+		private backEnd: BackEnd
 	) {
 
 	}
 
-	initData(): void {
+	init(): void {
+		this.unsubscribe();
 
-		this.pushUserModedSubscription = this.socketIO.pushUserModed$.subscribe(user => {
+		//推送过来的修改用户信息
+		this.pushUserModed_Subscription = this.backEnd.pushUserModed$.subscribe(user => {
 
 			let relationList = this.relationListSubject.getValue();
 
@@ -44,50 +48,47 @@ export class UserService {
 			});
 
 			this.relationListSubject.next(relationList);
-		});
+		})
 
 		//relationList 改变通知 friendList改变
-		this.relationListSubscription = this.relationListSubject.map(relationList => {
-			let friendList = [];
+		this.relationList_Subscription = this.relationListSubject
+			.map(relationList => {
+				let friendList = [];
 
-			relationList.forEach(function (relation) {
-				//关系确认才是好友关系
-				if (relation.confirm) {
-					friendList.push(relation._friend);
-				}
-			});
+				relationList.forEach(function (relation) {
+					//关系确认才是好友关系
+					if (relation.confirm) {
+						friendList.push(relation._friend);
+					}
+				});
 
-			return friendList;
+				return friendList;
 
-		}).subscribe(friendList => this.friendListSubject.next(friendList));
-
-		//test
-		// this.own$.subscribe(
-		//     own =>{
-		//         console.log('own$',own);
-		//     }
-		// )
-
-		// this.relationList$.subscribe(
-		//     relationList =>{
-		//         console.log('relationList$',relationList);
-		//     }
-		// )
-
-		// this.friendList$.subscribe(
-		//     friendList =>{
-		//         console.log('friendList$',friendList);
-		//     }
-		// )
-
+			}).subscribe(
+			friendList => {
+				this.friendListSubject.next(friendList)
+			}
+			);
 
 		this.getOwn();
 		this.getRelationList();
+
 	}
 
 	destroy() {
-		this.pushUserModedSubscription.unsubscribe();
-		this.relationListSubscription.unsubscribe();
+		this.clearSource();
+		this.unsubscribe();
+	}
+
+	clearSource() {
+		this.ownSubject.next({});
+		this.relationListSubject.next([]);
+		this.friendListSubject.next([]);
+	}
+
+	unsubscribe() {
+		this.pushUserModed_Subscription && this.pushUserModed_Subscription.unsubscribe();
+		this.relationList_Subscription && this.relationList_Subscription.unsubscribe();
 	}
 
 	getOwn(): void {
@@ -105,13 +106,15 @@ export class UserService {
 			.map((res: any) => {
 				return res.json().data;
 			})
-			.subscribe(relationList => this.relationListSubject.next(relationList));
+			.subscribe(
+			relationList => this.relationListSubject.next(relationList)
+			);
 	}
 
 
 	//通过手机通讯录查找好友
-	getUserListByMobiles(mobiles:Number[]): Observable<any> {
-		return this.myHttp.post(HOST + '/user/getUserListByMobiles',{mobiles})
+	getUserListByMobiles(mobiles: Number[]): Observable<any> {
+		return this.myHttp.post(HOST + '/user/getUserListByMobiles', { mobiles })
 			.map((res: any) => {
 				return res.json();
 			});
@@ -185,6 +188,16 @@ export class UserService {
 		});
 	}
 
+	//修改昵称
+	modAvatar(ImgUri): Promise<any> {
+		console.log(ImgUri);
+		return this.myHttp.upload(ImgUri, 'avatar.png', HOST + '/user/modAvatar')
+			.then(result => {
+				var res = JSON.parse(result.response);
+				this.ownSubject.next(res.data);
+				return res;
+			});
+	}
 
 
 	//修改昵称

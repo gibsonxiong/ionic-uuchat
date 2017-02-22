@@ -1,24 +1,20 @@
 import { Component } from '@angular/core';
 import { Platform, AlertController } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
-import { Contacts, Contact, ContactField, ContactName, ContactFieldType, IContactFindOptions } from 'ionic-native';
 // import { Push } from 'ionic-native';
 // import { Badge } from 'ionic-native';
 // import { Keyboard } from 'ionic-native';
-import { Geolocation } from 'ionic-native';
-import { Vibration } from 'ionic-native';
-import { LocalNotifications } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 
 
 import { IndexPage } from '../pages/index/index';
-import { SignupPage } from '../pages/signup/signup';
 import { SigninPage } from '../pages/signin/signin';
+/*test*/
+import { SignupCompletePage } from '../pages/signup-complete/signup-complete';
 
 import { UserService } from '../services/user';
 import { MsgService } from '../services/msg';
 
-import { SocketIO } from '../providers/socket-io';
 
 @Component({
 	templateUrl: 'app.html',
@@ -36,11 +32,13 @@ export class MyApp {
 
 		//通过token判断是否登录过
 		storage.get('token').then(token => {
-			if (token) {
-				this.rootPage = IndexPage;
-			} else {
-				this.rootPage = SigninPage;
-			}
+
+			// if (token) {
+			// 	this.rootPage = IndexPage;
+			// } else {
+			// 	this.rootPage = SigninPage;
+			// }
+			this.rootPage = SignupCompletePage;
 
 		});
 
@@ -67,23 +65,6 @@ export class MyApp {
 			// 	console.log(arg);
 			// }).catch(err => {
 			// 	console.log(err);
-			// });
-
-
-			// console.log('Vibration.vibrate(1000)');
-			// Vibration.vibrate(300);
-
-
-			// console.log('LocalNotifications.schedule()');
-			// LocalNotifications.schedule({
-			// 	id: 1,
-			// 	title: 'Local ILocalNotification Example',
-			// 	text: 'Single ILocalNotification',
-			// 	// sound: 'file://sound.mp3',
-			// 	data: { secret: 'key' },
-			// 	icon: 'http://www.classscript.com/static/img/avatar2.png',
-			// 	smallIcon: 'http://www.classscript.com/static/img/avatar2.png',
-			// 	badge: 2,
 			// });
 
 
@@ -132,16 +113,6 @@ export class MyApp {
 			// 	})
 			// 	.catch(err => console.log('****', err));
 
-
-			Geolocation.getCurrentPosition().then((resp) => {
-				// resp.coords.latitude
-				// resp.coords.longitude
-
-				console.log('latitude:', resp.coords.latitude);
-				console.log('longitude:', resp.coords.longitude);
-			}).catch((error) => {
-				console.log('Error getting location', error);
-			});
 
 		});
 	}
@@ -217,7 +188,7 @@ document.addEventListener("pause", function () {
 
 //test
 import Rx from 'rxjs';
-import { Observable, Subject, ReplaySubject, BehaviorSubject } from 'rxjs';
+import { Observable, Subject, ReplaySubject, BehaviorSubject, AsyncSubject, Subscriber, Subscription, Scheduler } from 'rxjs';
 
 // import 'rxjs/add/observable/of';
 // import 'rxjs/add/observable/from';
@@ -434,8 +405,54 @@ import { Observable, Subject, ReplaySubject, BehaviorSubject } from 'rxjs';
 // 	// a.next(200);
 // })();
 
+// export declare class ReplaySubject<T> extends Subject<T> {
+//     private scheduler;
+//     private _events;
+//     private _bufferSize;
+//     private _windowTime;
+//     constructor(bufferSize?: number, windowTime?: number, scheduler?: Scheduler);
+//     next(value: T): void;
+//     protected _subscribe(subscriber: Subscriber<T>): Subscription;
+//     _getNow(): number;
+//     private _trimBufferThenGetEvents();
+// }
 
 
+// var subscription = new Subscription();
+
+// var a = new Subject();
+// var b = new Subject();
+// var c = new Subject();
+
+// subscription.add(
+// 	a.subscribe(n => {
+// 		console.log('fire a:' + n);
+// 	})
+// );
+
+// subscription.add(
+// 	b.subscribe(n => {
+// 		console.log('fire b:' + n);
+// 	})
+// );
+
+
+
+// a.next(1);
+// b.next(1);
+
+// subscription.unsubscribe();
+
+// subscription.add(
+// 	c.subscribe(n => {
+// 		console.log('fire c:' + n);
+// 	})
+
+// )
+
+// a.next(2);
+// b.next(2);
+// c.next(2);
 
 
 
