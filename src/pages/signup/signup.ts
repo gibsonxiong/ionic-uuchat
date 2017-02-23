@@ -23,7 +23,7 @@ export class SignupPage {
 		private fb: FormBuilder,
 	) {
 		this.form = fb.group({
-			mobile: ['',
+			mobile: ['13686004518',
 				[
 					Validators.required,
 					Validators.pattern(/^1[3|4|5|8]\d{9}$/)
@@ -71,19 +71,19 @@ export class SignupPage {
 
 	//验证短信验证码
 	checkVerificationCode() {
-		alert(1);
 		let mobile = this.form.value.mobile;
 		let code = this.form.value.code;
 
-
 		this.userservice.checkVerificationCode(mobile, code).subscribe(
 			(res) => {
-				if(res.code) return alert(res.msg);
+				// if(res.code) return alert(res.msg);
 
-				this.gotoSignupCompletePage(res.data);
+				// let mobileToken = res.data.mobileToken;
+				var mobileToken='1111';
+				this.gotoSignupCompletePage(mobileToken);
 			},
 			err =>{
-				alert('注册失败');
+				alert('手机验证失败');
 			}
 		);
 	}

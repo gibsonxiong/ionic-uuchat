@@ -6,6 +6,8 @@ import { Storage } from '@ionic/storage';
 import { SignupPage } from '../signup/signup';
 import { IndexPage } from '../index/index';
 import { UserService } from '../../services/user';
+import { SystemService } from '../../services/system';
+import { UserValidator } from '../../validators/user';
 
 @Component({
 	selector: 'cy-signin-page',
@@ -47,10 +49,11 @@ export class SigninPage {
 		public builder: FormBuilder,
 		public storage: Storage,
 		public userservice: UserService,
+		private systemService: SystemService,
 	) {
 
 		this.form = builder.group({
-			username: ['test1', null, UserValidators.existsAsync()],
+			username: ['test1', null, UserValidator.existsAsync()],
 			password: ['123456', [Validators.required, Validators.minLength(2)]]
 		});
 
@@ -62,11 +65,10 @@ export class SigninPage {
 		this.userservice.signin(this.form.value).subscribe(
 			res => {
 				if (res.code) {
-					this.presentToast(res.msg);
-					return;
+					return this.systemService.toastSubject.next(res.msg);
 				}
+
 				let token = res.data.token;
-				console.log('signin', token);
 
 				this.storage.set('token', token)
 					.then(token => {
@@ -78,19 +80,15 @@ export class SigninPage {
 
 			},
 			err => {
-				this.presentToast(err);
+				if(err.status === 0) {
+					return this.systemService.toastSubject.next('网络连接失败');
+				}
+				
+				this.systemService.toastSubject.next(err);
 			}
 		);
 	}
 
-	presentToast(msg): void {
-		let toast = this.toastCtrl.create({
-			message: msg,
-			duration: 3000,
-			position: 'top'
-		});
-		toast.present();
-	}
 
 
 	gotoSignupPage(): void {
@@ -99,23 +97,4 @@ export class SigninPage {
 
 }
 
-/*UserValidator*/
-class UserValidators {
 
-	static existsAsync() {
-
-		return function (contorl): Promise<{ [key: string]: any }> {
-			return new Promise((resole, reject) => {
-				setTimeout(() => {
-					if (contorl.value === 'false') {
-						resole({ existsAsync: true });
-					} else {
-						resole(null);
-					}
-
-				}, 500);
-			});
-		}
-
-	}
-}

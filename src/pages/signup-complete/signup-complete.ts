@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavParams, ActionSheetController } from 'ionic-angular';
+import { NavParams, NavController, ActionSheetController } from 'ionic-angular';
 import { Camera, Crop, ImagePicker } from 'ionic-native';
 
+import { SigninPage } from '../signin/signin';
 import { UserService } from '../../services/user';
+import { UserValidator } from '../../validators/user';
 
+import { File } from 'ionic-native';
+
+declare var cordova: any;
 
 @Component({
 	selector: 'cy-signup-complete-page',
@@ -16,21 +21,24 @@ export class SignupCompletePage {
 	private avatarSrc = 'assets/img/default-avatar.jpg';
 
 	constructor(
+		private navCtrl:NavController,
 		private navParams: NavParams,
 		private actionSheetCtrl: ActionSheetController,
 		private userservice: UserService,
 		private fb: FormBuilder,
-		private userService: UserService
+		private userService: UserService,
+		private userValidator: UserValidator,
 	) {
 		let mobileToken = navParams.data['mobileToken'];
 
 		this.form = fb.group({
+			avatar: null,
 			mobileToken: mobileToken,
-			username: '',
-			password: '',
-			nickname: '',
+			username: [ 'test4', Validators.required, this.userValidator.existsByUsernameAsync()],
+			password: '123456',
+			nickname: 'gigi',
 			gender: 0,
-			motto: '',
+			motto: 'Hi',
 		});
 	}
 
@@ -55,7 +63,32 @@ export class SignupCompletePage {
 	}
 
 	signup() {
+		var postData = this.form.value;
 
+		this.userService.signup(postData)
+			.subscribe(
+			res => {
+
+				this.navCtrl.popToRoot();
+
+			},
+			err => {
+				
+			})
+	}
+
+	fileInputChange(e) {
+		var that = this;
+		let file = e.target.files[0];
+
+		this.form.controls['avatar'].setValue(file);
+
+		//显示头像
+		var reader = new FileReader();
+		reader.onload = function () {
+			that.avatarSrc = this.result;
+		}
+		reader.readAsDataURL(file);
 	}
 
 	//设置头像
@@ -87,12 +120,28 @@ export class SignupCompletePage {
 
 	//通过拍照设置头像
 	setByPhotograph() {
+		var that = this;
+
 		this.photograph()
 			.then((imageData) => {
 				return this.cropImg(imageData);
 			})
 			.then(newImagePath => {
-				this.avatarSrc = newImagePath;
+
+				console.log(newImagePath)
+				const fs = cordova.file.externalCacheDirectory;
+
+				File.resolveLocalFilesystemUrl(newImagePath)
+					.then(fileEntry => {
+
+						// this.avatarSrc = fileEntry.toURL()
+
+					})
+					.catch(err => {
+						console.log('boooh', err)
+					});
+
+				// this.avatarSrc = newImagePath;
 			})
 			.catch((err) => {
 				console.log('拍照失败！', err);

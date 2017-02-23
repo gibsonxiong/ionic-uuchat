@@ -1,6 +1,4 @@
 // http://ionicframework.com/docs/v2/theming/
-
-
 // App Global Sass
 // --------------------------------------------------
 // Put style rules here that you want to apply globally. These
@@ -14,12 +12,27 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
-ion-note{
-	max-width: 60%;
-	font-size:1.6rem;
+input,
+textarea {
+  -webkit-appearance: none;
 }
 
-.hint{
-	font-size: 1.4rem;
-	color: #999;
+.content-ios {
+  color: #333;
+  background-color: #fefcff;
+}
+
+.item-ios {
+  color: #333;
+  background-color: transparent;
+}
+
+ion-note {
+  max-width: 60%;
+  font-size: 1.6rem;
+}
+
+.hint {
+  font-size: 1.4rem;
+  color: #999;
 }

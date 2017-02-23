@@ -21,32 +21,11 @@ export class MyHttp extends Http {
 
 	) {
 		super(_backend, _defaultOptions);
-
-
 	}
 
 	request(url: string | Request, options?: RequestOptionsArgs): Observable<Response> {
-		console.log('requestCount:' + this.requestCount);
-		if (this.requestCount === 0) {
-			this.loading = this.loadingCtrl.create({
-				content: "Please wait...",
-			});
-		}
 
-		this.loading.present();
-		this.requestCount++;
-		return super.request(url, options)
-			.do(() => {
-
-				this.requestCount--;
-				console.log('requestCount:' + this.requestCount);
-				if (this.requestCount === 0) this.loading.dismiss();
-				// });
-			}).catch((error, caught) => {
-				this.requestCount--;
-				if (this.requestCount === 0) this.loading.dismiss();
-				return caught;
-			});
+		return super.request(url, options);
 	}
 
 	setToken(token) {
@@ -64,7 +43,7 @@ export class MyHttp extends Http {
 	}
 
 	upload(filePath, fileName, remoteUrl, params?): Promise<any> {
-		console.log(filePath)
+
 		const fileTransfer = new Transfer();
 		var options = {
 			fileKey: 'file',

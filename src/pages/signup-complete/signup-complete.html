@@ -8,31 +8,38 @@
     <ion-list>
       <ion-item>
         <ion-label>用户名</ion-label>
-        <ion-input type="text" formControlName="username" placeholder="用户名"></ion-input>
+        <ion-input type="text" formControlName="username"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>密码</ion-label>
-        <ion-input type="password" formControlName="password" placeholder="密码"></ion-input>
+        <ion-input type="password" formControlName="password"></ion-input>
       </ion-item>
     </ion-list>
 
     <h3 class="sub-title">个人资料</h3>
     <div class="avatar-wrap">
-      <img [src]="avatarSrc" (click)="presentActionSheet()"/>
+
+      <!--<img [src]="avatarSrc" (click)="presentActionSheet()"/>-->
+      <label>
+      <img [src]="avatarSrc"/>
+      <input type="file" style="display: none;" formContorlName="avatar" (change)="fileInputChange($event)"/>
+      </label>
       <p class="avatar-tip">点击图片，上传头像</p>
     </div>
     <ion-list>
-      <ion-item>
-        <ion-label>昵称</ion-label>
-        <ion-input type="text" formControlName="nickname" placeholder="昵称"></ion-input>
-      </ion-item>
       <button ion-item (click)="selectGender($event)">
-        <ion-label>性别</ion-label>
-        <ion-note item-right>{{form.value.gender | gender}}</ion-note>
+          <ion-label>性别</ion-label>
+          <ion-note>{{form.value.gender | gender}}</ion-note>
+          <!--<ion-input value="{{form.value.gender | gender}}" [disabled]="true"></ion-input>-->
       </button>
       <ion-item>
+        <ion-label>昵称</ion-label>
+        <ion-input type="text" formControlName="nickname"></ion-input>
+      </ion-item>
+
+      <ion-item>
         <ion-label>个性签名</ion-label>
-        <ion-textarea type="text" placeholder="个性签名" formControlName="motto"></ion-textarea>
+        <ion-textarea type="text" formControlName="motto"></ion-textarea>
       </ion-item>
     </ion-list>
     <div padding-horizontal>

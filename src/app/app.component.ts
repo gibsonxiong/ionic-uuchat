@@ -33,12 +33,12 @@ export class MyApp {
 		//通过token判断是否登录过
 		storage.get('token').then(token => {
 
-			// if (token) {
-			// 	this.rootPage = IndexPage;
-			// } else {
-			// 	this.rootPage = SigninPage;
-			// }
-			this.rootPage = SignupCompletePage;
+			if (token) {
+				this.rootPage = IndexPage;
+			} else {
+				this.rootPage = SigninPage;
+			}
+			// this.rootPage = SignupCompletePage;
 
 		});
 
@@ -184,6 +184,10 @@ document.addEventListener("resume", function () {
 document.addEventListener("pause", function () {
 	console.log("应用进入到后台！");
 }, false);
+
+
+
+
 
 
 //test

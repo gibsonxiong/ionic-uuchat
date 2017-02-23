@@ -1,14 +1,18 @@
-cy-signin-page{
-	.logo-wrap{
-		padding: 2.5rem;
-		text-align: center;
-
-		img{
-			width: 8rem;
-		}
-	}
-	
-	form {
-		padding-bottom: .2rem;
-	}
+cy-signin-page {
+  ion-label {
+    width: 60px;
+	text-align: right;
+	padding-right: 8px;
+    color: color($colors, primary)
+  }
+  .logo-wrap {
+    padding: 2.5rem;
+    text-align: center;
+    img {
+      width: 8rem;
+    }
+  }
+  form {
+    padding-bottom: .2rem;
+  }
 }

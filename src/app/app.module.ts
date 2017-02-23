@@ -40,6 +40,8 @@ import { ChatMsg } from '../components/chat-msg/chat-msg';
 /*services*/
 import { UserService } from '../services/user';
 import { MsgService } from '../services/msg';
+import { SystemService } from '../services/system';
+
 
 import { MyHttp } from '../providers/my-http';
 import { BackEnd } from '../providers/backend';
@@ -47,6 +49,9 @@ import { BackEnd } from '../providers/backend';
 /*pipes*/
 import { GenderPipe } from '../pipes/gender';
 import { TimediffPipe } from '../pipes/timediff';
+
+/*validators*/
+import { UserValidator } from '../validators/user';
 
 @NgModule({
 	declarations: [
@@ -135,7 +140,7 @@ import { TimediffPipe } from '../pipes/timediff';
 	providers: [
 		Storage,
 		{ provide: ErrorHandler, useClass: IonicErrorHandler },
-
+		SystemService,
 		MsgService,
 		UserService,
 		BackEnd,
@@ -145,6 +150,8 @@ import { TimediffPipe } from '../pipes/timediff';
 			useFactory: myHttpFactory,
 			deps: [XHRBackend, RequestOptions, LoadingController]
 		},
+
+		UserValidator,
 
 	]
 })

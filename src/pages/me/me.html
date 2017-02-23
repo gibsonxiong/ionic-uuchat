@@ -1,29 +1,37 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Me</ion-title>
+    <ion-title>我的</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
   <ion-list margin-top>
-    <button ion-item (click)="gotoMeDetailPage()">
+    <button class="info" ion-item (click)="gotoMeDetailPage()">
 			<ion-thumbnail item-left>
 	           <ion-img [src]="own.avatarSrc"></ion-img>
 	        </ion-thumbnail>
-	        <h2>{{own.nickname}}</h2>
+	        <h2>
+            <span class="nickname">{{own.nickname}}</span>
+             <ion-icon name="male" color="primary" *ngIf="own.gender===0"></ion-icon>
+            <ion-icon name="female" color="fourthly" *ngIf="own.gender===1"></ion-icon>
+          </h2>
         </button>
   </ion-list>
 
 
   <ion-list>
-    <button ion-item (click)="scanBarCode()">扫一扫</button>
+    <button ion-item (click)="scanBarCode()">
+      <ion-icon name="md-qr-scanner" color="primary" item-left></ion-icon> 扫一扫
+      </button>
 
-    <button ion-item (click)="gotoDownloadPage()">下载APP</button>
+    <button ion-item (click)="gotoDownloadPage()">
+      <ion-icon name="logo-android" color="android" item-left></ion-icon> 下载APP
+      </button>
   </ion-list>
 
   <ion-list>
     <button ion-item (click)="gotoSettingPage()">
-      <ion-icon name="settings" item-left></ion-icon> 设置
+      <ion-icon name="settings" color="thirdly" item-left></ion-icon> 设置
       </button>
   </ion-list>
 

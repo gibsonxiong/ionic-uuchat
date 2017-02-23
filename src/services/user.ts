@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -106,9 +106,7 @@ export class UserService {
 			.map((res: any) => {
 				return res.json().data;
 			})
-			.subscribe(
-			relationList => this.relationListSubject.next(relationList)
-			);
+			.subscribe(relationList => this.relationListSubject.next(relationList));
 	}
 
 
@@ -120,58 +118,79 @@ export class UserService {
 			});
 	}
 
+	//登录
 	signin(postData): Observable<any> {
-		this.myHttp.get('http://www.baidu.com').map((res: any) => {
-			debugger;
-			return res.json();
-		}).subscribe();
-
-		return this.myHttp.post(HOST + '/user/signin', postData).map((res: any) => {
-			return res.json();
-		});
+		return this.myHttp.post(HOST + '/user/signin', postData)
+			.map((res: any) => {
+				return res.json();
+			});
 	}
 
+	//获取验证码
 	getVerificationCode(mobile): Observable<any> {
-		return this.myHttp.get(HOST + '/user/getVerificationCode/' + mobile).map((res: any) => {
-			return res.json();
-		});
+		return this.myHttp.get(HOST + '/user/getVerificationCode/' + mobile)
+			.map((res: any) => {
+				return res.json();
+			});
 	}
 
+
+	//验证验证码
 	checkVerificationCode(mobile, code): Observable<any> {
 		var postData = { mobile, code };
-		return this.myHttp.post(HOST + '/user/checkVerificationCode', postData).map((res: any) => {
-			return res.json();
-		});
+		return this.myHttp.post(HOST + '/user/checkVerificationCode', postData)
+			.map((res: any) => {
+				return res.json();
+			});
+	}
+
+	//注册
+	signup(postData): Observable<any> {
+		//上传文件
+		var formData = new FormData();
+		for (let key in postData) {
+			formData.append(key, postData[key]);
+		}
+
+		return this.myHttp.post(HOST + '/user/signup', formData)
+			.map((res: any) => {
+				return res.json();
+			});
 	}
 
 	//搜索用户
 	searchUser(search): Observable<any> {
-		return this.myHttp.get(HOST + '/user/searchUser/' + search).map((res: any) => {
-			return res.json();
-		});
+		return this.myHttp.get(HOST + '/user/searchUser/' + search)
+			.map((res: any) => {
+				return res.json();
+			});
 	}
 
 	//获取用户资料
 	getUser(userId): Observable<any> {
-		return this.myHttp.get(HOST + '/user/getUser/' + userId).map((res: any) => {
-			return res.json();
-		});
+		return this.myHttp.get(HOST + '/user/getUser/' + userId)
+			.map((res: any) => {
+				return res.json();
+			});
 	}
 
 
 	//申请好友
 	makeFriend(userId, requestMsg): Observable<any> {
 		requestMsg = requestMsg == null ? '' : requestMsg;
-		return this.myHttp.get(HOST + '/user/makeFriend/' + userId + '?requestMsg=' + requestMsg).map((res: any) => {
-			return res.json();
-		});
+
+		return this.myHttp.get(HOST + '/user/makeFriend/' + userId + '?requestMsg=' + requestMsg)
+			.map((res: any) => {
+				return res.json();
+			});
 	}
 
 	//确认好友
 	confirmFriend(userId): Observable<any> {
-		return this.myHttp.get(HOST + '/user/confirmFriend/' + userId).map((res: any) => {
-			return res.json();
-		});
+		return this.myHttp.get(HOST + '/user/confirmFriend/' + userId)
+			.map((res: any) => {
+				return res.json();
+			});
 	}
 
 	// //获取好友列表
@@ -202,9 +221,10 @@ export class UserService {
 
 	//修改昵称
 	modNickname(nickname): Observable<any> {
-		let observable = this.myHttp.get(HOST + '/user/modNickname/' + nickname).map((res: any) => {
-			return res.json();
-		});
+		let observable = this.myHttp.get(HOST + '/user/modNickname/' + nickname)
+			.map((res: any) => {
+				return res.json();
+			});
 
 		observable.subscribe(
 			res => {
@@ -218,9 +238,10 @@ export class UserService {
 
 	//修改性别
 	modGender(gender): Observable<any> {
-		let observable = this.myHttp.get(HOST + '/user/modGender/' + gender).map((res: any) => {
-			return res.json();
-		});
+		let observable = this.myHttp.get(HOST + '/user/modGender/' + gender)
+			.map((res: any) => {
+				return res.json();
+			});
 
 		observable.subscribe(
 			res => {
@@ -235,9 +256,10 @@ export class UserService {
 
 	//修改个性签名
 	modMotto(motto): Observable<any> {
-		let observable = this.myHttp.get(HOST + '/user/modMotto/' + motto).map((res: any) => {
-			return res.json();
-		});
+		let observable = this.myHttp.get(HOST + '/user/modMotto/' + motto)
+			.map((res: any) => {
+				return res.json();
+			});
 
 		observable.subscribe(
 			res => {
@@ -249,5 +271,12 @@ export class UserService {
 		return observable;
 	}
 
+	//通过username查找是否存在帐号
+	existsByUsername(username): Observable<any> {
+		return this.myHttp.get(HOST + '/user/existsByUsername/' + username)
+			.map((res: any) => {
+				return res.json();
+			});
+	}
 
 }
