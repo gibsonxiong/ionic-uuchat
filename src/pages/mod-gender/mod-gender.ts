@@ -1,53 +1,47 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { FormBuilder,FormControl, FormArray, FormGroup,Validators} from '@angular/forms';
+import { FormBuilder, FormControl, FormArray, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../services/user';
+import { SystemService } from '../../services/system';
 
 @Component({
-  selector:'cy-mod-gender-page',
-  templateUrl: 'mod-gender.html'
+	selector: 'cy-mod-gender-page',
+	templateUrl: 'mod-gender.html'
 })
-export class ModGenderPage implements OnInit{
+export class ModGenderPage implements OnInit {
 
-	form : FormGroup;
+	private form: FormGroup;
 
-  constructor(
-  	public navCtrl:NavController,
-  	public navParams:NavParams,
-  	public builder:FormBuilder,
-  	public userService:UserService
-  	) {
+	constructor(
+		private navCtrl: NavController,
+		private navParams: NavParams,
+		private builder: FormBuilder,
+		private userService: UserService,
+		private systemService: SystemService
+	) {
 
-  	let gender = navParams.data['gender'];
+		let gender = navParams.data['gender'];
 
-  	this.form = builder.group({
-  		gender:[gender],
-  	});
+		this.form = builder.group({
+			gender: [gender],
+		});
 
+	}
 
-  }
+	ngOnInit() {
 
-  ngOnInit(){
-  	
-  	
-  }
+	}
 
 
-  //提交
-  submit(){
-  	console.log('submit',this.form);
+	//提交
+	submit() {
+		let gender = this.form.value.gender;
 
-  	let gender = this.form.value.gender;
-	  
-  	this.userService.modGender(gender).subscribe(
-  		res => {
-  			if(res.code) return console.log(res.msg);
-  			this.navCtrl.pop();
-  		},
-  		err=>{
-  			console.log(err);
-  		}
-
-  	);
-  }
+		this.userService.modGender(gender).subscribe(
+			res => {
+				this.navCtrl.pop();
+			},
+			err => this.systemService.handleError(err, '修改失败')
+		);
+	}
 }

@@ -16,6 +16,8 @@ export class MePage implements OnInit {
 
 	private own = {};
 
+	private own_Subscription;
+
 	constructor(
 		public appCtrl: App,
 		public userService: UserService,
@@ -25,9 +27,12 @@ export class MePage implements OnInit {
 	}
 
 	ngOnInit() {
-		this.userService.own$.subscribe(own => this.own = own);
+		this.own_Subscription = this.userService.own$.subscribe(own => this.own = own);
 	}
 
+	ngOnDestroy() {
+		this.own_Subscription.unsubscribe();
+	}
 	
 	scanBarCode() {
 		// let options = {

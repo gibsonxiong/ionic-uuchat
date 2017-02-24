@@ -45,17 +45,20 @@ export class UserValidator {
 				clearTimeout(timer);
 
 				setTimeout(() => {
-					this.userService.existsByUsername(contorl.value).subscribe(
+					let username = contorl.value;
+					this.userService.existsByUsername(username).subscribe(
 						res => {
-							if (res.code) return resolve({ existsByUsername: res.data })
-							
-							//存在，则无效
-							if(res.data){
+							let isExists = res.data;
+							if (isExists) {
 								resolve({ existsByUsername: true })
-							}else{
+							} else {
 								resolve(null)
 							}
 						},
+						err => {
+							console.log(err);
+							resolve({ existsByUsername: true })
+						}
 					)
 
 				}, 300);

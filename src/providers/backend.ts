@@ -5,7 +5,8 @@ import { MyReplaySubject } from '../utils/MyRelaySubject';
 import { HOST } from '../config';
 import { MyHttp } from '../providers/my-http';
 
-declare var io: any;
+declare var require;
+var io = require('../assets/js/socket.io-1.4.5');
 
 @Injectable()
 export class BackEnd {
@@ -19,6 +20,9 @@ export class BackEnd {
     private onForceQuitSubject = new Subject();
     public onForceQuit = this.onForceQuitSubject.asObservable();
 
+    private stateSubject = new BehaviorSubject(0);          //0-未连接  1-正在连接  //2-已连接
+    private state$ = this.onForceQuitSubject.asObservable();
+
     private pushMsgSubject = new MyReplaySubject();
     public pushMsg$ = this.pushMsgSubject.asObservable();
 
@@ -30,6 +34,14 @@ export class BackEnd {
         public myhttp: MyHttp,
     ) {
 
+    }
+
+    // init(token){
+
+    // }
+
+    ngOnInit(){
+        console.log('ngOnInit in BackEnd');
     }
 
     //连接

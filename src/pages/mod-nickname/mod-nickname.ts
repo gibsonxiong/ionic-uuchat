@@ -1,52 +1,50 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { FormBuilder,FormGroup,Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../services/user';
+import { SystemService } from '../../services/system';
 
 @Component({
-  selector:'cy-mod-nickname-page',
-  templateUrl: 'mod-nickname.html'
+	selector: 'cy-mod-nickname-page',
+	templateUrl: 'mod-nickname.html'
 })
-export class ModNicknamePage implements OnInit{
+export class ModNicknamePage implements OnInit {
 
-	form : FormGroup;
+	form: FormGroup;
 
-  constructor(
-  	public navCtrl:NavController,
-  	public navParams:NavParams,
-  	public builder:FormBuilder,
-  	public userService:UserService
-  	) {
+	constructor(
+		private navCtrl: NavController,
+		private navParams: NavParams,
+		private builder: FormBuilder,
+		private userService: UserService,
+		private systemService: SystemService
+	) {
 
-  	let nickname = navParams.data['nickname'];
+		let nickname = navParams.data['nickname'];
 
-  	this.form = builder.group({
-  		nickname:nickname
-  	});
-
-
-  }
-
-  ngOnInit(){
-  	
-  	
-  }
+		this.form = builder.group({
+			nickname: nickname
+		});
 
 
-  //提交
-  submit(){
-  	console.log('submit',this.form);
+	}
 
-  	let nickname = this.form.value.nickname;
-  	this.userService.modNickname(nickname).subscribe(
-  		res => {
-  			if(res.code) return console.log(res.msg);
-  			this.navCtrl.pop();
-  		},
-  		err=>{
-  			console.log(err);
-  		}
+	ngOnInit() {
 
-  	);
-  }
+
+	}
+
+
+	//提交
+	submit() {
+		let nickname = this.form.value.nickname;
+
+		this.userService.modNickname(nickname).subscribe(
+			res => {
+				this.navCtrl.pop();
+			},
+			err => this.systemService.handleError(err, '修改失败')
+
+		);
+	}
 }

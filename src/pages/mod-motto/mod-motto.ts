@@ -1,52 +1,49 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { FormBuilder,FormGroup} from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserService } from '../../services/user';
+import { SystemService } from '../../services/system';
 
 @Component({
-  selector:'cy-mod-motto-page',
-  templateUrl: 'mod-motto.html'
+	selector: 'cy-mod-motto-page',
+	templateUrl: 'mod-motto.html'
 })
-export class ModMottoPage implements OnInit{
+export class ModMottoPage implements OnInit {
 
-	form : FormGroup;
+	private form: FormGroup;
 
-  constructor(
-  	public navCtrl:NavController,
-  	public navParams:NavParams,
-  	public builder:FormBuilder,
-  	public userService:UserService
-  	) {
+	constructor(
+		private navCtrl: NavController,
+		private navParams: NavParams,
+		private builder: FormBuilder,
+		private userService: UserService,
+		private systemService: SystemService
+	) {
 
-  	let motto = navParams.data['motto'];
+		let motto = navParams.data['motto'];
 
-  	this.form = builder.group({
-  		motto:motto
-  	});
-
-
-  }
-
-  ngOnInit(){
-  	
-  	
-  }
+		this.form = builder.group({
+			motto: motto
+		});
 
 
-  //提交
-  submit(){
-  	console.log('submit',this.form);
+	}
 
-  	let motto = this.form.value.motto;
-  	this.userService.modMotto(motto).subscribe(
-  		res => {
-  			if(res.code) return console.log(res.msg);
-  			this.navCtrl.pop();
-  		},
-  		err=>{
-  			console.log(err);
-  		}
+	ngOnInit() {
 
-  	);
-  }
+
+	}
+
+	//提交
+	submit() {
+		let motto = this.form.value.motto;
+
+		this.userService.modMotto(motto).subscribe(
+			res => {
+				this.navCtrl.pop();
+			},
+			err => this.systemService.handleError(err, '修改失败')
+
+		);
+	}
 }

@@ -3,6 +3,7 @@ import { NavController } from 'ionic-angular';
 import { UserDetailPage } from '../user-detail/user-detail';
 import { FriendByContactPage } from '../friend-by-contact/friend-by-contact';
 import { UserService } from '../../services/user';
+import { SystemService } from '../../services/system';
 
 @Component({
 	selector: 'cy-friend-add-page',
@@ -13,21 +14,24 @@ export class FriendAddPage {
 	search: string;
 
 	constructor(
-		public navCtrl: NavController,
-		public userService: UserService,
+		private navCtrl: NavController,
+		private userService: UserService,
+		private systemService: SystemService,
 	) { }
 
 	submitForm() {
+
+
 		this.userService.searchUser(this.search).subscribe(
 			res => {
-				if (res.code) return alert(res.msg);
-
-				if (res.data && res.data.length == 0) {
-					return alert('没有找到该用户！');;
+				if (res.data.length == 0) {
+					return this.systemService.showToast('没有找到该用户！');
 				}
 
-				this.gotoUserDetailPage(res.data[0]._id);
-			}
+				let userId = res.data[0]._id;
+				this.gotoUserDetailPage(userId);
+			},
+			err => this.systemService.handleError(err, '查找用户失败')
 		);
 	}
 

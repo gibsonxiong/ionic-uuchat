@@ -4,10 +4,10 @@ import { IonicApp, IonicModule, IonicErrorHandler, LoadingController } from 'ion
 import { Storage } from '@ionic/storage';
 import { MyApp } from './app.component';
 
-import { Highlight } from '../components/highlight/highlight';
 /*pages*/
 import { IndexPage } from '../pages/index/index';
 import { ChatPage } from '../pages/chat/chat';
+import { ChatPopoverPage } from '../pages/chat-popover/chat-popover';
 import { ChatContentPage } from '../pages/chat-content/chat-content';
 import { DailyPage } from '../pages/daily/daily';
 import { DiscoverPage } from '../pages/discover/discover';
@@ -35,7 +35,7 @@ import { SettingPage } from '../pages/setting/setting';
 import { myHttpFactory } from '../factorys';
 
 /*components*/
-import { ChatMsg } from '../components/chat-msg/chat-msg';
+import { Highlight } from '../components/highlight/highlight';
 
 /*services*/
 import { UserService } from '../services/user';
@@ -60,6 +60,7 @@ import { UserValidator } from '../validators/user';
 		/*pages*/
 		IndexPage,
 		ChatPage,
+		ChatPopoverPage,
 		ChatContentPage,
 		DailyPage,
 		DiscoverPage,
@@ -85,7 +86,6 @@ import { UserValidator } from '../validators/user';
 		SettingPage,
 
 		/*components*/
-		ChatMsg,
 		Highlight,
 
 		/*pipes*/
@@ -109,6 +109,7 @@ import { UserValidator } from '../validators/user';
 		/*pages*/
 		IndexPage,
 		ChatPage,
+		ChatPopoverPage,
 		ChatContentPage,
 		DailyPage,
 		DiscoverPage,
@@ -133,9 +134,6 @@ import { UserValidator } from '../validators/user';
 		DownloadPage,
 		SettingPage,
 
-		/*components*/
-		// ChatMsg,
-		// Highlight,
 	],
 	providers: [
 		Storage,

@@ -72,8 +72,6 @@ export class ChatContentPage {
                 this.msgList = msgList.filter(msg => {
                     return msg.relationId === this.relationId;
                 });
-
-
             }
         );
 
@@ -108,13 +106,13 @@ export class ChatContentPage {
             this.recording = false;
             this.recordFile.stopRecord();
             this.msgService.sendAudioMsg(this.relationId, this.recordFileSrc);
-            
+
         }
     }
 
     //取消录音
-    cancelRecord(){
-        if(this.recordFile && this.recording ){
+    cancelRecord() {
+        if (this.recordFile && this.recording) {
             this.recording = false;
             this.recordFile.stopRecord();
             this.recordFile.release();

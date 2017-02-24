@@ -12,9 +12,6 @@ import { SigninPage } from '../pages/signin/signin';
 /*test*/
 import { SignupCompletePage } from '../pages/signup-complete/signup-complete';
 
-import { UserService } from '../services/user';
-import { MsgService } from '../services/msg';
-
 
 @Component({
 	templateUrl: 'app.html',
@@ -45,8 +42,8 @@ export class MyApp {
 		platform.ready().then(() => {
 			// Okay, so the platform is ready and our plugins are available.
 			// Here you can do any higher level native things you might need.
-			// StatusBar.styleDefault();
-			// Splashscreen.hide();
+			StatusBar.styleDefault();
+			Splashscreen.hide();
 
 			// try {
 			// 	this.initPush();
@@ -191,13 +188,11 @@ document.addEventListener("pause", function () {
 
 
 //test
+
 import Rx from 'rxjs';
 import { Observable, Subject, ReplaySubject, BehaviorSubject, AsyncSubject, Subscriber, Subscription, Scheduler } from 'rxjs';
 
-// import 'rxjs/add/observable/of';
-// import 'rxjs/add/observable/from';
-// import 'rxjs/add/operator/toPromise';
-// import 'rxjs/add/operator/flatMap';
+
 
 
 //test1
@@ -459,6 +454,32 @@ import { Observable, Subject, ReplaySubject, BehaviorSubject, AsyncSubject, Subs
 // c.next(2);
 
 
+// //test12
+// var a = new Subject();
+
+
+// a.subscribe(
+// 	(n)=>{
+// 		console.log('next',n);
+// 	},
+// 	err=>{
+// 		console.log('err',err);
+// 	},
+// 	()=>{
+// 		console.log('complete');
+// 	}
+// )
+
+
+// a.next(1);
+// a.next(2);
+// a.complete();
+// a.error({code:1,msg:'出错啦'});
 
 
 
+
+Rx.Observable.of(0, 1, 2, 3)
+	.map((n) => n * n) // 每项取平方
+	.filter((n) => n > 100) // 取出平方后大于0的项
+	.subscribe((n) => console.log('1',n)); 

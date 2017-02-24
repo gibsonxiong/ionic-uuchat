@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController } from 'ionic-angular';
 
 import { UserService } from '../../services/user';
+import { SystemService } from '../../services/system';
 import { SignupCompletePage } from '../signup-complete/signup-complete';
 
 @Component({
@@ -21,6 +22,7 @@ export class SignupPage {
 		private navCtrl: NavController,
 		private userservice: UserService,
 		private fb: FormBuilder,
+		private systemService: SystemService,
 	) {
 		this.form = fb.group({
 			mobile: ['13686004518',
@@ -64,9 +66,12 @@ export class SignupPage {
 
 		//获取验证码
 		let mobile = this.form.value.mobile;
-		this.userservice.getVerificationCode(mobile).subscribe(() => {
-
-		});
+		this.userservice.getVerificationCode(mobile).subscribe(
+			res => {
+				this.systemService.showToast(res.msg);
+			},
+			err => this.systemService.handleError(err, '发送短信失败')
+		);
 	}
 
 	//验证短信验证码
@@ -74,17 +79,15 @@ export class SignupPage {
 		let mobile = this.form.value.mobile;
 		let code = this.form.value.code;
 
-		this.userservice.checkVerificationCode(mobile, code).subscribe(
-			(res) => {
-				// if(res.code) return alert(res.msg);
+		var obser = this.userservice.checkVerificationCode(mobile, code);
+		obser = this.systemService.linkLoading(obser);
 
-				// let mobileToken = res.data.mobileToken;
-				var mobileToken='1111';
+		obser.subscribe(
+			res => {
+				let mobileToken = res.data.mobileToken;
 				this.gotoSignupCompletePage(mobileToken);
 			},
-			err =>{
-				alert('手机验证失败');
-			}
+			err => this.systemService.handleError(err, '手机验证失败')
 		);
 	}
 

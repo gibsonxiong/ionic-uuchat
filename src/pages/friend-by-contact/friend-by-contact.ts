@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { FriendRequestPage } from '../friend-request/friend-request';
 import { UserService } from '../../services/user';
+import { SystemService } from '../../services/system';
 import { Contacts, Contact, ContactField, ContactName, ContactFieldType, IContactFindOptions } from 'ionic-native';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
@@ -15,23 +16,25 @@ export class FriendByContactPage implements OnInit {
 
 	constructor(
 		private navCtrl: NavController,
-		public userService: UserService
+		private userService: UserService,
+		private systemService: SystemService
 	) {
 
 	}
 
 	ngOnInit() {
 
-		this.findContacts().subscribe(
+		this.findContacts()
+			.subscribe(
 			contacts => {
-				function getDisplayName(mobile){
+				function getDisplayName(mobile) {
 					var displayName;
-					contacts.forEach(contact=>{
-						if(contact.phoneNumber === mobile){
+					contacts.forEach(contact => {
+						if (contact.phoneNumber === mobile) {
 							displayName = contact.displayName;
 							return false;
 						}
-						
+
 					});
 					return displayName;
 
@@ -39,25 +42,19 @@ export class FriendByContactPage implements OnInit {
 
 				let mobiles = contacts.map(contact => contact.phoneNumber);
 
-				this.userService.getUserListByMobiles(mobiles).subscribe(
+				return this.userService.getUserListByMobiles(mobiles).subscribe(
 					res => {
+
 						let users = res.data;
 
-						users.forEach((user,i)=>{
-							user.displayName = getDisplayName(user.mobile);
+						users.forEach((user, i) => {
+							user.displayName = this.getDisplayName(user.mobile, contacts);
 						})
 						this.userList = users;
-					},
-					err => {
-						console.log(err);
-					}
-				);
+					});
 			},
-
-			err=>{
-				console.log(err);
-			}
-		)
+			err => this.systemService.handleError(err, '获取通讯录好友失败')
+			);
 
 
 
@@ -89,6 +86,18 @@ export class FriendByContactPage implements OnInit {
 
 	gotoFriendRequestPage(userId) {
 		this.navCtrl.push(FriendRequestPage, { userId });
+	}
+
+	private getDisplayName(mobile, contacts) {
+		var displayName;
+		contacts.forEach(contact => {
+			if (contact.phoneNumber === mobile) {
+				displayName = contact.displayName;
+				return false;
+			}
+
+		});
+		return displayName;
 	}
 
 }

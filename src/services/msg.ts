@@ -191,20 +191,20 @@ export class MsgService {
 
 	sendMsg(relationId, content): void {
 		this.myHttp.post(HOST + '/msg/sendMsg', { relationId, content })
-			.map((res: any) => {
-				return res.json().data;
-			}).subscribe(msg => { this.newMsgSubject.next(msg) });
+			.subscribe(
+			res => { this.newMsgSubject.next(res.data) },
+			err => { console.log(err) }
+			);
 	}
 
 	//发送语音
 	sendAudioMsg(relationId, audioUri): void {
 		this.myHttp.upload('/sdcard/' + audioUri, 'record.mp3', HOST + '/msg/sendAudioMsg', { relationId })
-			.then(result => {
-				console.log(JSON.stringify(result));
-				var res = JSON.parse(result.response);
-				if (res.code) throw new Error('请求错误！');
+			.subscribe(res => {
 				this.newMsgSubject.next(res.data);
-				return res;
+			},
+			err=>{
+				console.log(err)
 			});
 	}
 
@@ -251,19 +251,5 @@ export class MsgService {
 	setInPrivateStorage(name, value): Promise<any> {
 		return this.storage.set(name + '/' + this.ownId, value);
 	}
-
-	// getChatList():Observable<any>{
-	// 	return this.myHttp.get( HOST + '/msg/getChatList')
-	//                   .map((res:any)=> {
-	//                       return res.json();
-	//                   });
-	// }
-
-	// getMsgList(relationId):Observable<any>{
-	// 	return this.myHttp.get( HOST + '/msg/getMsgList/'+relationId)
-	//                   .map((res:any)=> {
-	//                       return res.json();
-	//                   });
-	// }
 
 }

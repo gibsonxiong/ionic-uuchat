@@ -5,40 +5,48 @@ import { ModNicknamePage } from '../mod-nickname/mod-nickname';
 import { ModGenderPage } from '../mod-gender/mod-gender';
 import { ModMottoPage } from '../mod-motto/mod-motto';
 import { UserService } from '../../services/user';
+// import { SystemService } from '../../services/system';
 
 @Component({
-  selector:'cy-me-detail-page',
-  templateUrl: 'me-detail.html',
+	selector: 'cy-me-detail-page',
+	templateUrl: 'me-detail.html',
 })
-export class MeDetailPage implements OnInit{
+export class MeDetailPage implements OnInit {
 
-	own:any = {};
+	own: any = {};
 
-  constructor(
-  		public navCtrl : NavController,
-  	    public userService :UserService
-  	) {}
+	private own_Subscription;
 
-  ngOnInit(){
+	constructor(
+		private navCtrl: NavController,
+		private userService: UserService,
+		// private systemService: SystemService,
+	) { }
 
-    this.userService.own$.subscribe( own=> this.own = own );
+	ngOnInit() {
 
-  }
+		this.own_Subscription = this.userService.own$.subscribe(own => this.own = own);
 
-  gotoModAvatarPage(){
-  	this.navCtrl.push(ModAvatarPage,{avatarSrc:this.own.avatarSrc});
-  }
+	}
 
-  gotoModNicknamePage(){
-    this.navCtrl.push(ModNicknamePage,{nickname:this.own.nickname});
-  }
+	ngOnDestroy() {
+		this.own_Subscription.unsubscribe();
+	}
 
-  gotoModGenderPage(){
-    this.navCtrl.push(ModGenderPage,{gender:this.own.gender});
-  }
+	gotoModAvatarPage() {
+		this.navCtrl.push(ModAvatarPage, { avatarSrc: this.own.avatarSrc });
+	}
 
-  gotoModMottoPage(){
-    this.navCtrl.push(ModMottoPage,{motto:this.own.motto});
-  }
-  
+	gotoModNicknamePage() {
+		this.navCtrl.push(ModNicknamePage, { nickname: this.own.nickname });
+	}
+
+	gotoModGenderPage() {
+		this.navCtrl.push(ModGenderPage, { gender: this.own.gender });
+	}
+
+	gotoModMottoPage() {
+		this.navCtrl.push(ModMottoPage, { motto: this.own.motto });
+	}
+
 }

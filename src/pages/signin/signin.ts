@@ -2,9 +2,12 @@ import { Component } from '@angular/core';
 import { trigger, state, style, transition, animate, group } from '@angular/core';      //动画
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController, ToastController } from 'ionic-angular';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/mergeMap';
 import { Storage } from '@ionic/storage';
-import { SignupPage } from '../signup/signup';
+
 import { IndexPage } from '../index/index';
+import { SignupPage } from '../signup/signup';
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
 import { UserValidator } from '../../validators/user';
@@ -51,7 +54,6 @@ export class SigninPage {
 		public userservice: UserService,
 		private systemService: SystemService,
 	) {
-
 		this.form = builder.group({
 			username: ['test1', null, UserValidator.existsAsync()],
 			password: ['123456', [Validators.required, Validators.minLength(2)]]
@@ -61,32 +63,24 @@ export class SigninPage {
 
 	//登录
 	signin(data): void {
+		var obser = this.userservice.signin(this.form.value);
+		obser = this.systemService.linkLoading(obser, '登录中');
 
-		this.userservice.signin(this.form.value).subscribe(
-			res => {
-				if (res.code) {
-					return this.systemService.toastSubject.next(res.msg);
-				}
-
+		obser
+			.mergeMap((res) => {
+				//本地保存token
 				let token = res.data.token;
+				let p = this.storage.set('token', token);
 
-				this.storage.set('token', token)
-					.then(token => {
-						this.navCtrl.setRoot(IndexPage);
-					})
-					.catch(err => {
-						alert('登录失败！');
-					});
-
-			},
-			err => {
-				if(err.status === 0) {
-					return this.systemService.toastSubject.next('网络连接失败');
-				}
+				return Observable.fromPromise(p);
+			})
+			.subscribe(
+			token => {
 				
-				this.systemService.toastSubject.next(err);
-			}
-		);
+				this.navCtrl.setRoot(IndexPage);
+			},
+			err => this.systemService.handleError(err, '登录失败')
+			);
 	}
 
 

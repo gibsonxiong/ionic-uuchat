@@ -8,6 +8,9 @@ import { Transfer } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 import { HOST } from '../../config';
 import { UserService } from '../../services/user';
+import { SystemService } from '../../services/system';
+
+import 'rxjs/add/operator/toPromise';
 
 
 @Component({
@@ -25,7 +28,8 @@ export class ModAvatarPage {
 		public navParams: NavParams,
 		public storage: Storage,
 		public actionSheetCtrl: ActionSheetController,
-		private userService: UserService
+		private userService: UserService,
+		private systemService: SystemService
 	) {
 		this.avatarSrc = navParams.data['avatarSrc'];
 
@@ -65,16 +69,12 @@ export class ModAvatarPage {
 				return this.cropImg(imageData);
 			})
 			.then(newImagePath => {
-				return this.userService.modAvatar(newImagePath);
+				return this.userService.modAvatar(newImagePath).toPromise();
 			})
 			.then(res => {
-				if (res.code) throw new Error('上传头像失败！');
-
 				this.avatarSrc = res.data.avatarSrc;
 			})
-			.catch((err) => {
-				console.log('拍照失败！', err);
-			});
+			.catch(err => this.systemService.handleError(err, '设置头像失败'));
 	}
 
 	//通过手机相册设置头像
@@ -84,16 +84,12 @@ export class ModAvatarPage {
 				return this.cropImg(uri);
 			})
 			.then(newImagePath => {
-				return this.userService.modAvatar(newImagePath);
+				return this.userService.modAvatar(newImagePath).toPromise();
 			})
 			.then(res => {
-				if (res.code) throw new Error('上传头像失败！');
-
-				this.avatarSrc = res.data.avatarSrc;
+				this.avatarSrc = res['data'].avatarSrc;
 			})
-			.catch((err) => {
-				console.log('访问手机相册失败！', err);
-			});
+			.catch(err => this.systemService.handleError(err, '设置头像失败'));
 	}
 
 	//拍照
@@ -107,24 +103,19 @@ export class ModAvatarPage {
 		return Camera.getPicture(options);
 	}
 
+	//裁剪图片
 	cropImg(uri) {
-		return Crop.crop(uri, { quality: 75 });
+		return Crop.crop(uri, { quality: 100 });
 	}
 
-
-	// openAlbum(): Promise<string> {
-	// 	//打开手机相册
-	// 	return FileChooser.open();
-	// }
-
+	//打开手机相册
 	openAlbum(): Promise<string> {
-		//打开手机相册
-		var options ={
-			maximumImagesCount:1
+
+		var options = {
+			maximumImagesCount: 1
 		};
-		return ImagePicker.getPictures(options).then(res=>{
-			// console.log(JSON.stringify(res));
-			return res[0];
+		return ImagePicker.getPictures(options).then(val => {
+			return val[0];
 		})
 	}
 
