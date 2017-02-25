@@ -48,6 +48,7 @@ import { BackEnd } from '../providers/backend';
 
 /*pipes*/
 import { GenderPipe } from '../pipes/gender';
+import { ConnectStatePipe } from '../pipes/connect-state';
 import { TimediffPipe } from '../pipes/timediff';
 
 /*validators*/
@@ -90,6 +91,7 @@ import { UserValidator } from '../validators/user';
 
 		/*pipes*/
 		GenderPipe,
+		ConnectStatePipe,
 		TimediffPipe
 	],
 	imports: [

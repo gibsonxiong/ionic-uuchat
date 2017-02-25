@@ -6,6 +6,8 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 import { MyReplaySubject } from '../utils/MyRelaySubject';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/do';
@@ -30,10 +32,9 @@ export class MsgService {
 	private chatListSubject = new BehaviorSubject<any[]>([]);
 	public chatList$ = this.chatListSubject.asObservable();
 
-	private own_Subscription;
-	private pushMsg_Subscription;
-	private newMsg_Subscription;
-	private newMsg_Subscription2;
+	private storageMsgListSubject = new Subject<any[]>();
+	private storageChatListSubject = new Subject<any[]>();
+
 
 	constructor(
 		public storage: Storage,
@@ -41,36 +42,126 @@ export class MsgService {
 		public backEnd: BackEnd,
 		public userService: UserService
 	) {
-
+		this._init();
 	}
 
-	init(): void {
-		this.unsubscribe();
+	private _init() {
 
-		//获取ownId后，从本地找出msgList,chatList
-		this.own_Subscription = this.userService.own$.subscribe(
-			own => {
-				this.ownId = own._id;
+		// //获取ownId后，从本地找出msgList,chatList
+		// this.userService.own$.subscribe(
+		// 	own => {
+		// 		this.ownId = own._id;
 
-				//todo 因为initMsgList依赖userId，所以要在userId存在时执行，待优化
-				if (own._id) {
-					this.initMsgList();
-					this.initChatList();
-				}
+		// 		//todo 因为initMsgList依赖userId，所以要在userId存在时执行，待优化
+		// 		if (own._id) {
+		// 			this.initMsgList();
+		// 			this.initChatList();
+		// 		}
+		// 	}
+		// )
+
+
+		this.backEnd.pushMsg$.subscribe(
+			msg => this.newMsgSubject.next(msg)
+		)
+
+		//msg
+		let msgListByNewMsg_Subscription;
+		let msgListByNewMsg$ = this.newMsgSubject
+			.map(msg => {
+				let msgList = this.msgListSubject.getValue();
+				msgList.push(msg);
+				return msgList;
+			})
+			.combineLatest(this.userService.friendList$)
+			.map((combine) => {
+				let msgList = combine[0];
+				let friendList = combine[1];
+				console.log('msgList$ & friendList$:', msgList, friendList);
+
+				msgList.forEach(msg => {
+
+					friendList.forEach(friend => {
+						if (msg.fromUserId === friend._id) {
+							msg._fromUser = friend;
+						}
+					});
+
+				});
+
+				return msgList;
+			});
+
+		this.storageMsgListSubject.subscribe(
+			msgList => {
+				this.msgListSubject.next(msgList);
+
+				msgListByNewMsg_Subscription && msgListByNewMsg_Subscription.unsubscribe();
+
+				//先从本地存储拿数据，在绑定，避免顺序搞错
+				msgListByNewMsg_Subscription = msgListByNewMsg$.subscribe(list => {
+					this.storageMsgList(list)
+					this.msgListSubject.next(list);
+				})
 			}
 		)
 
 
-		this.pushMsg_Subscription = this.backEnd.pushMsg$.subscribe(
-			msg => this.newMsgSubject.next(msg)
+		//chat
+		let chatListByNewMsg_Subscription;
+		let chatListByNewMsg$ = this.newMsgSubject
+			.map(msg => {
+				let chatList = this.chatListSubject.getValue();
+
+				return this.updateChatList(chatList, msg);
+			})
+			.combineLatest(this.userService.relationList$)
+			.map((combine) => {
+				let chatList = combine[0];
+				let relationList = combine[1];
+				console.log('chatList$ & relationList$:', chatList, relationList);
+
+				chatList.forEach(chat => {
+
+					relationList.forEach(relation => {
+						if (chat.relationId === relation._id) {
+							chat.name = relation._friend.nickname;
+							chat.avatarSrc = relation._friend.avatarSrc;
+						}
+					});
+
+				});
+
+				return chatList;
+			});
+
+		this.storageChatListSubject.subscribe(
+			chatList => {
+				this.chatListSubject.next(chatList);
+
+				chatListByNewMsg_Subscription && chatListByNewMsg_Subscription.unsubscribe();
+
+				//先从本地存储拿数据，在绑定，避免顺序搞错
+				chatListByNewMsg_Subscription = chatListByNewMsg$.subscribe(list => {
+					this.storageChatList(list)
+					this.chatListSubject.next(list);
+				})
+			}
+		)
+
+		this.msgList$.subscribe(
+			msgList => {
+
+			}
 		)
 
 	}
 
-	destroy() {
-		this.clearSource();
-		this.unsubscribe();
+	getSource() {
+		this.getMsgList();
+		this.getChatList();
 	}
+
 
 	clearSource() {
 		this.newMsgSubject.clearBuffer();
@@ -78,115 +169,110 @@ export class MsgService {
 		this.msgListSubject.next([]);
 	}
 
-	unsubscribe() {
-		this.own_Subscription && this.own_Subscription.unsubscribe();
-		this.pushMsg_Subscription && this.pushMsg_Subscription.unsubscribe();
-		this.newMsg_Subscription && this.newMsg_Subscription.unsubscribe();
-		this.newMsg_Subscription2 && this.newMsg_Subscription2.unsubscribe();
+	//从本地拿
+	getMsgList() {
+		Observable.of(1)
+			.mergeMap(() => {
+				return this.userService.own$
+			})
+			.filter((own) => {
+				return own._id
+			})
+			.mergeMap((own) => {
+				return Observable.fromPromise(this.storage.get('msgList/' + own._id))
+			})
+			.subscribe(
+			msgList => this.storageMsgListSubject.next(msgList || []),
+			err => console.log(err)
+			)
+
+
+		// this.getMsgListFromStorage()
+		// 	.then((msgList = []) => {
+		// 		this.storageMsgListSubject.next(msgList);
+		// 	})
+		// 	.catch(err => console.log(err));
 	}
 
+	getChatList() {
+		Observable.of(1)
+			.mergeMap(() => {
+				return this.userService.own$
+			})
+			.filter((own) => {
+				return own._id
+			})
+			.mergeMap((own) => {
+				return Observable.fromPromise(this.storage.get('chatList/' + own._id))
+			})
+			.subscribe(
+			chatList => this.storageChatListSubject.next(chatList || []),
+			err => console.log(err)
+			)
+	}
 
+	deleteChat(relationId) {
+		
+		var chatList = this.chatListSubject.getValue();
 
-	//从一个Observable (this.newMsgSubject)
-	initMsgList() {
+		chatList.forEach((chat, i) => {
+			if (chat.relationId === relationId) {
+				chatList.splice(i, 1);
+				return false;
+			}
+		});
+		this.storageChatList(chatList);
+		this.storageChatListSubject.next(chatList);
 
-		//从本地获取聊天信息
-		this.getMsgListFromStorage().then(msgList => {
-			msgList = msgList || [];
-			this.msgListSubject.next(msgList);
+	}
 
-			//从每条newMsg获取msgList
-			this.newMsg_Subscription = this.newMsgSubject.subscribe(msg => {
-				let msgList = this.msgListSubject.getValue();
-				msgList.push(msg);
-				this.storageMsgList(msgList)
-				this.msgListSubject.next(msgList);
-			});
+	//每收到newMsg,更新chatList并返回
+	private updateChatList(chatList, msg) {
+		let index = chatList.findIndex(chat => {
+			return chat.relationId === msg.relationId;
+		});
 
+		let content = msg.type === 0 ? msg.content : '[语音]';
+
+		//该信息存在聊天列表中
+		if (index !== -1) {
+			let chat = chatList[index];
+			chat.lastContent = content;
+			chat.lastSendTime = msg.sendTime;
+			chat.unread++;                    //未读加一
+
+			//如果正在读信息
+			if (chat.relationId === this.readingId) {
+				chat.unread = 0;
+			}
+
+		} else {
+			let chat = {
+				lastContent: content,
+				lastSendTime: msg.sendTime,
+				relationId: msg.relationId,
+				name: '',
+				avatarSrc: '',
+				unread: 1
+			};
+
+			//如果正在读信息
+			if (chat.relationId === this.readingId) {
+				chat.unread = 0;
+			}
+
+			chatList.unshift(chat);
+		}
+
+		//以时间倒序排序
+		chatList.sort((a, b) => {
+			return new Date(b.lastSendTime).getTime() - new Date(a.lastSendTime).getTime()
 		});
 
 
+		return chatList;
 	}
 
-	//从两个Observable (this.newMsgSubject, this.userService.relationList$)
-	initChatList() {
-
-		//从本地获取聊天列表
-		this.getChatListFromStorage().then(chatList => {
-
-			chatList = chatList || [];
-
-			this.chatListSubject.next(chatList);
-
-			//从每条newMsg获取chatList
-			this.newMsg_Subscription2 = this.newMsgSubject.scan((chatList, msg) => {
-
-				let index = chatList.findIndex(chat => {
-					return chat.relationId === msg.relationId;
-				});
-
-				let content = msg.type === 0 ? msg.content : '[语音]';
-
-				//该信息存在聊天列表中
-				if (index !== -1) {
-					let chat = chatList[index];
-					chat.lastContent = content;
-					chat.lastSendTime = msg.sendTime;
-					chat.unread++;                    //未读加一
-
-					//如果正在读信息
-					if (chat.relationId === this.readingId) {
-						chat.unread = 0;
-					}
-
-				} else {
-					let chat = {
-						lastContent: content,
-						lastSendTime: msg.sendTime,
-						relationId: msg.relationId,
-						name: '',
-						avatarSrc: '',
-						unread: 1
-					};
-
-					//如果正在读信息
-					if (chat.relationId === this.readingId) {
-						chat.unread = 0;
-					}
-
-					chatList.unshift(chat);
-				}
-
-				//以时间倒序排序
-				chatList.sort((a, b) => {
-					return new Date(b.lastSendTime).getTime() - new Date(a.lastSendTime).getTime()
-				});
-
-
-				return chatList;
-
-			}, chatList)
-				.combineLatest(this.userService.relationList$, (chatListTemp, relationList) => {
-					console.log('chatListTemp$ & relationList$:', chatListTemp, relationList);
-
-					chatListTemp.forEach(chat => {
-
-						relationList.forEach(relation => {
-							if (chat.relationId === relation._id) {
-								chat.name = relation._friend.nickname;
-								chat.avatarSrc = relation._friend.avatarSrc;
-							}
-						});
-
-					});
-
-					return chatListTemp;
-				})
-				.do((chatList) => { this.storageChatList(chatList) })
-				.subscribe(chatList => this.chatListSubject.next(chatList));
-
-		});
-	}
 
 
 	sendMsg(relationId, content): void {
@@ -203,7 +289,7 @@ export class MsgService {
 			.subscribe(res => {
 				this.newMsgSubject.next(res.data);
 			},
-			err=>{
+			err => {
 				console.log(err)
 			});
 	}

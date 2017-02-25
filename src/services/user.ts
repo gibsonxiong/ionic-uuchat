@@ -23,22 +23,16 @@ export class UserService {
 	private friendListSubject = new BehaviorSubject<any[]>([]);
 	public friendList$ = this.friendListSubject.asObservable();
 
-	//订阅
-	private pushUserModed_Subscription;
-	private relationList_Subscription;
-
 	constructor(
 		private myHttp: MyHttp,
 		private backEnd: BackEnd
 	) {
-
+		this._init();
 	}
 
-	init(): void {
-		this.unsubscribe();
-
+	private _init() {
 		//推送过来的修改用户信息
-		this.pushUserModed_Subscription = this.backEnd.pushUserModed$.subscribe(user => {
+		this.backEnd.pushUserModed$.subscribe(user => {
 
 			let relationList = this.relationListSubject.getValue();
 
@@ -52,7 +46,7 @@ export class UserService {
 		})
 
 		//relationList 改变通知 friendList改变
-		this.relationList_Subscription = this.relationListSubject
+		this.relationListSubject
 			.map(relationList => {
 				let friendList = [];
 
@@ -71,15 +65,15 @@ export class UserService {
 			}
 			);
 
+
+
+	}
+
+	getSource() {
 		this.getOwn();
 		this.getRelationList();
-
 	}
 
-	destroy() {
-		this.clearSource();
-		this.unsubscribe();
-	}
 
 	clearSource() {
 		this.ownSubject.next({});
@@ -87,10 +81,6 @@ export class UserService {
 		this.friendListSubject.next([]);
 	}
 
-	unsubscribe() {
-		this.pushUserModed_Subscription && this.pushUserModed_Subscription.unsubscribe();
-		this.relationList_Subscription && this.relationList_Subscription.unsubscribe();
-	}
 
 	getOwn(): void {
 		this.myHttp.get(HOST + '/user/getOwn')

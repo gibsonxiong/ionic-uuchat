@@ -5,13 +5,15 @@
 </ion-header>
 <ion-content>
   <form (ngSubmit)="submitForm()">
-    <ion-item>
-      <ion-label>
-        <ion-icon name="search" color="primary"></ion-icon>
-      </ion-label>
-      <ion-input [(ngModel)]="search" type="search" name="search" placeholder="微信号/手机号"></ion-input>
-    </ion-item>
-    <button type="submit">搜索</button>
+    <ion-list padding-top>
+      <ion-item >
+        <ion-label>
+          <ion-icon name="search" color="primary"></ion-icon>
+        </ion-label>
+        <ion-input [(ngModel)]="search" type="search" name="search" placeholder="微信号/手机号"></ion-input>
+      </ion-item>
+      <button type="submit">搜索</button>
+    </ion-list>
   </form>
   <ion-list margin-top>
     <button ion-item (click)="gotoFriendByContactPage()">

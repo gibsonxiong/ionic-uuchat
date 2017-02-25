@@ -5,22 +5,27 @@
   </ion-navbar>
 
 </ion-header>
-	
+
 
 <ion-content>
-	<div *ngIf="!list.length" class="no-friend-request-tip">没有新好友请求</div>
+  <div *ngIf="!list.length" class="no-friend-request-tip">
+    <div>
+      <ion-icon name="sad" class="tip-icon"></ion-icon>
+    </div>
+    没有新好友请求
+  </div>
 
-	<ion-list *ngIf="list.length">
-		<ion-item *ngFor="let item of list">
-			<ion-thumbnail item-left>
-	           <img [src]="item._fromUser.avatarSrc">
-	        </ion-thumbnail>
-	        <h2>{{item._fromUser.nickname}}</h2>
-	        <p>{{item.requestMsg}}</p>
+  <ion-list *ngIf="list.length">
+    <ion-item *ngFor="let item of list">
+      <ion-thumbnail item-left>
+        <img [src]="item._fromUser.avatarSrc">
+      </ion-thumbnail>
+      <h2>{{item._fromUser.nickname}}</h2>
+      <p>{{item.requestMsg}}</p>
 
-			<button ion-button item-right *ngIf="!item.confirm" (click)="confirmFriend(item._fromUser._id)">添加</button>
+      <button ion-button item-right *ngIf="!item.confirm" (click)="confirmFriend(item._fromUser._id)">添加</button>
 
-			<ion-note item-right *ngIf="item.confirm">已添加</ion-note>
-		</ion-item>
-	</ion-list>
+      <ion-note item-right *ngIf="item.confirm">已添加</ion-note>
+    </ion-item>
+  </ion-list>
 </ion-content>

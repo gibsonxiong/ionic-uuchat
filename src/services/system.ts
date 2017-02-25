@@ -19,8 +19,8 @@ export class SystemService {
 	//Toast
 	public createToast(options): Toast {
 		var toastDefaults: ToastOptions = {
-			duration: 2500,
-			position: 'top',
+			duration: 2000,
+			position: 'middle',
 		};
 
 		//只输入msg字符串

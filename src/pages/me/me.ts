@@ -6,6 +6,8 @@ import { DownloadPage } from '../download/download';
 import { SettingPage } from '../setting/setting';
 import { MeDetailPage } from '../me-detail/me-detail';
 import { UserService } from '../../services/user';
+import { SystemService } from '../../services/system';
+
 import { BackEnd } from '../../providers/backend';
 
 @Component({
@@ -19,9 +21,10 @@ export class MePage implements OnInit {
 	private own_Subscription;
 
 	constructor(
-		public appCtrl: App,
-		public userService: UserService,
-		public backend: BackEnd,
+		private appCtrl: App,
+		private userService: UserService,
+		private backend: BackEnd,
+		private systemService: SystemService,
 	) {
 
 	}
@@ -33,23 +36,19 @@ export class MePage implements OnInit {
 	ngOnDestroy() {
 		this.own_Subscription.unsubscribe();
 	}
-	
+
 	scanBarCode() {
-		// let options = {
-		// 	showFlipCameraButton: true,
-		// 	showTorchButton: true,
-		// 	orientation: 'portrait'
-		// }
-		// BarcodeScanner.scan(options).then((barcodeData) => {
-		// 	console.log('barcodeData', barcodeData);
-		// 	// Success! Barcode data is here
-		// }, (err) => {
-		// 	// An error occurred
-		// 	console.log('[err] barcodeData', err);
-		// });
+		let options = {
+			showFlipCameraButton: true,
+			showTorchButton: true,
+			orientation: 'portrait'
+		}
+		BarcodeScanner.scan(options)
+			.then((barcodeData) => {
+				console.log('barcodeData', barcodeData);
+				// Success! Barcode data is here
+			}, (err) => this.systemService.handleError(err,'出错啦'));
 	}
-
-
 
 
 	gotoMeDetailPage() {
@@ -60,7 +59,7 @@ export class MePage implements OnInit {
 		this.appCtrl.getRootNav().push(DownloadPage);
 	}
 
-	gotoSettingPage(){
+	gotoSettingPage() {
 		this.appCtrl.getRootNav().push(SettingPage);
 	}
 

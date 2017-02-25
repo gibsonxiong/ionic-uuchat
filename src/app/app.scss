@@ -24,10 +24,21 @@ textarea {
 
 .item-ios {
   color: #333;
-  background-color: transparent;
 }
 
-ion-note {
+.toast-ios {
+  .toast-wrapper {
+    right: auto; 
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 300px;
+  }
+  .toast-message {
+    padding: 1rem;
+  }
+}
+
+.toast-ios ion-note {
   max-width: 60%;
   font-size: 1.6rem;
 }

@@ -36,6 +36,7 @@ export class ChatContentPage {
     private recordFileSrc = 'record.mp3';
     private recordFile;
     private recording = false;
+    private mediaTimer;
 
     @ViewChild(Content) contentComponent;
     @ViewChild('audio') audio;
@@ -102,7 +103,20 @@ export class ChatContentPage {
         if (!this.recording) {
             this.recording = true;
             this.recordFile.startRecord();
+
+            this.mediaTimer = setInterval(() => {
+                // get media amplitude
+                this.recordFile.getCurrentAmplitude()
+                    .then((amp) => {
+                        console.log(amp + "%");
+                    })
+                    .catch(err => {
+                        console.log("Error getting amp=" + err);
+                    });
+            }, 300);
+
         } else {
+            clearInterval(this.mediaTimer);
             this.recording = false;
             this.recordFile.stopRecord();
             this.msgService.sendAudioMsg(this.relationId, this.recordFileSrc);

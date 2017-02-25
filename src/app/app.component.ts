@@ -478,8 +478,159 @@ import { Observable, Subject, ReplaySubject, BehaviorSubject, AsyncSubject, Subs
 
 
 
+// //模拟msg
+// var newMsg = new ReplaySubject();
 
-Rx.Observable.of(0, 1, 2, 3)
-	.map((n) => n * n) // 每项取平方
-	.filter((n) => n > 100) // 取出平方后大于0的项
-	.subscribe((n) => console.log('1',n)); 
+// newMsg.next({ content: '3' });
+// newMsg.next({ content: '4' });
+
+// var storage = new Subject<any[]>();
+
+// var list = new BehaviorSubject([]);
+
+// var list4newMsg = newMsg.map(msg => {
+// 	var _list = list.getValue();
+// 	_list.push(msg);
+// 	return _list;
+// });
+
+
+
+// storage
+// 	.subscribe(_list => {
+// 		list.next(_list);
+
+// 		list4newMsg
+// 			.subscribe(_list => {
+// 				list.next(_list);
+// 			});
+// 	});
+
+// //--------------------
+
+// setTimeout(() => {
+// 	storage.next([
+// 		{ content: '1' },
+// 		{ content: '2' },
+// 	])
+// }, 1000);
+
+// setTimeout(() => {
+// 	storage.next([
+// 		{ content: '7' },
+// 		{ content: '8' },
+// 	])
+// }, 1000);
+
+// list.subscribe(_list => {
+// 	console.log(_list);
+// })
+
+// newMsg.next({ content: '5' });
+
+
+
+//模拟本地存储
+// var id = new Subject();
+// var id$ = id.publishReplay(1).share();
+
+// id.next(1);
+
+// id.subscribe(
+// 	n => console.log('id$', n),
+// 	err => console.log('eer', err)
+
+// )
+
+// id$.subscribe(
+// 	n => console.log('id$', n),
+// 	err => console.log('eer', err)
+
+// )
+
+// id.next(2);
+
+// // merge
+// var source1 = Rx.Observable.interval(100)
+// 	.timeInterval()
+// 	.pluck('interval');
+// var source2 = Rx.Observable.interval(150)
+// 	.timeInterval()
+// 	.pluck('interval');
+
+// var source = Rx.Observable.merge(
+// 	source1,
+// 	source2).take(10);
+
+
+// var subscription = source.subscribe(
+// 	function (x) {
+// 		console.log('Next: ' + x);
+// 	},
+// 	function (err) {
+// 		console.log('Error: ' + err);
+// 	},
+// 	function () {
+// 		console.log('Completed');
+// 	});
+
+
+//concat
+// var timer = Rx.Observable.interval(1000);
+// var sequence = Rx.Observable.range(1, 10);
+// var result = Rx.Observable.concat(timer, sequence);
+// result.subscribe(x => console.log(x));
+
+// //mergeMap
+// var interval = Rx.Observable.interval(1000);
+// var result = interval.mergeMap(x =>
+// 	x % 2 === 1 ? Rx.Observable.of('a' + x, 'b' + x, 'c' + x) : Rx.Observable.empty()
+// );
+// result.subscribe(x => console.log(x));
+
+
+
+// // forkJoin
+
+// /* Using observables and Promises */
+// var source = Rx.Observable.forkJoin(
+// 	Rx.Observable.range(0, 10),
+// 	Rx.Observable.interval(1000).take(3)
+// );
+
+// var subscription = source.subscribe(
+// 	x => console.log(`onNext: ${x}`),
+// 	e => console.log(`onError: ${e}`),
+// 	() => console.log('onCompleted'));
+
+// // => Next: [42, 9, 3, 56]
+// // => Completed
+
+
+
+//
+// var clicks = Rx.Observable.fromEvent(document, 'click');
+// var powersOfTwo = clicks
+// 	.mapTo(1)
+// 	.expand(x => Rx.Observable.of(3 * x).delay(1000))
+// 	.take(10);
+// powersOfTwo.subscribe(x => console.log(x));
+
+
+// var a = new BehaviorSubject(1);
+
+// var clicks = Rx.Observable.fromEvent(document, 'click')
+// 	.mergeMap(v => a.filter(v => v > 5))
+// 	.subscribe(v => console.log(v));
+
+// setTimeout(() => {
+// 	a.next(8);
+// }, 5000);
+
+
+
+
+
+
+
+

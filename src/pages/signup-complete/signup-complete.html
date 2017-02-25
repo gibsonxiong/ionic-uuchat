@@ -29,11 +29,10 @@
     <ion-list>
       <button ion-item (click)="selectGender($event)">
           <ion-label>性别</ion-label>
-          <ion-note>{{form.value.gender | gender}}</ion-note>
-          <!--<ion-input value="{{form.value.gender | gender}}" [disabled]="true"></ion-input>-->
+          <ion-note item-right>{{form.value.gender | gender}}</ion-note>
       </button>
       <ion-item>
-        <ion-label>昵称</ion-label>
+        <ion-label >昵称</ion-label>
         <ion-input type="text" formControlName="nickname"></ion-input>
       </ion-item>
 

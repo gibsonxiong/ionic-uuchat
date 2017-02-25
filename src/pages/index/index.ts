@@ -13,6 +13,8 @@ import { SigninPage } from '../signin/signin';
 
 import { UserService } from '../../services/user';
 import { MsgService } from '../../services/msg';
+import { SystemService } from '../../services/system';
+
 import { MyHttp } from '../../providers/my-http';
 import { BackEnd } from '../../providers/backend';
 
@@ -39,6 +41,7 @@ export class IndexPage {
         private alertCtrl: AlertController,
         private userService: UserService,
         private msgService: MsgService,
+        private systemService: SystemService,
         private myHttp: MyHttp,
         private backEnd: BackEnd,
     ) {
@@ -46,6 +49,7 @@ export class IndexPage {
 
     ngOnInit() {
         this.connectServer();
+
 
         //强迫下线通知
         this.subscriptions.add(
@@ -87,33 +91,33 @@ export class IndexPage {
 
     ngOnDestroy() {
         this.backEnd.disconnect();
-        this.backEnd.clearSource();
         this.destroyData();
         this.unsubscribe();
     }
 
-    connectServer() {
+    connectServer(shouldInitData = true) {
         this.storage.get('token').then(token => {
             if (token) {
                 this.backEnd.connect(token);
-                this.initData();
+                shouldInitData && this.initData();
 
             } else {
-                alert('请先登录');
-
+                this.systemService.showToast('请先登录');
                 this.gotoSigninPage();
             }
         });
     }
 
     initData(): void {
-        this.userService.init();
-        this.msgService.init();
+        this.userService.getSource();
+        this.msgService.getSource();
     }
 
     destroyData(): void {
-        this.userService.destroy();
-        this.msgService.destroy();
+        this.backEnd.clearSource();
+        this.userService.clearSource();
+        this.msgService.clearSource();
+
     }
 
     unsubscribe() {
@@ -125,7 +129,7 @@ export class IndexPage {
         //断开连接
         this.backEnd.disconnect();
         //取消所有订阅
-        this.unsubscribe();
+        // this.unsubscribe();
 
         this.presentAlert();
     }
@@ -153,12 +157,7 @@ export class IndexPage {
                 {
                     text: '重新登录',
                     handler: data => {
-                        this.backEnd.disconnect();
-                        this.backEnd.clearSource();
-                        this.destroyData();
-                        this.unsubscribe();
-
-                        this.connectServer();
+                        this.connectServer(false);
                     }
                 },
                 {
