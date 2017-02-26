@@ -20,7 +20,6 @@ import { UserService } from '../services/user';
 @Injectable()
 export class MsgService {
 
-	private ownId: string;
 	private readingId: string = '';
 
 	private newMsgSubject = new MyReplaySubject<any>();
@@ -46,20 +45,6 @@ export class MsgService {
 	}
 
 	private _init() {
-
-		// //获取ownId后，从本地找出msgList,chatList
-		// this.userService.own$.subscribe(
-		// 	own => {
-		// 		this.ownId = own._id;
-
-		// 		//todo 因为initMsgList依赖userId，所以要在userId存在时执行，待优化
-		// 		if (own._id) {
-		// 			this.initMsgList();
-		// 			this.initChatList();
-		// 		}
-		// 	}
-		// )
-
 
 		this.backEnd.pushMsg$.subscribe(
 			msg => this.newMsgSubject.next(msg)
@@ -171,48 +156,26 @@ export class MsgService {
 
 	//从本地拿
 	getMsgList() {
-		Observable.of(1)
-			.mergeMap(() => {
-				return this.userService.own$
-			})
-			.filter((own) => {
-				return own._id
-			})
-			.mergeMap((own) => {
-				return Observable.fromPromise(this.storage.get('msgList/' + own._id))
-			})
-			.subscribe(
+		let ownId = this.backEnd.getOwnId();
+
+		Observable.fromPromise(this.storage.get('msgList/' + ownId)).subscribe(
 			msgList => this.storageMsgListSubject.next(msgList || []),
 			err => console.log(err)
-			)
+		)
 
-
-		// this.getMsgListFromStorage()
-		// 	.then((msgList = []) => {
-		// 		this.storageMsgListSubject.next(msgList);
-		// 	})
-		// 	.catch(err => console.log(err));
 	}
 
 	getChatList() {
-		Observable.of(1)
-			.mergeMap(() => {
-				return this.userService.own$
-			})
-			.filter((own) => {
-				return own._id
-			})
-			.mergeMap((own) => {
-				return Observable.fromPromise(this.storage.get('chatList/' + own._id))
-			})
-			.subscribe(
+		let ownId = this.backEnd.getOwnId();
+
+		return Observable.fromPromise(this.storage.get('chatList/' + ownId)).subscribe(
 			chatList => this.storageChatListSubject.next(chatList || []),
 			err => console.log(err)
-			)
+		)
 	}
 
 	deleteChat(relationId) {
-		
+
 		var chatList = this.chatListSubject.getValue();
 
 		chatList.forEach((chat, i) => {
@@ -314,6 +277,7 @@ export class MsgService {
 	}
 
 
+	//msg
 	storageMsgList(msgList): Promise<any> {
 		return this.setInPrivateStorage('msgList', msgList);
 	}
@@ -322,6 +286,7 @@ export class MsgService {
 		return this.getInPrivateStorage('msgList');
 	}
 
+	//chat
 	storageChatList(chatList): Promise<any> {
 		return this.setInPrivateStorage('chatList', chatList);
 	}
@@ -330,12 +295,17 @@ export class MsgService {
 		return this.getInPrivateStorage('chatList');
 	}
 
+
+
+
 	getInPrivateStorage(name): Promise<any> {
-		return this.storage.get(name + '/' + this.ownId);
+		let ownId = this.backEnd.getOwnId();
+		return this.storage.get(name + '/' + ownId);
 	}
 
 	setInPrivateStorage(name, value): Promise<any> {
-		return this.storage.set(name + '/' + this.ownId, value);
+		let ownId = this.backEnd.getOwnId();
+		return this.storage.set(name + '/' + ownId, value);
 	}
 
 }

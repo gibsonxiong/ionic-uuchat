@@ -14,6 +14,8 @@ var io = require('../assets/js/socket.io-1.4.5');
 export class BackEnd {
     private socket: any;
 
+    private token;
+    private ownId;
 
     //连接完触发
     // private onStatusChangedSubject = new ReplaySubject(1);
@@ -42,13 +44,17 @@ export class BackEnd {
 
 
     //连接
-    connect(token) {
+    connect(token, ownId) {
+        this.token = token;
+        this.ownId = ownId;
         this.myhttp.setToken(token);
         this.connectSocket(token);
     }
 
     //断开连接
     disconnect() {
+        this.token = null;
+        this.ownId = null;
         this.myhttp.removeToken();
         this.disconnectSocket();
     }
@@ -62,6 +68,14 @@ export class BackEnd {
         //清除上一个用户的数据
         this.pushMsgSubject.clearBuffer();
         this.pushUserModedSubject.clearBuffer();
+    }
+
+    getToken() {
+        return this.token;
+    }
+
+    getOwnId() {
+        return this.ownId;
     }
 
     private connectSocket(token): Promise<any> {

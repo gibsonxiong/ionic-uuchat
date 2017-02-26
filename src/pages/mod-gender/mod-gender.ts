@@ -36,8 +36,10 @@ export class ModGenderPage implements OnInit {
 	//提交
 	submit() {
 		let gender = this.form.value.gender;
+		let obser = this.userService.modGender(gender);
+		obser = this.systemService.linkLoading(obser);
 
-		this.userService.modGender(gender).subscribe(
+		obser.subscribe(
 			res => {
 				this.navCtrl.pop();
 			},

@@ -96,16 +96,22 @@ export class IndexPage {
     }
 
     connectServer(shouldInitData = true) {
-        this.storage.get('token').then(token => {
-            if (token) {
-                this.backEnd.connect(token);
-                shouldInitData && this.initData();
+        let p1 = this.storage.get('token');
+        let p2 = this.storage.get('ownId');
 
-            } else {
-                this.systemService.showToast('请先登录');
-                this.gotoSigninPage();
-            }
-        });
+        Promise.all([p1, p2])
+            .then(all => {
+                let token = all[0];
+                let ownId = all[1];
+                if (token && ownId) {
+                    this.backEnd.connect(token, ownId);
+                    shouldInitData && this.initData();
+
+                } else {
+                    this.systemService.showToast('请先登录');
+                    this.gotoSigninPage();
+                }
+            });
     }
 
     initData(): void {
@@ -135,6 +141,12 @@ export class IndexPage {
     }
 
     notify(msg) {
+        let ownId = this.backEnd.getOwnId();
+
+        if (!ownId) return;
+
+        if (ownId === msg.fromUserId) return;
+
         var content = msg.type === 0 ? msg.content : '[语音]';
         LocalNotifications.schedule({
             id: msg._id,

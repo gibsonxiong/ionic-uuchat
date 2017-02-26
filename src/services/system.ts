@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ToastController, ToastOptions, Toast, LoadingController, LoadingOptions, Loading } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/finally';
+// import 'rxjs/add/operator/finally';
+import 'rxjs/add/operator/do';
 
 declare var require;
 var _ = require('../assets/js/underscore');
@@ -62,9 +63,14 @@ export class SystemService {
 	public linkLoading(observable: Observable<any>, LoadingOptions?): Observable<any> {
 		var loading = this.showLoading(LoadingOptions);
 
-		return observable.finally(() => {
-			loading.dismiss()
-		});
+		return observable.do(
+			() => {
+				this.closeLoading(loading);
+			},
+			() => {
+				this.closeLoading(loading);
+			}
+		);
 
 	}
 

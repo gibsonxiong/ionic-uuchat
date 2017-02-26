@@ -64,14 +64,17 @@ export class ModAvatarPage {
 
 	//通过拍照设置头像
 	setByPhotograph() {
+		let loading;
 		this.photograph()
 			.then((imageData) => {
 				return this.cropImg(imageData);
 			})
 			.then(newImagePath => {
+				loading = this.systemService.showLoading();
 				return this.userService.modAvatar(newImagePath).toPromise();
 			})
 			.then(res => {
+				this.systemService.closeLoading(loading);
 				this.avatarSrc = res.data.avatarSrc;
 			})
 			.catch(err => this.systemService.handleError(err, '设置头像失败'));
@@ -79,14 +82,17 @@ export class ModAvatarPage {
 
 	//通过手机相册设置头像
 	setByAlbum() {
+		let loading;
 		this.openAlbum()
 			.then((uri) => {
 				return this.cropImg(uri);
 			})
 			.then(newImagePath => {
+				loading = this.systemService.showLoading();
 				return this.userService.modAvatar(newImagePath).toPromise();
 			})
 			.then(res => {
+				this.systemService.closeLoading(loading);
 				this.avatarSrc = res['data'].avatarSrc;
 			})
 			.catch(err => this.systemService.handleError(err, '设置头像失败'));

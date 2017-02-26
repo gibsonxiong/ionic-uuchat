@@ -37,8 +37,10 @@ export class ModMottoPage implements OnInit {
 	//提交
 	submit() {
 		let motto = this.form.value.motto;
+		let obser = this.userService.modMotto(motto);
+		obser = this.systemService.linkLoading(obser);
 
-		this.userService.modMotto(motto).subscribe(
+		obser.subscribe(
 			res => {
 				this.navCtrl.pop();
 			},

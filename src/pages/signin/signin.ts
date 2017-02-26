@@ -70,13 +70,15 @@ export class SigninPage {
 			.mergeMap((res) => {
 				//本地保存token
 				let token = res.data.token;
-				let p = this.storage.set('token', token);
+				let ownId = res.data.ownId;
+				let p1 = this.storage.set('token', token);
+				let p2 = this.storage.set('ownId', ownId);
+				let pAll = Promise.all([p1, p2]);
 
-				return Observable.fromPromise(p);
+				return Observable.fromPromise(pAll);
 			})
 			.subscribe(
-			token => {
-				
+			() => {
 				this.navCtrl.setRoot(IndexPage);
 			},
 			err => this.systemService.handleError(err, '登录失败')

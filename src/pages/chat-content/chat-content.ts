@@ -4,6 +4,7 @@ import { App, NavController, NavParams, Content } from 'ionic-angular';
 import { MediaPlugin } from 'ionic-native';
 import { MsgService } from '../../services/msg';
 import { UserService } from '../../services/user';
+import { BackEnd } from '../../providers/backend';
 import { Storage } from '@ionic/storage';
 import { Transfer } from 'ionic-native';
 import 'rxjs/add/operator/filter';
@@ -26,7 +27,7 @@ export class ChatContentPage {
     private ownId: string;
     private form: FormGroup;
 
-    private userSubscription;
+    // private userSubscription;
     private msgListSubscription;
     private newMsgSubscription;
 
@@ -47,11 +48,15 @@ export class ChatContentPage {
         private fb: FormBuilder,
         private storage: Storage,
         private userService: UserService,
-        private msgService: MsgService
+        private msgService: MsgService,
+        private backEnd: BackEnd,
     ) {
 
         this.relationId = params.data.relationId;
         this.pageTitle = params.data.chatName;
+        this.ownId = backEnd.getOwnId();
+
+        // Validators.pattern(/^\s*(\S+)\s*$/g)
 
         this.form = fb.group({
             content: ['', Validators.required]
@@ -62,11 +67,11 @@ export class ChatContentPage {
 
     ngOnInit() {
 
-        this.userSubscription = this.userService.own$.subscribe(
-            own => {
-                this.ownId = own._id;
-            }
-        );
+        // this.userSubscription = this.userService.own$.subscribe(
+        //     own => {
+        //         this.ownId = own._id;
+        //     }
+        // );
 
         this.msgListSubscription = this.msgService.msgList$.subscribe(
             msgList => {
@@ -86,7 +91,7 @@ export class ChatContentPage {
     }
 
     ngOnDestroy() {
-        this.userSubscription.unsubscribe();
+        // this.userSubscription.unsubscribe();
         this.msgListSubscription.unsubscribe();
         this.newMsgSubscription.unsubscribe();
     }
@@ -160,6 +165,7 @@ export class ChatContentPage {
     }
 
     sendMsg() {
+        if (this.form.invalid) return;
         let content = this.form.value.content;
 
         this.msgService.sendMsg(this.relationId, content);

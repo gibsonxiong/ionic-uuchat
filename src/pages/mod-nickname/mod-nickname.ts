@@ -38,8 +38,10 @@ export class ModNicknamePage implements OnInit {
 	//提交
 	submit() {
 		let nickname = this.form.value.nickname;
+		let obser = this.userService.modNickname(nickname);
+		obser = this.systemService.linkLoading(obser);
 
-		this.userService.modNickname(nickname).subscribe(
+		obser.subscribe(
 			res => {
 				this.navCtrl.pop();
 			},
