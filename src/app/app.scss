@@ -28,19 +28,19 @@ textarea {
 
 .toast-ios {
   .toast-wrapper {
-    right: auto; 
+    right: auto;
     left: 50%;
     transform: translateX(-50%);
-    max-width: 300px;
+    max-width: 400px;
   }
   .toast-message {
     padding: 1rem;
   }
 }
 
-.toast-ios ion-note {
+ion-note {
   max-width: 60%;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
 }
 
 .hint {

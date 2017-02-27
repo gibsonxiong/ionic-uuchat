@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { App } from 'ionic-angular';
+import { App, Platform } from 'ionic-angular';
 import { BarcodeScanner } from 'ionic-native';
 
 import { DownloadPage } from '../download/download';
@@ -21,10 +21,12 @@ export class MePage implements OnInit {
 	private own_Subscription;
 
 	constructor(
+		private platform: Platform,
 		private appCtrl: App,
 		private userService: UserService,
 		private backend: BackEnd,
 		private systemService: SystemService,
+
 	) {
 
 	}
@@ -38,6 +40,10 @@ export class MePage implements OnInit {
 	}
 
 	scanBarCode() {
+		let nonsupport = this.platform.is('mobileweb');
+
+		if (nonsupport) return this.systemService.showToast('扫一扫暂不支持浏览器，请下载APP体验');
+
 		let options = {
 			showFlipCameraButton: true,
 			showTorchButton: true,
@@ -47,7 +53,7 @@ export class MePage implements OnInit {
 			.then((barcodeData) => {
 				console.log('barcodeData', barcodeData);
 				// Success! Barcode data is here
-			}, (err) => this.systemService.handleError(err,'出错啦'));
+			}, (err) => this.systemService.handleError(err, '出错啦'));
 	}
 
 

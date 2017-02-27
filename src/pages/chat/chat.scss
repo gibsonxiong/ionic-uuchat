@@ -1,17 +1,20 @@
-cy-chat-page{
-	.button-title{
-		padding: 0 10px;
-	}
-
-	ion-badge{
-	    position: absolute;
-	    top: 50%;
-	    right: 15px;
-	}
-
-	ion-note {
-		float:right;
-		font-size: 12px;
-	}
+cy-chat-page {
+  .button-title {
+    padding: 0 10px;
+  }
+  ion-badge {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+  }
+  ion-note {
+    float: right;
+    font-size: 12px;
+  }
 }
 
+.chat-popover {
+  .popover-content {
+    width: 150px;
+  }
+}

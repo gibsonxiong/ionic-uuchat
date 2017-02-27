@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { App, PopoverController } from 'ionic-angular';
 import { ChatContentPage } from '../chat-content/chat-content';
 import { ChatPopoverPage } from '../chat-popover/chat-popover';
@@ -21,6 +21,8 @@ export class ChatPage implements OnInit {
 	private subscriptions = new Subscription();
 
 	constructor(
+		private ref: ChangeDetectorRef,
+		private zone: NgZone,
 		private appCtrl: App,
 		private popoverCtrl: PopoverController,
 		private msgService: MsgService,
@@ -41,7 +43,11 @@ export class ChatPage implements OnInit {
 		)
 
 		this.timer = setInterval(() => {
-			this.chatList = this.chatList;
+			let chatList = this.chatList;
+			this.chatList = [];
+			this.ref.detectChanges();
+			this.chatList = chatList;
+
 		}, 60000);
 
 		this.msgService.chatList$.subscribe(
@@ -52,12 +58,25 @@ export class ChatPage implements OnInit {
 
 	}
 
+	ngAfterViewInit(a, b, c) {
+		// viewChild is set after the view has been initialized
+
+	}
+
+	ngAfterViewChecked(a, b, c) {
+		// viewChild is set after the view has been initialized
+
+	}
+
 	ngOnDestory() {
 		this.subscriptions.unsubscribe();
+		clearInterval(this.timer);
 	}
 
 	presentPopover(event) {
-		let popover = this.popoverCtrl.create(ChatPopoverPage);
+		let popover = this.popoverCtrl.create(ChatPopoverPage, {}, {
+			cssClass: 'chat-popover'
+		});
 
 		popover.present({
 			ev: event
@@ -68,7 +87,7 @@ export class ChatPage implements OnInit {
 		clearInterval(this.timer);
 	}
 
-	deleteChat(relationId){
+	deleteChat(relationId) {
 		this.msgService.deleteChat(relationId);
 	}
 

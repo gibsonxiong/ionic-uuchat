@@ -11,10 +11,14 @@
   <ion-list>
     <ion-item>
       <ion-thumbnail item-left>
-        <ion-img [src]="user.avatarSrc"></ion-img>
+        <img [src]="user.avatarSrc | avatarSrc" />
       </ion-thumbnail>
-      <h2>{{user.nickname}}</h2>
-      <p>用户名：{{user.username}}</p>
+      <h2>
+        <span class="nickname">{{user.nickname}}</span>
+        <ion-icon name="male" color="primary" *ngIf="user.gender===0"></ion-icon>
+        <ion-icon name="female" color="fourthly" *ngIf="user.gender===1"></ion-icon>
+      </h2>
+      <p class="username">用户名：{{user.username}}</p>
     </ion-item>
   </ion-list>
 

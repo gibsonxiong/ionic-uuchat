@@ -12,18 +12,38 @@
 </ion-header>
 
 
-<ion-content>
-  <div class="send-time-wrap"><span class="send-time">20:01</span></div>
+<ion-content padding-vertical>
 
-  <div *ngFor="let msg of msgList" class="msg-wrap {{ msg.fromUserId === ownId?'me-msg':'other-msg' }}">
-    <ion-img [src]="msg._fromUser && msg._fromUser.avatarSrc" (click)="gotoUserDetailPage(msg.fromUserId)"></ion-img>
-    <!--文本消息-->
-    <p class="msg-content" *ngIf="msg.type===0">{{msg.content}}</p>
 
-    <!--文本消息-->
-    <p class="msg-content" *ngIf="msg.type===3" (click)="playRecord(msg.content)">
-      <ion-icon class="audio-icon" name="wifi"></ion-icon>
-    </p>
+  <div *ngFor="let msg of msgList">
+    <!--发送时间-->
+    <div class="send-time-wrap"><span class="send-time">{{msg.sendTime | timediff}}</span></div>
+    <!--消息-->
+    <div class="msg-wrap {{ msg.fromUserId === ownId?'me-msg':'other-msg' }}">
+      <!--头像-->
+
+      <ion-thumbnail>
+        <img [src]="msg._fromUser && msg._fromUser.avatarSrc | avatarSrc" (click)="gotoUserDetailPage(msg.fromUserId)" />
+      </ion-thumbnail>
+
+      <!--文本消息-->
+      <p class="msg-content" *ngIf="msg.type===0">{{msg.content}}</p>
+
+      <!--文本消息-->
+      <p class="msg-content" *ngIf="msg.type===3" (click)="playRecord(msg.content)">
+        <ion-icon class="audio-icon" name="wifi"></ion-icon>
+
+      </p>
+      <span class="audio-duartion" *ngIf="msg.type===3">{{msg.audioDuration}}"</span>
+
+      <ion-spinner *ngIf="msg.fromUserId === ownId && msg.pending"></ion-spinner>
+
+    </div>
+  </div>
+  <div class="record-volume-wrap" *ngIf="recording">
+    <div class="title">开始说话</div>
+    <img class="volume-img" [src]="volumeImgSrc" />
+    <div class="">{{recordDuration}}s</div>
   </div>
   <audio #audio autoplay="autoplay"></audio>
 </ion-content>
@@ -48,7 +68,7 @@
         <button ion-button block outline small (click)="recordToggle()">{{recording? '停止录音':'开始录音'}}</button>
       </div>
 
-      <button ion-button icon-only outline small><ion-icon name="add-outline"></ion-icon></button>
+      <!--<button ion-button icon-only outline small><ion-icon name="add-outline"></ion-icon></button>-->
     </div>
   </ion-toolbar>
 </ion-footer>

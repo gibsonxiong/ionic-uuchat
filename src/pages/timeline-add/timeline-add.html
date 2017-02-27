@@ -1,0 +1,21 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>记录心情</ion-title>
+
+    <ion-buttons end>
+      <button ion-button (click)="publish()">发表</button>
+    </ion-buttons>
+  </ion-navbar>
+
+
+
+</ion-header>
+<ion-content>
+  <form [formGroup]="form" (ngSubmit)="publish()"></form>
+  <ion-list>
+    <ion-item>
+      <ion-textarea type="text" placeholder="写下你的心情吧" formControlName="content"></ion-textarea>
+    </ion-item>
+  </ion-list>
+</ion-content>

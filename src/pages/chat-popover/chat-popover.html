@@ -1,3 +1,10 @@
-<ion-list >
-  <button ion-item detail-none >添加好友</button>
+<ion-list>
+  <button ion-item detail-none (click)="gotoFriendAddPage()">
+    <ion-icon name="person-add" item-left></ion-icon>
+		添加好友
+  </button>
+  <button ion-item detail-none (click)="gotoFriendAddPage()">
+    <ion-icon name="md-qr-scanner" item-left ></ion-icon>
+		扫一扫
+  </button>
 </ion-list>

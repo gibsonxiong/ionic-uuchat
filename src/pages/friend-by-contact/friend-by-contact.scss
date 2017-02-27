@@ -1,4 +1,10 @@
-cy-friend-by-contact-page{
-
+cy-friend-by-contact-page {
+  .displayName {
+    font-size: 1.8rem;
+    margin-right: 8px;
+  }
+  .nickname {
+    margin-top: 5px;
+    font-size: 1.3rem;
+  }
 }
-

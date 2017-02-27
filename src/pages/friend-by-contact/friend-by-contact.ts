@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, Platform } from 'ionic-angular';
 import { FriendRequestPage } from '../friend-request/friend-request';
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
@@ -15,6 +15,7 @@ export class FriendByContactPage implements OnInit {
 	userList: any[] = [];
 
 	constructor(
+		private platform: Platform,
 		private navCtrl: NavController,
 		private userService: UserService,
 		private systemService: SystemService
@@ -23,6 +24,8 @@ export class FriendByContactPage implements OnInit {
 	}
 
 	ngOnInit() {
+		let nonsupport = this.platform.is('mobileweb');
+		if (nonsupport) return this.systemService.showToast('访问手机录暂不支持浏览器，请下载APP体验');
 
 		this.findContacts()
 			.subscribe(
@@ -55,8 +58,6 @@ export class FriendByContactPage implements OnInit {
 			},
 			err => this.systemService.handleError(err, '获取通讯录好友失败')
 			);
-
-
 
 	}
 

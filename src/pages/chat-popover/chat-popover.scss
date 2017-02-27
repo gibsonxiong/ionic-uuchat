@@ -1,5 +1,9 @@
-cy-chat-popover-page{
-	.qrcode{
-        width: 100%;
-    }
+cy-chat-popover-page {
+  ion-list {
+    margin: 0!important;
+    border: none;
+  }
+  .qrcode {
+    width: 100%;
+  }
 }

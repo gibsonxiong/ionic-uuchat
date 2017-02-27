@@ -31,6 +31,9 @@ import { FriendByContactPage } from '../pages/friend-by-contact/friend-by-contac
 import { ReorderPage } from '../pages/reorder/reorder';
 import { DownloadPage } from '../pages/download/download';
 import { SettingPage } from '../pages/setting/setting';
+import { TimelineAddPage } from '../pages/timeline-add/timeline-add';
+
+
 
 import { myHttpFactory } from '../factorys';
 
@@ -50,6 +53,7 @@ import { BackEnd } from '../providers/backend';
 import { GenderPipe } from '../pipes/gender';
 import { ConnectStatePipe } from '../pipes/connect-state';
 import { TimediffPipe } from '../pipes/timediff';
+import { AvatarSrcPipe } from '../pipes/avatar-src';
 
 /*validators*/
 import { UserValidator } from '../validators/user';
@@ -85,6 +89,7 @@ import { UserValidator } from '../validators/user';
 		ReorderPage,
 		DownloadPage,
 		SettingPage,
+		TimelineAddPage,
 
 		/*components*/
 		Highlight,
@@ -92,7 +97,8 @@ import { UserValidator } from '../validators/user';
 		/*pipes*/
 		GenderPipe,
 		ConnectStatePipe,
-		TimediffPipe
+		TimediffPipe,
+		AvatarSrcPipe
 	],
 	imports: [
 		IonicModule.forRoot(MyApp, {
@@ -135,6 +141,7 @@ import { UserValidator } from '../validators/user';
 		ReorderPage,
 		DownloadPage,
 		SettingPage,
+		TimelineAddPage
 
 	],
 	providers: [

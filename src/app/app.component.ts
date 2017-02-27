@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
 import { Platform, AlertController } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
-// import { Push } from 'ionic-native';
-// import { Badge } from 'ionic-native';
-// import { Keyboard } from 'ionic-native';
 import { Storage } from '@ionic/storage';
 
 
@@ -30,12 +27,12 @@ export class MyApp {
 		//通过token判断是否登录过
 		storage.get('token').then(token => {
 
-			if (token) {
-				this.rootPage = IndexPage;
-			} else {
-				this.rootPage = SigninPage;
-			}
-			// this.rootPage = SignupCompletePage;
+			// if (token) {
+			// 	this.rootPage = IndexPage;
+			// } else {
+			// 	this.rootPage = SigninPage;
+			// }
+			this.rootPage = SignupCompletePage;
 
 		});
 
@@ -45,96 +42,11 @@ export class MyApp {
 			StatusBar.styleDefault();
 			Splashscreen.hide();
 
-			// try {
-			// 	this.initPush();
-			// } catch (e) {
-			// 	alert('[Native Error]Push init error')
-			// }
-
-			// Badge.registerPermission
-			// Badge.hasPermission().then(value => {
-			// 	console.log('hasPermission', value);
-			// })
-			// 	.catch(err => {
-			// 		console.log(err);
-			// 	})
-			// Badge.set(1).then((arg) => {
-			// 	console.log(arg);
-			// }).catch(err => {
-			// 	console.log(err);
-			// });
-
-
-			// console.log('Contact');
-			//创建联系人
-			// let contact: Contact = Contacts.create();
-
-			// contact.name = new ContactName(null, 'Smith', 'John');
-			// contact.phoneNumbers = [new ContactField('mobile', '6471234567')];
-			// contact.save().then(
-			// 	() => console.log('Contact saved!', contact),
-			// 	(error: any) => console.error('Error saving contact.', error)
-			// );
-
-
-			//查找所有联系人电话
-			// let fields: ContactFieldType[] = [
-			// 	'displayName'
-			// ];
-			// let options: IContactFindOptions = {
-			// 	// filter?: string;
-			// 	// /** Determines if the find operation returns multiple navigator.contacts. */
-			// 	// multiple?: boolean;
-			// 	// desiredFields?: string[];
-			// 	// /**
-			// 	//  * (Android only): Filters the search to only return contacts with a phone number informed.
-			// 	//  */
-			// 	// hasPhoneNumber?: boolean;
-			// 	// desiredFields:['displayName','phoneNumbers'],
-			// 	hasPhoneNumber: true
-			// };
-			// Contacts.find(fields, options)
-			// 	.then(contacts => {
-			// 		var data = [];
-			// 		contacts.forEach(contact => {
-			// 			//一个联系人，手机号码可能有多个
-			// 			contact.phoneNumbers.forEach(phoneNumber => {
-			// 				data.push({
-			// 					displayName: contact.displayName,
-			// 					phoneNumber: phoneNumber.value
-			// 				});
-			// 			});
-
-			// 		});
-			// 		console.log('**',data);
-			// 	})
-			// 	.catch(err => console.log('****', err));
-
-
 		});
 	}
 
 	ngOnInit() {
 
-	}
-
-	initPush() {
-		// let push = Push.init({
-		// 	android: {
-		// 		senderID: '85075801930'
-		// 	},
-		// });
-
-
-	}
-
-	showAlert(value) {
-		let alert = this.alertCtrl.create({
-			title: 'New Friend!',
-			subTitle: value,
-			buttons: ['OK']
-		});
-		alert.present();
 	}
 
 	// 前往应用市场进行打分鼓励  

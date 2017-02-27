@@ -13,8 +13,8 @@
         <img [src]="user.avatarSrc">
       </ion-thumbnail>
 
-      <h2>{{user.displayName}}</h2>
-      <p>uu昵称:{{user.nickname}}</p>
+      <h2 class="displayName">{{user.displayName}}</h2>
+      <p class="nickname">uu昵称:{{user.nickname}}</p>
 
       <button ion-button item-right *ngIf="!user._isFriend" (click)=" gotoFriendRequestPage(user._id)">添加</button>
       <ion-note item-right *ngIf="user._isFriend">已添加</ion-note>

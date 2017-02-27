@@ -1,9 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { App, NavController, NavParams, Content } from 'ionic-angular';
+import { Platform, App, NavController, NavParams, Content } from 'ionic-angular';
 import { MediaPlugin } from 'ionic-native';
 import { MsgService } from '../../services/msg';
 import { UserService } from '../../services/user';
+import { SystemService } from '../../services/system';
 import { BackEnd } from '../../providers/backend';
 import { Storage } from '@ionic/storage';
 import { Transfer } from 'ionic-native';
@@ -37,7 +38,10 @@ export class ChatContentPage {
     private recordFileSrc = 'record.mp3';
     private recordFile;
     private recording = false;
-    private mediaTimer;
+    private volumeImgSrc;
+    private recordDuration = 0;
+    private media_Timer;
+    private recordDuration_Timer;
 
     @ViewChild(Content) contentComponent;
     @ViewChild('audio') audio;
@@ -46,9 +50,11 @@ export class ChatContentPage {
         private navCtrl: NavController,
         private params: NavParams,
         private fb: FormBuilder,
+        private platform: Platform,
         private storage: Storage,
         private userService: UserService,
         private msgService: MsgService,
+        private systemService: SystemService,
         private backEnd: BackEnd,
     ) {
 
@@ -56,7 +62,7 @@ export class ChatContentPage {
         this.pageTitle = params.data.chatName;
         this.ownId = backEnd.getOwnId();
 
-        // Validators.pattern(/^\s*(\S+)\s*$/g)
+        // 
 
         this.form = fb.group({
             content: ['', Validators.required]
@@ -90,6 +96,7 @@ export class ChatContentPage {
 
     }
 
+
     ngOnDestroy() {
         // this.userSubscription.unsubscribe();
         this.msgListSubscription.unsubscribe();
@@ -98,6 +105,10 @@ export class ChatContentPage {
 
     //语音
     recordToggle() {
+        let nonsupport = this.platform.is('mobileweb');
+
+        if (nonsupport) return this.systemService.showToast('发送语音暂不支持浏览器，请下载APP体验');
+
         //语音
         if (this.recordFile) {
             this.recordFile.release();
@@ -109,31 +120,37 @@ export class ChatContentPage {
             this.recording = true;
             this.recordFile.startRecord();
 
-            this.mediaTimer = setInterval(() => {
+            this.startTime();
+            this.setVolumeImgSrc(0);
+            this.media_Timer = setInterval(() => {
                 // get media amplitude
                 this.recordFile.getCurrentAmplitude()
                     .then((amp) => {
-                        console.log(amp + "%");
+                        console.log(amp * 100);
+                        this.setVolumeImgSrc(amp * 100);
                     })
                     .catch(err => {
                         console.log("Error getting amp=" + err);
                     });
-            }, 300);
+            }, 200);
 
         } else {
-            clearInterval(this.mediaTimer);
+            clearInterval(this.media_Timer);
             this.recording = false;
             this.recordFile.stopRecord();
-            this.msgService.sendAudioMsg(this.relationId, this.recordFileSrc);
+            this.stopTime();
+            this.msgService.sendAudioMsg(this.relationId, this.recordFileSrc, this.recordDuration);
 
         }
     }
+
 
     //取消录音
     cancelRecord() {
         if (this.recordFile && this.recording) {
             this.recording = false;
             this.recordFile.stopRecord();
+            this.stopTime();
             this.recordFile.release();
         }
     }
@@ -141,6 +158,27 @@ export class ChatContentPage {
     playRecord(audioSrc) {
         this.audio.nativeElement.src = audioSrc;
     }
+
+    setVolumeImgSrc(persents) {
+        persents = persents * 4;     //优化点
+        persents = Math.max(0, Math.min(persents, 100));
+        let i = Math.ceil(persents * 0.6 / 60 * 6);
+
+        this.volumeImgSrc = `assets/img/volume${i}.png`;
+    }
+
+    //录音计时
+    startTime() {
+        this.recordDuration = 0;
+        this.recordDuration_Timer = setInterval(() => {
+            this.recordDuration++;
+        }, 1000);
+    }
+
+    stopTime() {
+        clearInterval(this.recordDuration_Timer);
+    }
+
 
     //切换语音或文本
     switchInput() {
@@ -164,9 +202,13 @@ export class ChatContentPage {
         this.contentComponent.scrollTo(null, this.contentComponent.scrollHeight);
     }
 
+    
     sendMsg() {
         if (this.form.invalid) return;
+
         let content = this.form.value.content;
+
+        if(/^\s+$/g.test(content)) return this.systemService.showToast('不能发送空白消息');
 
         this.msgService.sendMsg(this.relationId, content);
 

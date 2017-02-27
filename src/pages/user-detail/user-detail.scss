@@ -1,3 +1,10 @@
-cy-user-detail-page{
-	
+cy-user-detail-page {
+  .nickname {
+    font-size: 1.8rem;
+    margin-right: 8px;
+  }
+  .username {
+    margin-top: 5px;
+    font-size: 1.3rem;
+  }
 }

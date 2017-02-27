@@ -8,13 +8,14 @@
   <ion-list margin-top>
     <button class="info" ion-item (click)="gotoMeDetailPage()">
 			<ion-thumbnail item-left>
-	           <ion-img [src]="own.avatarSrc"></ion-img>
+	           <img [src]="own.avatarSrc | avatarSrc" />
 	        </ion-thumbnail>
 	        <h2>
             <span class="nickname">{{own.nickname}}</span>
              <ion-icon name="male" color="primary" *ngIf="own.gender===0"></ion-icon>
             <ion-icon name="female" color="fourthly" *ngIf="own.gender===1"></ion-icon>
           </h2>
+          <p class="username">用户名：{{own.username}}</p>
         </button>
   </ion-list>
 

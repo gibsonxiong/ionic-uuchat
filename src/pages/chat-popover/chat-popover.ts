@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { ViewController } from 'ionic-angular';
+import { ViewController, NavController } from 'ionic-angular';
+import { FriendAddPage } from '../friend-add/friend-add';
 
 @Component({
 	selector: 'cy-chat-popover-page',
@@ -7,11 +8,23 @@ import { ViewController } from 'ionic-angular';
 })
 export class ChatPopoverPage {
 
-	constructor(public viewCtrl: ViewController) { }
+	constructor(
+		private viewCtrl: ViewController,
+		private navCtrl: NavController,
+	) { }
 
 	close() {
 		this.viewCtrl.dismiss();
 	}
 
+	gotoFriendAddPage(){
+		this.navCtrl.push(FriendAddPage);
+		this.viewCtrl.dismiss();
+	}
+
+	// gotoFriendAddPage(){
+	// 	this.navCtrl.push(FriendAddPage);
+	// 	this.viewCtrl.dismiss();
+	// }
 
 }

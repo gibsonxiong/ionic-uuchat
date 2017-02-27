@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, ActionSheetController } from 'ionic-angular';
+import { NavController, NavParams, ActionSheetController, Platform } from 'ionic-angular';
 import { ImagePicker } from 'ionic-native';
 import { FileChooser } from 'ionic-native';
 import { Camera } from 'ionic-native';
@@ -24,10 +24,11 @@ export class ModAvatarPage {
 	@ViewChild('file') file;
 
 	constructor(
-		public navCtrl: NavController,
-		public navParams: NavParams,
-		public storage: Storage,
-		public actionSheetCtrl: ActionSheetController,
+		private platform:Platform,
+		private navCtrl: NavController,
+		private navParams: NavParams,
+		private storage: Storage,
+		private actionSheetCtrl: ActionSheetController,
 		private userService: UserService,
 		private systemService: SystemService
 	) {
@@ -64,6 +65,10 @@ export class ModAvatarPage {
 
 	//通过拍照设置头像
 	setByPhotograph() {
+		let nonsupport = this.platform.is('mobileweb');
+
+		if (nonsupport) return this.systemService.showToast('扫一扫暂不支持浏览器，请下载APP体验');
+
 		let loading;
 		this.photograph()
 			.then((imageData) => {

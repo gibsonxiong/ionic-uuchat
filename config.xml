@@ -7,7 +7,8 @@
   <allow-navigation href="*"/>
   <allow-navigation href="http://192.168.1.104:8100"/>
   <access origin="*"/>
-  <access origin="cdvfile:*"/>
+  <access origin="cdvfile://*"/>
+  <access origin="file://*"/>
   <allow-intent href="*"/>
   <platform name="android">
     <allow-intent href="market:*"/>

@@ -24,7 +24,7 @@
     <ion-item-sliding *ngFor="let chat of chatList">
       <button ion-item detail-none (click)="gotoChatContentPage(chat.relationId,chat.name)">
 		<ion-thumbnail item-left>
-			<img [src]="chat.avatarSrc">
+			<img [src]="chat.avatarSrc | avatarSrc"/>
 		</ion-thumbnail>
 		
 		<h2>{{chat.name}} <ion-note>{{chat.lastSendTime | timediff}}</ion-note></h2>
