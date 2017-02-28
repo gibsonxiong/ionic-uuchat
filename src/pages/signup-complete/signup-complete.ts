@@ -37,9 +37,9 @@ export class SignupCompletePage {
 		let mobileToken = navParams.data['mobileToken'];
 
 		this.form = fb.group({
-			avatar: null,
+			avatar: [[]],
 			mobileToken: mobileToken,
-			username: ['test4', Validators.required, this.userValidator.existsByUsernameAsync()],
+			username: ['test5', Validators.required, this.userValidator.existsByUsernameAsync()],
 			password: '123456',
 			nickname: 'gigi',
 			gender: 0,
@@ -69,9 +69,21 @@ export class SignupCompletePage {
 
 	signup() {
 		var postData = this.form.value;
+		//上传文件
+		var formData = new FormData();
 
-		var obser = this.userService.signup(postData);
+		formData.append("avatar", postData.avatar[0], 'avatar.png');
+		formData.append("mobileToken", postData.mobileToken);
+		formData.append("username", postData.username);
+		formData.append("password", postData.password);
+		formData.append("nickname", postData.nickname);
+		formData.append("gender", postData.gender);
+		formData.append("motto", postData.motto);
+
+		var obser = this.userService.signup(formData);
 		obser = this.systemService.linkLoading(obser);
+
+
 
 		obser.subscribe(
 			res => {
@@ -135,38 +147,31 @@ export class SignupCompletePage {
 				return this.cropImg(imageData);
 			})
 			.then(newImagePath => {
-
-				CordovaFile.resolveLocalFilesystemUrl(newImagePath)
-					.then((fileEntry: FileEntry) => {
-						return new Promise<CordovaFile>((resolve, reject) => {
-							fileEntry.file(
-								file => {
-									resolve(file);
-								},
-								err => {
-									reject(err);
-								}
-							);
-						});
-					})
-					.then((file: CordovaFile) => {
-						var reader = new FileReader();
-						reader.onloadend = (e) => {
-							var Html5File = new Blob([e.target['result']], { type: 'image/png' });
-							Html5File['name'] = 'avatar.png';
-							this.avatarSrc = this.sanitizer.bypassSecurityTrustUrl(file['localURL']);
-							this.form.controls['avatar'].setValue([Html5File, Html5File]);
-						};
-						reader.readAsArrayBuffer(file as Blob);
-					})
-					.catch(err => {
-						console.log('boooh', err)
-					});
-
+				return CordovaFile.resolveLocalFilesystemUrl(newImagePath)
 			})
-			.catch((err) => {
-				console.log('拍照失败！', err);
-			});
+			.then((fileEntry: FileEntry) => {
+				return new Promise<CordovaFile>((resolve, reject) => {
+					fileEntry.file(
+						file => {
+							resolve(file);
+						},
+						err => {
+							reject(err);
+						}
+					);
+				});
+			})
+			.then((file: CordovaFile) => {
+				var reader = new FileReader();
+				reader.onloadend = (e) => {
+					var Html5File = new Blob([e.target['result']], { type: 'image/png' });
+					Html5File['name'] = 'avatar.png';
+					this.avatarSrc = this.sanitizer.bypassSecurityTrustUrl(file['localURL']);
+					this.form.controls['avatar'].setValue([Html5File, Html5File]);
+				};
+				reader.readAsArrayBuffer(file as Blob);
+			})
+			.catch((err) => this.systemService.handleError(err, '设置头像失败'));
 	}
 
 	//通过手机相册设置头像
@@ -176,35 +181,46 @@ export class SignupCompletePage {
 				return this.cropImg(uri);
 			})
 			.then(newImagePath => {
-
-				CordovaFile.resolveLocalFilesystemUrl(newImagePath)
-					.then(fileEntry => {
-
-						this.avatarSrc = this.sanitizer.bypassSecurityTrustUrl(fileEntry.toInternalURL());
-
-					})
-					.catch(err => {
-						console.log('boooh', err)
-					});
+				return CordovaFile.resolveLocalFilesystemUrl(newImagePath)
 			})
-			.catch((err) => {
-				console.log('访问手机相册失败！', err);
-			});
+			.then((fileEntry: FileEntry) => {
+				return new Promise<CordovaFile>((resolve, reject) => {
+					fileEntry.file(
+						file => {
+							resolve(file);
+						},
+						err => {
+							reject(err);
+						}
+					);
+				});
+			})
+			.then((file: CordovaFile) => {
+				var reader = new FileReader();
+				reader.onloadend = (e) => {
+					var Html5File = new Blob([e.target['result']], { type: 'image/png' });
+					Html5File['name'] = 'avatar.png';
+					this.avatarSrc = this.sanitizer.bypassSecurityTrustUrl(file['localURL']);
+					this.form.controls['avatar'].setValue([Html5File, Html5File]);
+				};
+				reader.readAsArrayBuffer(file as Blob);
+			})
+			.catch((err) => this.systemService.handleError(err, '设置头像失败'));
 	}
 
 	//拍照
 	photograph() {
 		var options = {
 			allowEdit: false,
-			targetWidth: 400,
-			targetHeight: 400,
+			targetWidth: 350,
+			targetHeight: 350,
 		};
 
 		return Camera.getPicture(options);
 	}
 
 	cropImg(uri) {
-		return Crop.crop(uri, { quality: 75 });
+		return Crop.crop(uri, { quality: 100 });
 	}
 
 

@@ -47,3 +47,11 @@ ion-note {
   font-size: 1.4rem;
   color: #999;
 }
+
+.clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+}

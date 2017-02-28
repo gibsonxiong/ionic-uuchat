@@ -1,0 +1,83 @@
+cy-timeline-list-page {
+  .timeline {
+    display: flex;
+    padding: 15px;
+    border-bottom: $hairlines-width solid #ccc;
+    .avatar {
+      margin-right: 15px;
+      width: 45px;
+      height: 45px;
+      border-radius: 2px;
+    }
+  }
+  .right-container {
+    flex: 1;
+    .nickname {
+      font-size: 16px;
+      color: color($colors, font);
+    }
+    .content {
+      margin: 10px 0;
+    }
+    .media-container {
+      .media-wrap {
+        float: left;
+        width: 75px;
+        height: 75px;
+        margin: 4px;
+        overflow: hidden;
+        img {
+          width: 100%;
+        }
+      }
+    }
+    .publishTime {
+        margin-top: 5px;
+      font-size: 13px;
+      color: #aaa;
+      float: left;
+    }
+  }
+  .cb-wrap {
+    .comment-btn-wrap {
+      float: right;
+    }
+  }
+  .cc-wrap {
+    padding: 5px 15px 20px 0;
+    .comment-content-wrap {
+      position: relative;
+      background-color: #eee;
+      border-radius: 2px;
+      &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: -5px;
+        right: 8px;
+        width: 0;
+        height: 0;
+        border: 5px solid #eee;
+        border-top-color: transparent;
+        border-left-color: transparent;
+        transform: rotate(225deg);
+      }
+      .likes {
+        padding: 5px 10px;
+        border-bottom: $hairlines-width solid #ddd;
+        .likeUser {
+          color: color($colors, font);
+          margin: 0 1px;
+        }
+      }
+      .comments {
+        .comment {
+          padding: 5px 10px;
+          &+.comment {
+            border-top: $hairlines-width solid #ddd;
+          }
+        }
+      }
+    }
+  }
+}

@@ -127,13 +127,7 @@ export class UserService {
 	}
 
 	//注册
-	signup(postData): Observable<any> {
-		//上传文件
-		var formData = new FormData();
-		for (let key in postData) {
-			formData.append(key, postData[key]);
-		}
-
+	signup(formData): Observable<any> {
 		return this.myHttp.post(HOST + '/user/signup', formData);
 	}
 

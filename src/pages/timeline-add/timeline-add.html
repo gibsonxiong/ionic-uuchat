@@ -12,10 +12,19 @@
 
 </ion-header>
 <ion-content>
-  <form [formGroup]="form" (ngSubmit)="publish()"></form>
-  <ion-list>
-    <ion-item>
-      <ion-textarea type="text" placeholder="写下你的心情吧" formControlName="content"></ion-textarea>
-    </ion-item>
-  </ion-list>
+  <form [formGroup]="form" (ngSubmit)="publish()">
+    <ion-list class="input-wrap">
+      <ion-item>
+        <ion-textarea type="text" placeholder="写下你的心情吧" formControlName="content"></ion-textarea>
+      </ion-item>
+    </ion-list>
+  </form>
+  <div class="media-wrap">
+    <div class="add-media-btn" *ngFor="let media of medias" (click)="fillMedia(media)">
+      <!--<button class="remove-btn" *ngIf="media.isFill()" (click)="removeMedia(media)"><ion-icon name="close" ></ion-icon></button>-->
+      <!--<button class="remove-btn" (click)="removeMedia(media)"><ion-icon name="close" ></ion-icon></button>-->
+      <img *ngIf="media.src" [src]="media.src" />
+      <ion-icon name="add" *ngIf="!media.src"></ion-icon>
+    </div>
+  </div>
 </ion-content>

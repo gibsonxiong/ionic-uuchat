@@ -32,6 +32,7 @@ import { ReorderPage } from '../pages/reorder/reorder';
 import { DownloadPage } from '../pages/download/download';
 import { SettingPage } from '../pages/setting/setting';
 import { TimelineAddPage } from '../pages/timeline-add/timeline-add';
+import { TimelineListPage } from '../pages/timeline-list/timeline-list';
 
 
 
@@ -43,6 +44,7 @@ import { Highlight } from '../components/highlight/highlight';
 /*services*/
 import { UserService } from '../services/user';
 import { MsgService } from '../services/msg';
+import { TimelineService } from '../services/timeline';
 import { SystemService } from '../services/system';
 
 
@@ -90,6 +92,7 @@ import { UserValidator } from '../validators/user';
 		DownloadPage,
 		SettingPage,
 		TimelineAddPage,
+		TimelineListPage,
 
 		/*components*/
 		Highlight,
@@ -141,7 +144,8 @@ import { UserValidator } from '../validators/user';
 		ReorderPage,
 		DownloadPage,
 		SettingPage,
-		TimelineAddPage
+		TimelineAddPage,
+		TimelineListPage
 
 	],
 	providers: [
@@ -150,6 +154,7 @@ import { UserValidator } from '../validators/user';
 		SystemService,
 		MsgService,
 		UserService,
+		TimelineService,
 		BackEnd,
 
 		{

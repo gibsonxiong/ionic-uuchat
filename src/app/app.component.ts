@@ -8,6 +8,7 @@ import { IndexPage } from '../pages/index/index';
 import { SigninPage } from '../pages/signin/signin';
 /*test*/
 import { SignupCompletePage } from '../pages/signup-complete/signup-complete';
+import { TimelineAddPage } from '../pages/timeline-add/timeline-add';
 
 
 @Component({
@@ -27,12 +28,13 @@ export class MyApp {
 		//通过token判断是否登录过
 		storage.get('token').then(token => {
 
-			// if (token) {
-			// 	this.rootPage = IndexPage;
-			// } else {
-			// 	this.rootPage = SigninPage;
-			// }
-			this.rootPage = SignupCompletePage;
+			if (token) {
+				this.rootPage = IndexPage;
+			} else {
+				this.rootPage = SigninPage;
+			}
+			// this.rootPage = SignupCompletePage;
+			// this.rootPage = TimelineAddPage;
 
 		});
 
