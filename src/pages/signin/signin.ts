@@ -55,8 +55,8 @@ export class SigninPage {
 		private systemService: SystemService,
 	) {
 		this.form = builder.group({
-			username: ['test1', null, UserValidator.existsAsync()],
-			password: ['123456', [Validators.required, Validators.minLength(2)]]
+			username: ['', null, UserValidator.existsAsync()],
+			password: ['', [Validators.required, Validators.minLength(2)]]
 		});
 
 	}

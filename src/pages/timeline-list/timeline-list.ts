@@ -75,12 +75,12 @@ export class TimelineListPage {
 	}
 
 	commentTimeline(timelineId) {
-		this.commenting = true;
-		// this.input.nativeElement.focus();
-		setTimeout(() => {
-			this.renderer.invokeElementMethod(this.input.nativeElement,
-				'focus');
-		}, 100);
+		// this.commenting = true;
+		// // this.input.nativeElement.focus();
+		// setTimeout(() => {
+		// 	this.renderer.invokeElementMethod(this.input.nativeElement,
+		// 		'focus');
+		// }, 100);
 
 
 	}

@@ -49,14 +49,16 @@ export class TimelineAddPage {
 			}
 		});
 
-		this.timelineService.publish(formData)
-			.subscribe(
+		let obser = this.timelineService.publish(formData);
+		obser = this.systemService.linkLoading(obser);
+
+		obser.subscribe(
 			res => {
 				this.systemService.createToast('发表成功');
 				this.navCtrl.pop();
 			},
-			err => this.systemService.handleError(err, '注册失败')
-			);
+			err => this.systemService.handleError(err, '发表失败')
+		);
 
 	}
 

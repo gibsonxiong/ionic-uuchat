@@ -39,11 +39,11 @@ export class SignupCompletePage {
 		this.form = fb.group({
 			avatar: [[]],
 			mobileToken: mobileToken,
-			username: ['test5', Validators.required, this.userValidator.existsByUsernameAsync()],
-			password: '123456',
-			nickname: 'gigi',
+			username: ['', Validators.required, this.userValidator.existsByUsernameAsync()],
+			password: '',
+			nickname: '',
 			gender: 0,
-			motto: 'Hi',
+			motto: '',
 		});
 	}
 
