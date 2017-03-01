@@ -104,14 +104,19 @@ export class IndexPage {
                 let token = all[0];
                 let ownId = all[1];
                 if (token && ownId) {
-                    this.backEnd.connect(token, ownId);
-                    shouldInitData && this.initData();
+                    this.userService.safe(token, ownId).subscribe(
+                        res => {
+                            this.backEnd.connect(token, ownId);
+                            shouldInitData && this.initData();
+                        },
+                        err =>this.systemService.handleError(err,'出错啦')
+                    )
 
                 } else {
                     this.systemService.showToast('请先登录');
                     this.gotoSigninPage();
                 }
-            });
+            })
     }
 
     initData(): void {

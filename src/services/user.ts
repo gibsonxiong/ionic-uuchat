@@ -114,6 +114,11 @@ export class UserService {
 		return this.myHttp.post(HOST + '/user/signin', postData);
 	}
 
+	//登录
+	safe(token, userId): Observable<any> {
+		return this.myHttp.post(HOST + '/user/safe', { token, userId });
+	}
+
 	//获取验证码
 	getVerificationCode(mobile): Observable<any> {
 		return this.myHttp.get(HOST + '/user/getVerificationCode/' + mobile);
