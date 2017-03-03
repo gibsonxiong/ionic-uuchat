@@ -55,14 +55,25 @@ export class SigninPage {
 		private systemService: SystemService,
 	) {
 		this.form = builder.group({
-			username: ['', null, UserValidator.existsAsync()],
-			password: ['', [Validators.required, Validators.minLength(2)]]
+			username: ['',
+				[
+					Validators.required,
+					Validators.pattern(/[a-zA-Z]\w{5,10}/g)
+				],
+				UserValidator.existsAsync()
+			],
+			password: ['',
+				[
+					Validators.required,
+					Validators.minLength(2)
+				]
+			]
 		});
 
 	}
 
 	//登录
-	signin(data): void {
+	signin(): void {
 		var obser = this.userservice.signin(this.form.value);
 		obser = this.systemService.linkLoading(obser, '登录中');
 
@@ -91,6 +102,14 @@ export class SigninPage {
 		this.navCtrl.push(SignupPage);
 	}
 
+	_$testSignin(n) {
+		this.form.setValue({
+			username: 'test' + n,
+			password: 123456
+		});
+
+		this.signin();
+	}
 }
 
 

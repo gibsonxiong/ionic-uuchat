@@ -1,5 +1,6 @@
-import { Component, ViewChild, OnInit, Renderer } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { Component, ViewChild, OnInit, Renderer, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { NavController, Content } from 'ionic-angular';
 import { FriendAddPage } from '../friend-add/friend-add';
 import { FriendNewPage } from '../friend-new/friend-new';
 import { UserDetailPage } from '../user-detail/user-detail';
@@ -7,25 +8,72 @@ import { TimelineAddPage } from '../timeline-add/timeline-add';
 import { BackEnd } from '../../providers/backend';
 import { TimelineService } from '../../services/timeline';
 import { SystemService } from '../../services/system';
+import 'rxjs/add/operator/do'
+
+import { Keyboard } from 'ionic-native'; //键盘
 
 @Component({
 	selector: 'cy-timeline-list-page',
 	templateUrl: 'timeline-list.html'
 })
 export class TimelineListPage {
+	private form: FormGroup;
 	private timelines: any[] = [];
+	private commentTimelineId;
+	private atUserId;
 	private commenting = false;
 
 	@ViewChild('input') input;
+	@ViewChild(Content) contentComponent;
 
 	constructor(
+		private ref: ChangeDetectorRef,
 		private renderer: Renderer,
+		private fb: FormBuilder,
 		private navCtrl: NavController,
 		private timelineService: TimelineService,
 		private systemService: SystemService,
 		private backEnd: BackEnd,
-	) { }
 
+	) {
+		this.form = fb.group({
+			content: ''
+		})
+
+	}
+
+	ngOnInit() {
+		this.contentComponent.ionScrollStart.subscribe(
+			e => {
+				// console.log(e);
+				this.hideCommentInput();
+				this.ref.detectChanges();
+			},
+			err => {
+				console.log(err);
+			}
+		)
+
+		Keyboard.onKeyboardHide().subscribe(
+			v => {
+				console.log(v);
+				this.hideCommentInput();
+				this.ref.detectChanges();
+			},
+			err => {
+
+			}
+		)
+
+		// document.addEventListener("resize", () => {
+		// 	console.log(123123);
+		// 	this.contentComponent.resize();
+		// }, false);
+	}
+
+	ngOnDestroy() {
+
+	}
 
 	ionViewDidEnter() {
 		let obser = this.timelineService.getTimelines();
@@ -41,9 +89,9 @@ export class TimelineListPage {
 
 	doRefresh(refresher) {
 		this.timelineService.getTimelines()
-			.do(()=>{
+			.do(() => {
 				refresher.complete();
-			},()=>{
+			}, () => {
 				refresher.complete();
 			})
 			.subscribe(
@@ -74,15 +122,51 @@ export class TimelineListPage {
 			);
 	}
 
-	commentTimeline(timelineId) {
-		// this.commenting = true;
-		// // this.input.nativeElement.focus();
-		// setTimeout(() => {
-		// 	this.renderer.invokeElementMethod(this.input.nativeElement,
-		// 		'focus');
-		// }, 100);
+	commentTimeline() {
+		let timelineId = this.commentTimelineId;
+		let atUserId = this.atUserId;
+		let content = this.form.value.content;
+		this.timelineService.commentTimeline(timelineId, content, atUserId).subscribe(
+			res => {
+				var timeline = res.data;
+				this.timelines.forEach((_timeline, i) => {
+					if (_timeline._id === timeline._id) {
+						this.timelines[i]._comments = timeline._comments;
+						return false;
+					}
+				})
+			},
+			err => this.systemService.handleError(err, '评论失败')
+		)
 
 
+	}
+
+	onContentClick() {
+		console.log('onContentClick');
+
+		if (!this.commenting) return;
+
+		this.hideCommentInput();
+	}
+
+
+	showCommentInput(e, timelineId) {
+		e.stopPropagation();
+		this.commentTimelineId = timelineId;
+		this.commenting = true;
+		this.contentComponent.resize();
+		setTimeout(() => {
+			this.renderer.invokeElementMethod(this.input.nativeElement,
+				'focus');
+			Keyboard.show();
+		}, 0);
+	}
+
+	hideCommentInput() {
+		this.commentTimelineId = null;
+		this.commenting = false;
+		this.contentComponent.resize();
 	}
 
 	gotoTimelineAddPage() {

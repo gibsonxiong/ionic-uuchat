@@ -33,6 +33,7 @@ import { DownloadPage } from '../pages/download/download';
 import { SettingPage } from '../pages/setting/setting';
 import { TimelineAddPage } from '../pages/timeline-add/timeline-add';
 import { TimelineListPage } from '../pages/timeline-list/timeline-list';
+import { QRcodePage } from '../pages/qrcode/qrcode';
 
 
 
@@ -93,6 +94,7 @@ import { UserValidator } from '../validators/user';
 		SettingPage,
 		TimelineAddPage,
 		TimelineListPage,
+		QRcodePage,
 
 		/*components*/
 		Highlight,
@@ -145,7 +147,8 @@ import { UserValidator } from '../validators/user';
 		DownloadPage,
 		SettingPage,
 		TimelineAddPage,
-		TimelineListPage
+		TimelineListPage,
+		QRcodePage
 
 	],
 	providers: [

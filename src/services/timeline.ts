@@ -52,6 +52,10 @@ export class TimelineService {
 		return this.myHttp.get(HOST + '/timeline/likeTimeline/' + timelineId, { search });
 	}
 
+	// 评论
+	commentTimeline(timelineId, content, atUserId?): Observable<any> {
+		return this.myHttp.post(HOST + '/timeline/commentTimeline/' + timelineId, { content, atUserId });
+	}
 
 
 }

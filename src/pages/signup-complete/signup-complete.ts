@@ -8,6 +8,7 @@ import { SystemService } from '../../services/system';
 import { SigninPage } from '../signin/signin';
 import { UserService } from '../../services/user';
 import { UserValidator } from '../../validators/user';
+import { patterns } from '../../patterns';
 
 import { File as CordovaFile, FileEntry } from 'ionic-native';
 
@@ -39,7 +40,12 @@ export class SignupCompletePage {
 		this.form = fb.group({
 			avatar: [[]],
 			mobileToken: mobileToken,
-			username: ['', Validators.required, this.userValidator.existsByUsernameAsync()],
+			username: ['',
+				[
+					Validators.required,
+					// Validators.pattern(patterns.username)
+				],
+				this.userValidator.existsByUsernameAsync()],
 			password: '',
 			nickname: '',
 			gender: 0,

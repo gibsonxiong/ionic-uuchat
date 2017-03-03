@@ -5,6 +5,7 @@ import { BarcodeScanner } from 'ionic-native';
 import { DownloadPage } from '../download/download';
 import { SettingPage } from '../setting/setting';
 import { MeDetailPage } from '../me-detail/me-detail';
+import { QRcodePage } from '../qrcode/qrcode';
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
 
@@ -69,5 +70,8 @@ export class MePage implements OnInit {
 		this.appCtrl.getRootNav().push(SettingPage);
 	}
 
+	gotoQRcodePage(){
+		this.appCtrl.getRootNav().push(QRcodePage);
+	}
 
 }

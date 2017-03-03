@@ -92,6 +92,10 @@ window.onerror = function (msg, url, line) {
 document.addEventListener("resume", function () {
 	console.log("应用回到前台运行！");
 }, false);
+
+document.addEventListener("resize", function () {
+	console.log("resize");
+}, false);
 document.addEventListener("pause", function () {
 	console.log("应用进入到后台！");
 }, false);
