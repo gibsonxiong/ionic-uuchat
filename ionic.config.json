@@ -1,6 +1,6 @@
 {
   "name": "uuchat-ionic-master",
-  "app_id": "",
-  "v2": true,
-  "typescript": true
+  "app_id": "f4c1b1ee",
+  "integrations": {},
+  "type": "ionic-angular"
 }

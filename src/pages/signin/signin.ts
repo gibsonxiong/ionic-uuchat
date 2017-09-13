@@ -58,14 +58,12 @@ export class SigninPage {
 			username: ['',
 				[
 					Validators.required,
-					Validators.pattern(/[a-zA-Z]\w{5,10}/g)
 				],
 				UserValidator.existsAsync()
 			],
 			password: ['',
 				[
 					Validators.required,
-					Validators.minLength(2)
 				]
 			]
 		});
