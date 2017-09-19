@@ -96,10 +96,7 @@ export class IndexPage {
     }
 
     connectServer(shouldInitData = true) {
-        let p1 = this.storage.get('token');
-        let p2 = this.storage.get('ownId');
-
-        Promise.all([p1, p2])
+        this.getToken()
             .then(all => {
                 let token = all[0];
                 let ownId = all[1];
@@ -109,7 +106,7 @@ export class IndexPage {
                             this.backEnd.connect(token, ownId);
                             shouldInitData && this.initData();
                         },
-                        err =>this.systemService.handleError(err,'出错啦')
+                        err => this.myHttp.handleError(err, '出错啦')
                     )
 
                 } else {
@@ -117,6 +114,13 @@ export class IndexPage {
                     this.gotoSigninPage();
                 }
             })
+    }
+
+    getToken(): Promise<any[]> {
+        let p1 = this.storage.get('token');
+        let p2 = this.storage.get('ownId');
+
+        return Promise.all([p1, p2])
     }
 
     initData(): void {

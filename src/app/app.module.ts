@@ -163,7 +163,7 @@ import { UserValidator } from '../validators/user';
 		{
 			provide: MyHttp,
 			useFactory: myHttpFactory,
-			deps: [XHRBackend, RequestOptions, LoadingController]
+			deps: [XHRBackend, RequestOptions, LoadingController, SystemService]
 		},
 
 		UserValidator,

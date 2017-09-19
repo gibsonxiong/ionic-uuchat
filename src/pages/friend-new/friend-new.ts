@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
 
+import { MyHttp } from '../../providers/my-http';
+
 
 @Component({
 	selector: 'cy-friend-new-page',
@@ -13,7 +15,8 @@ export class FriendNewPage implements OnInit {
 
 	constructor(
 		private userService: UserService,
-		private systemService: SystemService
+		private systemService: SystemService,
+		private myHttp: MyHttp
 	) { }
 
 	ngOnInit() {
@@ -22,7 +25,7 @@ export class FriendNewPage implements OnInit {
 			res => {
 				this.list = res.data;
 			},
-			err => this.systemService.handleError('查找好友申请列表失败')
+			err => this.myHttp.handleError('查找好友申请列表失败')
 		);
 
 	}
@@ -39,7 +42,7 @@ export class FriendNewPage implements OnInit {
 				});
 
 			},
-			err => this.systemService.handleError('添加失败')
+			err => this.myHttp.handleError('添加失败')
 		);
 	}
 

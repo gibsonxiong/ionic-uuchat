@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavController } from 'ionic-angular';
+import { NavController,  AlertController } from 'ionic-angular';
 
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
+import { MyHttp } from '../../providers/my-http';
+
 import { SignupCompletePage } from '../signup-complete/signup-complete';
+import { SigninPage } from '../signin/signin';
 
 @Component({
 	selector: 'cy-signup-page',
@@ -23,6 +26,8 @@ export class SignupPage {
 		private userservice: UserService,
 		private fb: FormBuilder,
 		private systemService: SystemService,
+		private myHttp: MyHttp,
+		private alertCtrl: AlertController
 	) {
 		this.form = fb.group({
 			mobile: ['',
@@ -70,7 +75,7 @@ export class SignupPage {
 			res => {
 				this.systemService.showToast(res.msg);
 			},
-			err => this.systemService.handleError(err, '发送短信失败')
+			err => this.myHttp.handleError(err, '发送短信失败')
 		);
 	}
 
@@ -84,10 +89,34 @@ export class SignupPage {
 
 		obser.subscribe(
 			res => {
+				//手机号已经注册
+				if (res.code === 1) {
+					let confirm = this.alertCtrl.create({
+						title: '该手机号码已经注册过',
+						message: '该手机号码已经注册过，如果是你的号码，你可以直接登录。',
+						buttons: [
+							{
+								text: '重新注册',
+								handler: () => {
+									this.form.reset();
+									this.countdown = 0;
+								}
+							},
+							{
+								text: '去登录',
+								handler: () => {
+									this.navCtrl.popTo(SigninPage, { username: mobile });
+								}
+							}
+						]
+					});
+					confirm.present();
+					return;
+				}
 				let mobileToken = res.data.mobileToken;
 				this.gotoSignupCompletePage(mobileToken);
 			},
-			err => this.systemService.handleError(err, '手机验证失败')
+			err => this.myHttp.handleError(err, '手机验证失败')
 		);
 	}
 

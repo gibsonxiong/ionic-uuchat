@@ -10,6 +10,7 @@ import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
 
 import { BackEnd } from '../../providers/backend';
+import { MyHttp } from '../../providers/my-http';
 
 @Component({
 	selector: 'cy-me-page',
@@ -27,6 +28,7 @@ export class MePage implements OnInit {
 		private userService: UserService,
 		private backend: BackEnd,
 		private systemService: SystemService,
+		private myHttp: MyHttp
 
 	) {
 
@@ -54,7 +56,7 @@ export class MePage implements OnInit {
 			.then((barcodeData) => {
 				console.log('barcodeData', barcodeData);
 				// Success! Barcode data is here
-			}, (err) => this.systemService.handleError(err, '出错啦'));
+			}, (err) => this.myHttp.handleError(err, '出错啦'));
 	}
 
 

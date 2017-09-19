@@ -19,13 +19,21 @@
 				<span item-right *ngIf="form.controls.password.valid && form.controls.password.dirty">√</span>
 				<span item-right *ngIf="form.controls.password.invalid && form.controls.password.dirty">×</span>-->
       </ion-item>
-    </ion-list>
 
+    </ion-list>
+    <div padding-horizontal>
+      <a href="javascript:;" (click)="gotoSignupPage()">注册</a>
+    </div>
     <!--<div padding-horizontal><button ion-button block [disabled]="form.invalid" @flyInOut>登录</button></div>-->
-    <div padding-horizontal><button ion-button block [disabled]="form.invalid || form.pending">登录</button></div>
+    <div padding-horizontal>
+      <button ion-button block icon-start disabled="{{ signining? 'disabled' : '' }}">
+          <ion-spinner color="light" style="margin-right:6px;" *ngIf="signining"></ion-spinner>
+          登录
+      </button>
+    </div>
   </form>
 
-  <div padding-horizontal>
+  <div padding-horizontal style="display: none;">
     <button ion-button block color="secondary" (click)="gotoSignupPage()">注册</button>
     <!-- <button ion-button block color="secondary" (click)="_$testSignin(1)">test1</button>
     <button ion-button block color="secondary" (click)="_$testSignin(2)">test2</button> -->

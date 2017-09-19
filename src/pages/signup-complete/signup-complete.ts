@@ -12,6 +12,8 @@ import { patterns } from '../../patterns';
 
 import { File as CordovaFile, FileEntry } from 'ionic-native';
 
+import { MyHttp } from '../../providers/my-http';
+
 declare var cordova: any;
 
 @Component({
@@ -33,6 +35,7 @@ export class SignupCompletePage {
 		private userService: UserService,
 		private userValidator: UserValidator,
 		private systemService: SystemService,
+		private myHttp:MyHttp
 
 	) {
 		let mobileToken = navParams.data['mobileToken'];
@@ -100,7 +103,7 @@ export class SignupCompletePage {
 				}, 2000);
 
 			},
-			err => this.systemService.handleError(err, '注册失败')
+			err => this.myHttp.handleError(err, '注册失败')
 		);
 	}
 
@@ -177,7 +180,7 @@ export class SignupCompletePage {
 				};
 				reader.readAsArrayBuffer(file as Blob);
 			})
-			.catch((err) => this.systemService.handleError(err, '设置头像失败'));
+			.catch((err) => this.myHttp.handleError(err, '设置头像失败'));
 	}
 
 	//通过手机相册设置头像
@@ -211,7 +214,7 @@ export class SignupCompletePage {
 				};
 				reader.readAsArrayBuffer(file as Blob);
 			})
-			.catch((err) => this.systemService.handleError(err, '设置头像失败'));
+			.catch((err) => this.myHttp.handleError(err, '设置头像失败'));
 	}
 
 	//拍照

@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { trigger, state, style, transition, animate, group } from '@angular/core';      //动画
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavController, ToastController } from 'ionic-angular';
+import { NavController, NavParams, ToastController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/mergeMap';
 import { Storage } from '@ionic/storage';
@@ -11,6 +11,8 @@ import { SignupPage } from '../signup/signup';
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
 import { UserValidator } from '../../validators/user';
+
+import { MyHttp } from '../../providers/my-http';
 
 @Component({
 	selector: 'cy-signin-page',
@@ -46,20 +48,30 @@ import { UserValidator } from '../../validators/user';
 })
 export class SigninPage {
 	public form: FormGroup;
+	private signining = false;
+
 	constructor(
-		public navCtrl: NavController,
-		public toastCtrl: ToastController,
-		public builder: FormBuilder,
-		public storage: Storage,
-		public userservice: UserService,
+		private navCtrl: NavController,
+		private navParams: NavParams,
+		private toastCtrl: ToastController,
+		private builder: FormBuilder,
+		private storage: Storage,
+		private userservice: UserService,
 		private systemService: SystemService,
+		private myHttp: MyHttp
 	) {
-		this.form = builder.group({
+
+
+	}
+
+	ngOnInit() {
+
+
+		this.form = this.builder.group({
 			username: ['',
 				[
 					Validators.required,
 				],
-				UserValidator.existsAsync()
 			],
 			password: ['',
 				[
@@ -68,29 +80,49 @@ export class SigninPage {
 			]
 		});
 
+		//注册页传来的username
+		var username = this.navParams.data['username'];
+		if( username){
+			this.form.controls['username'].setValue(username);
+		}else{
+			//获取上次登录的用户名
+			this.storage.get('latestUsername').then(value => {
+				if (value) {
+					this.form.controls['username'].setValue(value);
+				}
+			});
+		}
 	}
 
 	//登录
 	signin(): void {
+
+		this.signining = true;
 		var obser = this.userservice.signin(this.form.value);
-		obser = this.systemService.linkLoading(obser, '登录中');
 
 		obser
 			.mergeMap((res) => {
 				//本地保存token
 				let token = res.data.token;
 				let ownId = res.data.ownId;
-				let p1 = this.storage.set('token', token);
-				let p2 = this.storage.set('ownId', ownId);
-				let pAll = Promise.all([p1, p2]);
 
-				return Observable.fromPromise(pAll);
+				return this.saveToken(token, ownId);
 			})
+			.do(
+				() => {
+					this.signining = false;
+				},
+				() => {
+					this.signining = false;
+				}
+			)
 			.subscribe(
 			() => {
+				//保存登录名，下次登录返显处来
+				this.storage.set('latestUsername',this.form.value.username);
 				this.navCtrl.setRoot(IndexPage);
 			},
-			err => this.systemService.handleError(err, '登录失败')
+			err => this.myHttp.handleError(err, '登录失败'),
 			);
 	}
 
@@ -107,6 +139,13 @@ export class SigninPage {
 		});
 
 		this.signin();
+	}
+
+	private saveToken(token: any, ownId: any) {
+		let p1 = this.storage.set('token', token);
+		let p2 = this.storage.set('ownId', ownId);
+		let pAll = Promise.all([p1, p2]);
+		return Observable.fromPromise(pAll);
 	}
 }
 

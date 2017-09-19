@@ -12,6 +12,8 @@ import 'rxjs/add/operator/do'
 
 import { Keyboard } from 'ionic-native'; //键盘
 
+import { MyHttp } from '../../providers/my-http';
+
 @Component({
 	selector: 'cy-timeline-list-page',
 	templateUrl: 'timeline-list.html'
@@ -34,6 +36,7 @@ export class TimelineListPage {
 		private timelineService: TimelineService,
 		private systemService: SystemService,
 		private backEnd: BackEnd,
+		private myHttp: MyHttp
 
 	) {
 		this.form = fb.group({
@@ -43,6 +46,17 @@ export class TimelineListPage {
 	}
 
 	ngOnInit() {
+
+		let obser = this.timelineService.getTimelines();
+		obser = this.systemService.linkLoading(obser);
+
+		obser.subscribe(
+			res => {
+				this.timelines = res.data;
+			},
+			err => this.myHttp.handleError(err, '查看朋友圈出错啦')
+		)
+
 		this.contentComponent.ionScrollStart.subscribe(
 			e => {
 				// console.log(e);
@@ -75,17 +89,17 @@ export class TimelineListPage {
 
 	}
 
-	ionViewDidEnter() {
-		let obser = this.timelineService.getTimelines();
-		obser = this.systemService.linkLoading(obser);
+	// ionViewDidEnter() {
+	// 	let obser = this.timelineService.getTimelines();
+	// 	obser = this.systemService.linkLoading(obser);
 
-		obser.subscribe(
-			res => {
-				this.timelines = res.data;
-			},
-			err => this.systemService.handleError(err, '查看朋友圈出错啦')
-		)
-	}
+	// 	obser.subscribe(
+	// 		res => {
+	// 			this.timelines = res.data;
+	// 		},
+	// 		err => this.myHttp.handleError(err, '查看朋友圈出错啦')
+	// 	)
+	// }
 
 	doRefresh(refresher) {
 		this.timelineService.getTimelines()
@@ -98,7 +112,7 @@ export class TimelineListPage {
 			res => {
 				this.timelines = res.data;
 			},
-			err => this.systemService.handleError(err, '查看朋友圈出错啦')
+			err => this.myHttp.handleError(err, '查看朋友圈出错啦')
 			)
 	}
 
@@ -118,7 +132,7 @@ export class TimelineListPage {
 					}
 				})
 			},
-			err => this.systemService.handleError(err, '点赞失败')
+			err => this.myHttp.handleError(err, '点赞失败')
 			);
 	}
 
@@ -136,7 +150,7 @@ export class TimelineListPage {
 					}
 				})
 			},
-			err => this.systemService.handleError(err, '评论失败')
+			err => this.myHttp.handleError(err, '评论失败')
 		)
 
 

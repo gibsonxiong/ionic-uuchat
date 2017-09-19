@@ -43,6 +43,7 @@ export class SystemService {
 	public createLoading(options?): Loading {
 		var loadingDefaults: LoadingOptions = {};
 
+		//只输入msg字符串
 		if (_.isString(options)) options = { content: options };
 		options = _.extendOwn(loadingDefaults, options);
 
@@ -74,31 +75,6 @@ export class SystemService {
 
 	}
 
-	public handleError(err, defaultMsg: string = '出错啦') {
-		if (err.message == '$$timeout') {
-			return this.showToast('请求超时');
-		}
-
-		else if (err.status === 0) {
-			return this.showToast('网络不通');
-		}
-
-		//程序错误(自定义)
-		else if (err.$custom) {
-			return this.showToast(err.msg || '出错啦');
-		}
-
-		//取消动作不提示
-		else if (
-			err.code === 'userCancelled'										//	android crop
-			|| (err.message === "Error on cropping" && err.code === "404")		//	android imgPicker
-			|| (err === 'Camera cancelled.')									//  android camera
-		) {
-			return;
-		}
-
-		//程序异常
-		this.showToast(defaultMsg);
-	}
+	
 
 }

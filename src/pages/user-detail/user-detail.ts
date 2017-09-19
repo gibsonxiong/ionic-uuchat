@@ -5,6 +5,8 @@ import { SystemService } from '../../services/system';
 import { FriendRequestPage } from '../friend-request/friend-request';
 import { ChatContentPage } from '../chat-content/chat-content';
 
+import { MyHttp } from '../../providers/my-http';
+
 @Component({
 	selector: 'cy-user-detail-page',
 	templateUrl: 'user-detail.html'
@@ -20,7 +22,8 @@ export class UserDetailPage implements OnInit {
 		public navCtrl: NavController,
 		public navParams: NavParams,
 		public userService: UserService,
-		private systemService: SystemService
+		private systemService: SystemService,
+		private myHttp: MyHttp
 	) {
 
 		this.userId = navParams.data.userId;
@@ -34,7 +37,7 @@ export class UserDetailPage implements OnInit {
 				this.isFriend = res.data.isFriend;
 				this.relationId = res.data.relationId;
 			},
-			err => this.systemService.handleError(err, '加载失败')
+			err => this.myHttp.handleError(err, '加载失败')
 		);
 	}
 
