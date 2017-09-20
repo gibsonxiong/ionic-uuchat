@@ -10,6 +10,8 @@ import { Storage } from '@ionic/storage';
 import { Transfer } from 'ionic-native';
 import 'rxjs/add/operator/filter';
 
+import { HOST } from '../../config';
+
 import { UserDetailPage } from '../user-detail/user-detail';
 import { ReorderPage } from '../reorder/reorder';
 
@@ -67,6 +69,7 @@ export class ChatContentPage {
         });
         //
         
+
 
     }
 
