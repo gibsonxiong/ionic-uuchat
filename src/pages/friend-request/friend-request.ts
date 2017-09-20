@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
+import { MyHttp } from '../../providers/my-http';
+
 
 @Component({
 	selector: 'cy-friend-request-page',
@@ -15,7 +17,8 @@ export class FriendRequestPage {
 		public navCtrl: NavController,
 		public navParams: NavParams,
 		public userService: UserService,
-		public systemService: SystemService
+		public systemService: SystemService,
+		private myHttp: MyHttp
 	) {
 
 		this.userId = navParams.data.userId;
@@ -34,7 +37,7 @@ export class FriendRequestPage {
 				}, 1000)
 
 			},
-			err => this.systemService.handleError(err, '申请失败')
+			err => this.myHttp.handleError(err, '申请失败')
 		);
 	}
 

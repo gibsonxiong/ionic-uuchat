@@ -8,9 +8,10 @@ import { TimelineAddPage } from '../timeline-add/timeline-add';
 import { BackEnd } from '../../providers/backend';
 import { TimelineService } from '../../services/timeline';
 import { SystemService } from '../../services/system';
-import 'rxjs/add/operator/do'
-
 import { Keyboard } from 'ionic-native'; //键盘
+import { MyHttp } from '../../providers/my-http';
+
+import 'rxjs/add/operator/do'
 
 
 function isStringLike(s) {
@@ -40,6 +41,7 @@ export class TimelineListPage {
 		private timelineService: TimelineService,
 		private systemService: SystemService,
 		private backEnd: BackEnd,
+		private myHttp: MyHttp
 
 	) {
 		this.form = fb.group({
@@ -49,6 +51,17 @@ export class TimelineListPage {
 	}
 
 	ngOnInit() {
+
+		let obser = this.timelineService.getTimelines();
+		obser = this.systemService.linkLoading(obser);
+
+		obser.subscribe(
+			res => {
+				this.timelines = res.data;
+			},
+			err => this.myHttp.handleError(err, '查看朋友圈出错啦')
+		)
+
 		this.contentComponent.ionScrollStart.subscribe(
 			e => {
 				// console.log(e);
@@ -79,17 +92,17 @@ export class TimelineListPage {
 
 	}
 
-	ionViewDidEnter() {
-		let obser = this.timelineService.getTimelines();
-		obser = this.systemService.linkLoading(obser);
+	// ionViewDidEnter() {
+	// 	let obser = this.timelineService.getTimelines();
+	// 	obser = this.systemService.linkLoading(obser);
 
-		obser.subscribe(
-			res => {
-				this.timelines = res.data;
-			},
-			err => this.systemService.handleError(err, '查看朋友圈出错啦')
-		)
-	}
+	// 	obser.subscribe(
+	// 		res => {
+	// 			this.timelines = res.data;
+	// 		},
+	// 		err => this.myHttp.handleError(err, '查看朋友圈出错啦')
+	// 	)
+	// }
 
 	doRefresh(refresher) {
 		this.timelineService.getTimelines()
@@ -102,7 +115,7 @@ export class TimelineListPage {
 			res => {
 				this.timelines = res.data;
 			},
-			err => this.systemService.handleError(err, '查看朋友圈出错啦')
+			err => this.myHttp.handleError(err, '查看朋友圈出错啦')
 			)
 	}
 
@@ -122,8 +135,28 @@ export class TimelineListPage {
 					}
 				})
 			},
-			err => this.systemService.handleError(err, '点赞失败')
+			err => this.myHttp.handleError(err, '点赞失败')
 			);
+	}
+
+	commentTimeline() {
+		let timelineId = this.commentTimelineId;
+		let atUserId = this.atUserId;
+		let content = this.form.value.content;
+		this.timelineService.commentTimeline(timelineId, content, atUserId).subscribe(
+			res => {
+				var timeline = res.data;
+				this.timelines.forEach((_timeline, i) => {
+					if (_timeline._id === timeline._id) {
+						this.timelines[i]._comments = timeline._comments;
+						return false;
+					}
+				})
+			},
+			err => this.myHttp.handleError(err, '评论失败')
+		)
+
+
 	}
 
 	onContentClick() {
@@ -186,31 +219,6 @@ export class TimelineListPage {
 		this.commenting = false;
 		this.contentComponent.resize();
 		this.cdRef.detectChanges();
-	}
-
-
-	commentTimeline() {
-		let timelineId = this.commentTimelineId;
-		let atUserId = this.atUserId;
-		let content = this.form.value.content;
-
-		this.hideCommentInput();
-		this.timelineService.removeCacheComment(timelineId,atUserId);
-
-		this.timelineService.commentTimeline(timelineId, content, atUserId).subscribe(
-			res => {
-				var timeline = res.data;
-				this.timelines.forEach((_timeline, i) => {
-					if (_timeline._id === timeline._id) {
-						this.timelines[i]._comments = timeline._comments;
-						return false;
-					}
-				})
-			},
-			err => this.systemService.handleError(err, '评论失败')
-		)
-
-
 	}
 
 	getPlaceholder() {

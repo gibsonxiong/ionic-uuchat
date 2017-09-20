@@ -6,6 +6,7 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 import { Transfer } from 'ionic-native';
+import { SystemService } from '../services/system';
 import { HOST } from '../../config';
 
 
@@ -16,13 +17,14 @@ export class MyHttp extends Http {
 	private requestHeaders = {};
 	private requestCount = 0;
 
-	private timeoutLimit = 8000;
+	private timeoutLimit = 12000;
 	private timeoutErrorMsg = '$$timeout';
 
 	constructor(
 		_backend: ConnectionBackend,
 		_defaultOptions: RequestOptions,
 		private loadingCtrl: LoadingController,
+		private systemService : SystemService
 
 	) {
 		super(_backend, _defaultOptions);
@@ -38,7 +40,8 @@ export class MyHttp extends Http {
 	private convertResponse(_res: Response) {
 		let res = _res.json();
 
-		if (res.code) {
+		//code < 0 的当错误处理
+		if (res.code <  0) {
 			throw {
 				$custom: 1,
 				code: res.code,
@@ -136,5 +139,32 @@ export class MyHttp extends Http {
 				return res;
 			})
 
+	}
+
+	handleError(err, defaultMsg: string = '出错啦') {
+		if (err.message == '$$timeout') {
+			return this.systemService.showToast('请求超时');
+		}
+
+		else if (err.status === 0) {
+			return this.systemService.showToast('网络不通');
+		}
+
+		//程序错误(自定义)
+		else if (err.$custom) {
+			return this.systemService.showToast(err.msg || '出错啦');
+		}
+
+		//取消动作不提示
+		else if (
+			err.code === 'userCancelled'										//	android crop
+			|| (err.message === "Error on cropping" && err.code === "404")		//	android imgPicker
+			|| (err === 'Camera cancelled.')									//  android camera
+		) {
+			return;
+		}
+
+		//程序异常
+		this.systemService.showToast(defaultMsg);
 	}
 }

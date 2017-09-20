@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
 
+import { MyHttp } from '../../providers/my-http';
+
 @Component({
 	selector: 'cy-mod-motto-page',
 	templateUrl: 'mod-motto.html'
@@ -17,7 +19,8 @@ export class ModMottoPage implements OnInit {
 		private navParams: NavParams,
 		private builder: FormBuilder,
 		private userService: UserService,
-		private systemService: SystemService
+		private systemService: SystemService,
+		private myHttp: MyHttp
 	) {
 
 		let motto = navParams.data['motto'];
@@ -44,7 +47,7 @@ export class ModMottoPage implements OnInit {
 			res => {
 				this.navCtrl.pop();
 			},
-			err => this.systemService.handleError(err, '修改失败')
+			err => this.myHttp.handleError(err, '修改失败')
 
 		);
 	}

@@ -10,6 +10,7 @@ import { HOST } from '../../config';
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
 
+import { MyHttp } from '../../providers/my-http';
 import 'rxjs/add/operator/toPromise';
 
 
@@ -30,7 +31,8 @@ export class ModAvatarPage {
 		private storage: Storage,
 		private actionSheetCtrl: ActionSheetController,
 		private userService: UserService,
-		private systemService: SystemService
+		private systemService: SystemService,
+		private myHttp: MyHttp
 	) {
 		this.avatarSrc = navParams.data['avatarSrc'];
 
@@ -82,7 +84,7 @@ export class ModAvatarPage {
 				this.systemService.closeLoading(loading);
 				this.avatarSrc = res.data.avatarSrc;
 			})
-			.catch(err => this.systemService.handleError(err, '设置头像失败'));
+			.catch(err => this.myHttp.handleError(err, '设置头像失败'));
 	}
 
 	//通过手机相册设置头像
@@ -100,7 +102,7 @@ export class ModAvatarPage {
 				this.systemService.closeLoading(loading);
 				this.avatarSrc = res['data'].avatarSrc;
 			})
-			.catch(err => this.systemService.handleError(err, '设置头像失败'));
+			.catch(err => this.myHttp.handleError(err, '设置头像失败'));
 	}
 
 	//拍照

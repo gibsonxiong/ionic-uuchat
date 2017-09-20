@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, Platform } from 'ionic-angular';
-import { FriendRequestPage } from '../friend-request/friend-request';
-import { UserService } from '../../services/user';
-import { SystemService } from '../../services/system';
 import { Contacts, Contact, ContactField, ContactName, ContactFieldType, IContactFindOptions } from 'ionic-native';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
+
+import { SystemService } from '../../services/system';
+import { UserService } from '../../services/user';
+import { MyHttp } from '../../providers/my-http';
+
+import { FriendRequestPage } from '../friend-request/friend-request';
 
 @Component({
 	selector: 'cy-friend-by-contact-page',
@@ -18,7 +21,8 @@ export class FriendByContactPage implements OnInit {
 		private platform: Platform,
 		private navCtrl: NavController,
 		private userService: UserService,
-		private systemService: SystemService
+		private systemService: SystemService,
+		private myHttp: MyHttp
 	) {
 
 	}
@@ -56,7 +60,7 @@ export class FriendByContactPage implements OnInit {
 						this.userList = users;
 					});
 			},
-			err => this.systemService.handleError(err, '获取通讯录好友失败')
+			err => this.myHttp.handleError(err, '获取通讯录好友失败')
 			);
 
 	}

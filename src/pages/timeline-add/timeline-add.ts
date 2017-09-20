@@ -8,6 +8,7 @@ import { UserService } from '../../services/user';
 import { TimelineService } from '../../services/timeline';
 import { SystemService } from '../../services/system';
 
+import { MyHttp } from '../../providers/my-http';
 
 @Component({
 	selector: 'cy-timeline-add-page',
@@ -24,7 +25,8 @@ export class TimelineAddPage {
 		private navCtrl: NavController,
 		private actionSheetCtrl: ActionSheetController,
 		private timelineService: TimelineService,
-		private systemService: SystemService
+		private systemService: SystemService,
+		private myHttp: MyHttp
 	) {
 		this.form = fb.group({
 			content: '',
@@ -57,7 +59,7 @@ export class TimelineAddPage {
 				this.systemService.createToast('发表成功');
 				this.navCtrl.pop();
 			},
-			err => this.systemService.handleError(err, '发表失败')
+			err => this.myHttp.handleError(err, '发表失败')
 		);
 
 	}

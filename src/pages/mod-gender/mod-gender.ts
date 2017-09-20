@@ -4,6 +4,8 @@ import { FormBuilder, FormControl, FormArray, FormGroup, Validators } from '@ang
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
 
+import { MyHttp } from '../../providers/my-http';
+
 @Component({
 	selector: 'cy-mod-gender-page',
 	templateUrl: 'mod-gender.html'
@@ -17,7 +19,8 @@ export class ModGenderPage implements OnInit {
 		private navParams: NavParams,
 		private builder: FormBuilder,
 		private userService: UserService,
-		private systemService: SystemService
+		private systemService: SystemService,
+		private myHttp: MyHttp
 	) {
 
 		let gender = navParams.data['gender'];
@@ -43,7 +46,7 @@ export class ModGenderPage implements OnInit {
 			res => {
 				this.navCtrl.pop();
 			},
-			err => this.systemService.handleError(err, '修改失败')
+			err => this.myHttp.handleError(err, '修改失败')
 		);
 	}
 }

@@ -4,6 +4,7 @@ import { UserDetailPage } from '../user-detail/user-detail';
 import { FriendByContactPage } from '../friend-by-contact/friend-by-contact';
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
+import { MyHttp } from '../../providers/my-http';
 
 @Component({
 	selector: 'cy-friend-add-page',
@@ -17,6 +18,7 @@ export class FriendAddPage {
 		private navCtrl: NavController,
 		private userService: UserService,
 		private systemService: SystemService,
+		private myHttp: MyHttp
 	) { }
 
 	submitForm() {
@@ -31,7 +33,7 @@ export class FriendAddPage {
 				let userId = res.data[0]._id;
 				this.gotoUserDetailPage(userId);
 			},
-			err => this.systemService.handleError(err, '查找用户失败')
+			err => this.myHttp.handleError(err, '查找用户失败')
 		);
 	}
 
