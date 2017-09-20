@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,  user-scalable=0;">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/Swiper/3.4.2/css/swiper.css">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html {
+            /*height: 100%;*/
+        }
+        
+        body {
+            overflow: hidden;
+            /*height: 100%;*/
+        }
+        
+        .header {
+            height: 50px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .container {
+            position: relative;
+            height: 150px;
+            top: 10px;
+        }
+        
+        .img-box {
+            overflow: hidden;
+        }
+        
+        .img-box.img-landscape img {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 100%;
+        }
+        
+        .img-box.img-portrait img {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .swiper-container {
+            background-color: #000;
+        }
+        
+        .swiper-slide {
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header"></div>
+    <div class="container">
+        <div class="js-img-box" data-width="100px" data-height="100px">
+            <img src="../assets/images/test.jpg" />
+        </div>
+    </div>
+
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+
+    <div class="js-img-box" data-width="100px" data-height="100px">
+        <img src="../assets/images/test.jpg" />
+    </div>
+
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+    <div>ahsdhashdhad</div>
+
+    <div class="swiper-container overlay" style="display:none;">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <div class="swiper-zoom-container">
+                    <div class="js-img-box" data-width="100%">
+                        <img src="../assets/images/test.jpg" />
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-slide">
+                <div class="swiper-zoom-container">
+                    <div class="js-img-box" data-width="100%">
+                        <img src="../assets/images/test2.jpg" />
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-slide">
+                <div class="swiper-zoom-container">
+                    <div class="js-img-box" data-width="100%">
+                        <img src="../assets/images/test2.jpg" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 如果需要分页器 -->
+        <div class="swiper-pagination"></div>
+    </div>
+
+    <script src="//cdn.bootcss.com/jquery/1.9.0/jquery.js"></script>
+    <script src="//cdn.bootcss.com/jquery-color/2.1.2/jquery.color.js"></script>
+    <script src="//cdn.bootcss.com/Swiper/3.4.2/js/swiper.js"></script>
+
+    <script>
+        function ImgBox(elem) {
+            this.elem = elem;
+            this.img = elem.children('img');
+
+            this.init();
+            this.bindEvent();
+        }
+
+        ImgBox.prototype.init = function () {
+            var elem = this.elem.addClass('img-box');
+            var img = this.img;
+            var position = elem.css('position');
+            //box设置大小
+            var dataWidth = this.dataWidth = elem.data('width');
+            var dataHeight = this.dataHeight = elem.data('height');
+            //图片初始大小
+            var imgWidth = this.imgWidth = img[0].naturalWidth;
+            var imgHeight = this.imgHeight = img[0].naturalHeight;
+            var imgRatio = this.imgRatio = imgWidth / imgHeight;
+
+            if (position === 'static') elem.css('position', 'relative');
+
+            this.sizeBox();
+        };
+
+        //设置box大小
+        ImgBox.prototype.sizeBox = function () {
+            var elem = this.elem;
+            var dataWidth = this.dataWidth;
+            var dataHeight = this.dataHeight;
+            var imgWidth = this.imgWidth;
+            var imgHeight = this.imgHeight;
+            var imgRatio = this.imgRatio;
+
+            if (!dataWidth && !dataHeight) {
+                elem.css('width', imgWidth);
+                elem.css('height', imgHeight);
+            } else if (dataWidth && !dataHeight) {
+                elem.css('width', dataWidth);
+                var width = elem.width();
+                elem.css('height', width / imgRatio);
+            } else if (!dataWidth && dataHeight) {
+                elem.css('height', dataHeight);
+                var height = elem.height();
+                elem.css('width', height * imgRatio);
+            } else {
+                elem.css('width', dataWidth);
+                elem.css('height', dataHeight);
+            }
+
+            var width = this.width = this.elem.width();
+            var height = this.height = this.elem.height();
+            var ratio = this.ratio = width / height;
+
+            //0-全屏填充, 1-适应填充
+            var fillMode = 0;
+
+            if (ratio > imgRatio) {
+                if (fillMode == 0) {
+                    elem.addClass('img-portrait').removeClass('img-landscape');
+                } else if (fillMode == 1) {
+                    elem.addClass('img-landscape').removeClass('img-portrait');
+                }
+            } else {
+                if (fillMode == 0) {
+                    elem.addClass('img-landscape').removeClass('img-portrait');
+                } else if (fillMode == 1) {
+                    elem.addClass('img-portrait').removeClass('img-landscape');
+                }
+            }
+        };
+
+        ImgBox.prototype.bindEvent = function () {
+            var that = this;
+            $(window).on('resize', function () {
+                that.sizeBox();
+            });
+        }
+
+        $.fn.imgBox = function () {
+            this.each(function () {
+                new ImgBox($(this));
+            });
+        }
+
+        function createOverlay() {
+            var overlay = $('<div class="overlay"></div>');
+
+            $('body').append(overlay);
+
+            return overlay;
+        }
+    </script>
+    <script>
+        $(function () {
+            $('.js-img-box').imgBox();
+
+            $('.js-img-box').click(function () {
+                var overlay = createOverlay();
+                var box = $(this);
+                var img = $(this).children('img');
+                var offset = box.offset();
+                var clone = box.clone();
+
+                var beginWidth = box.width();
+                var beginHeight = box.height();
+                var beginTop = offset.top;
+                var beginLeft = offset.left;
+                var ratio = beginWidth / beginHeight;
+                var imgRatio = img.width() / img.height();
+
+                var endWidth = overlay.width();
+                var endHeight = endWidth / imgRatio;
+                var overlayHeight = overlay.height();
+                var endTop = (overlayHeight - endHeight) / 2;
+                var endLeft = 0;
+
+                if (endTop < 0) endTop = 0;
+
+                overlay.click(function () {
+                    zoomOut();
+                });
+
+                zoomIn();
+
+                function zoomIn() {
+                    clone
+                        .css({
+                            position: 'absolute',
+                            top: beginTop,
+                            left: beginLeft,
+                            width: beginWidth,
+                            height: beginHeight
+                        });
+
+                    overlay.append(clone);
+
+                    overlay.animate({
+                        'background-color': '#000'
+                    }, 200, function () {
+                        overlay.hide();
+                        $('.swiper-container').show();
+                        $('.swiper-container .js-img-box').imgBox();
+
+                        var mySwiper = new Swiper('.swiper-container', {
+                            // direction: 'vertical',
+                            // loop: true,
+                            zoom: true,
+                            // zoomToggle :false,
+                            // 如果需要分页器
+                            pagination: '.swiper-pagination',
+                        })
+                    });
+
+                    clone.animate({
+                        top: endTop,
+                        left: endLeft,
+                        width: endWidth,
+                        height: endHeight
+                    }, 200);
+                }
+
+                function zoomOut() {
+                    overlay.animate({
+                        'background-color': '#fff'
+                    }, 200, function () {
+                        overlay.remove();
+                    });
+
+                    clone.animate({
+                        top: beginTop,
+                        left: beginLeft,
+                        width: beginWidth,
+                        height: beginHeight
+                    }, 200);
+                }
+
+            });
+
+        })
+    </script>
+
+    <script>
+    </script>
+</body>
+
+</html>

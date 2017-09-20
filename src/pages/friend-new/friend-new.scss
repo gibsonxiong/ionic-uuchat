@@ -1,0 +1,12 @@
+cy-friend-new-page {
+  .no-friend-request-tip {
+    font-size: 1.5rem;
+    text-align: center;
+    padding-top: 10rem;
+    color: color($colors, primary);
+    .tip-icon {
+      font-size: 5rem;
+      
+    }
+  }
+}

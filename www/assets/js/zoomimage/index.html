@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Zoomimage</title>
+    <link rel="stylesheet" media="screen" type="text/css" href="css/layout.css" />
+    <link rel="stylesheet" media="screen" type="text/css" href="css/zoomimage.css" />
+    <link rel="stylesheet" media="screen" type="text/css" href="css/custom.css" />
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/eye.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/zoomimage.js"></script>
+    <script type="text/javascript" src="js/layout.js"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <h1>Zoomimage</h1>
+        <ul class="navigationTabs">
+            <li><a href="#about" rel="about">About</a></li>
+            <li><a href="#download" rel="download">Download</a></li>
+            <li><a href="#implement" rel="implement">Implement</a></li>
+        </ul>
+        <div class="tabsContent">
+            <div class="tab">
+                <h2>About</h2>
+                <p>Present you images in stylish way. The links are unobtrusively highjacked  to open the images in an inpage popup with drop shadow and border.</p>
+                <h3>Features</h3>
+                <ul>
+                    <li>Preloads images</li>
+                    <li>The images can by grouped in galleries</li>
+                    <li>Scales the image to fit the viewport</li>
+                    <li>Keyboard gallery navigation</li>
+                </ul>
+                <h3>Examples</h3>
+                <p>Images are opened relative to the trigger.</p>
+                <p>
+                    <a href="images/lights1.jpg" title="City lights" class="lightsGal"><img src="images/th_lights1.jpg" alt="City lights" /></a>
+                    <a href="images/lights2.jpg" title="Flashlight" class="lightsGal"><img src="images/th_lights2.jpg" alt="Flashlight" /></a>
+                    <a href="images/lights3.jpg" title="Laser lights" class="lightsGal"><img src="images/th_lights3.jpg" alt="Laser lights" /></a>
+                </p>
+                <pre>
+$('a.lightsGal').zoomimage();
+                </pre>
+                <p>Centered to the viewport, border of 20 pixels and the trigger is hidden.</p>
+                <p>
+                    <a href="images/bw1.jpg" title="The Moon" class="bwGal"><img src="images/th_bw1.jpg" alt="The Moon" /></a>
+                    <a href="images/bw2.jpg" title="Drops" class="bwGal"><img src="images/th_bw2.jpg" alt="Drops" /></a>
+                    <a href="images/bw3.jpg" title="Church" class="bwGal"><img src="images/th_bw3.jpg" alt="Church" /></a>
+                </p>
+                <pre>
+$('a.bwGal').zoomimage({
+	border: 20,
+	centered: true,
+	hideSource: true
+});
+                </pre>
+                <p>Custom shadow and styles, caption displayed on mouse over, no controls, use callbacks to fade in and out.</p>
+                <p>
+                    <a href="images/lights1.jpg" title="City lights" class="customGal"><img src="images/th_lights1.jpg" alt="City lights" /></a>
+                    <a href="images/lights2.jpg" title="Flashlight" class="customGal"><img src="images/th_lights2.jpg" alt="Flashlight" /></a>
+                    <a href="images/lights3.jpg" title="Laser lights" class="customGal"><img src="images/th_lights3.jpg" alt="Laser lights" /></a>
+                </p>
+                <pre>
+$('a.customGal').zoomimage({
+	controlsTrigger: 'mouseover',
+	className: 'custom',
+	shadow: 40,
+	controls: false,
+	opacity: 1,
+	beforeZoomIn: function(boxID) {
+		$('#' + boxID)
+			.find('img')
+			.css('opacity', 0)
+			.animate(
+				{'opacity':1},
+				{ duration: 500, queue: false }
+			);
+	},
+	beforeZoomOut: function(boxID) {
+		$('#' + boxID)
+			.find('img')
+			.css('opacity', 1)
+			.animate(
+				{'opacity':0},
+				{ duration: 500, queue: false }
+			);
+	}
+});
+                </pre>
+            </div>
+            <div class="tab">
+                <h2>Download</h2>
+                <p><a href="zoomimage.zip">zoomimage.zip (510 kb)</a>: jQuery, Javscript files, CSS files, images, examples and instructions.</p>
+                <h3>Changelog</h3>
+                <dl>
+					<dt>14.11.2007</dt>
+					<dd>Fixed: alert on key press</dd>
+					<dd>New options: <strong>preload</strong> - choose when the images are preloaded, on document load or on click</dd>
+					<dt>13.11.2007</dt>
+					<dd>New option: <strong>className</strong> - allows you to have diferent styles on the same page</dd>
+					<dd>New option: <strong>controlsTrigger</strong> - show caption and controls when the mouse is over the image or when the image is focused</dd>
+					<dd>New option: <strong>onFocus</strong> - callback triggered when the image is focused</dd>
+					<dd>Fixed: keyboard navigation on Safari</dd>
+					<dt>12.11.2007</dt>
+					<dd>The first release release.</dd>
+                </dl>
+            </div>
+            <div class="tab">
+                <h2>Implement</h2>
+                <p>Attach the Javascript and CSS files to your document. Edit CSS file and fix the paths to  images and change colors to fit your site theme. <strong>Important:</strong> be sure to include Javascript files in the specific order as in the example below.</p>
+                <pre>
+&lt;link rel="stylesheet" media="screen" type="text/css" href="css/zoomimage.css" /&gt;
+&lt;script type="text/javascript" src="js/eye.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="js/utils.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="js/zoomimage.js"&gt;&lt;/script&gt;
+                </pre>
+                <h3>Invocation code</h3>
+                <p>All you have to do is to select the elements in a jQuery way and call the plugin.</p>
+                <pre>
+ $('a.myLinks').zoomimage(options);
+                </pre>
+                <h3>Options</h3>
+                <p>A hash of parameters. All parameters are optional.</p>
+                <table>
+                	<tr>
+                		<td><strong>Opacity</strong></td>
+                		<td>float</td>
+                		<td>The opacity for the caption and controls. Default: 0.3</td>
+                	</tr>
+                	<tr>
+                		<td><strong>border</strong></td>
+                		<td>integer</td>
+                		<td>Image's border. Default: 0</td>
+                	</tr>
+                	<tr>
+                		<td><strong>duration</strong></td>
+                		<td>integer</td>
+                		<td>Animation duration. Default 300</td>
+                	</tr>
+                	<tr>
+                		<td><strong>easing</strong></td>
+                		<td>string</td>
+                		<td>Animation easing. Default: linear</td>
+                	</tr>
+                	<tr>
+                		<td><strong>prevent</strong></td>
+                		<td>integer</td>
+                		<td>Pixes to move the mouse before the images is dragged (prevents accidental dragging). Default: 14</td>
+                	</tr>
+                	<tr>
+                		<td><strong>controls</strong></td>
+                		<td>boolean</td>
+                		<td>Whatever if the controls are displayed (if the image is not part of an library then the controls are not displayed). Default: true</td>
+                	</tr>
+                	<tr>
+                		<td><strong>caption</strong></td>
+                		<td>boolean</td>
+                		<td>Whatever if the caption is displayed (the caption text is the text from 'title' atribute. Default: true</td>
+                	</tr>
+                	<tr>
+                		<td><strong>centered</strong></td>
+                		<td>boolean</td>
+                		<td>Whatever if the image should be centered in the viewport or relative to the trigger. Default: false</td>
+                	</tr>
+                	<tr>
+                		<td><strong>hideSource</strong></td>
+                		<td>boolean</td>
+                		<td>Whatever to hide source when the image is opened. Default: false</td>
+                	</tr>
+                	<tr>
+                		<td><strong>className</strong></td>
+                		<td>string</td>
+                		<td>CSS class to apply to the image's box. Default: false</td>
+                	</tr>
+                	<tr>
+                		<td><strong>controlsTrigger</strong></td>
+                		<td>string</td>
+                		<td>'focus' to show caption and controls when the box is focused or 'mouseover' to show controls and caption on mouse over. Default: 'focus'</td>
+                	</tr>
+                	<tr>
+                		<td><strong>preload</strong></td>
+                		<td>string</td>
+                		<td>'click' to preload the image when the trigger is clicked or 'load' to preload the image on document load. Default: 'click'</td>
+                	</tr>
+                	<tr>
+                		<td><strong>onLoad</strong></td>
+                		<td>function</td>
+                		<td>Callback function triggered when the image was loaded</td>
+                	</tr>
+                	<tr>
+                		<td><strong>beforeZoomIn</strong></td>
+                		<td>function</td>
+                		<td>Callback function triggered before the image is zoomed in</td>
+                	</tr>
+                	<tr>
+                		<td><strong>onZoomIn</strong></td>
+                		<td>function</td>
+                		<td>Callback function triggered when the image is zooms in</td>
+                	</tr>
+                	<tr>
+                		<td><strong>beforeZoomOut</strong></td>
+                		<td>function</td>
+                		<td>Callback function triggered before the image is zoomed out</td>
+                	</tr>
+                	<tr>
+                		<td><strong>onZoomOut</strong></td>
+                		<td>function</td>
+                		<td>Callback function triggered when the image is zooms out</td>
+                	</tr>
+                	<tr>
+                		<td><strong>onFocus</strong></td>
+                		<td>function</td>
+                		<td>Callback function triggered when the image is focused</td>
+                	</tr>
+                </table>
+                <h3>Close all images and clear orphans</h3>
+                <p>If you want to close all openend images or clear images without triggers (remvoed from DOM) then you can use 'zoomimageClear'. The selection for this plugin should always be 'div.zoomimage'.</p>
+                <pre>$('div.zooimage').zoomimageClear();</pre>
+                <h3>Shadow settings</h3>
+                <p>You can customize the shadow. To do this you have to understand how the box layout renders the shadow.</p>
+                <p><img src="images/shadow.gif" alt="Shadow layout" /></p>
+                <p>Each CSS class takes care of that specific region of shadow. You have change the size and place the background image in this classes.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

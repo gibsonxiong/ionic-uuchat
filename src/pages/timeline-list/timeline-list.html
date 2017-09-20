@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>朋友圈</ion-title>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="gotoTimelineAddPage()">
+          <ion-icon name="create"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true" (click)="onContentClick()">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="timeline" *ngFor="let timeline of timelines">
+
+    <img class="avatar" [src]="timeline._user && timeline._user.avatarSrc | avatarSrc" (click)="gotoUserDetailPage(timeline.userId)">
+
+    <div class="right-container ">
+      <a class="nickname" (click)="gotoUserDetailPage(timeline.userId)">{{timeline._user && timeline._user.nickname}}</a>
+      <!--内容-->
+      <p class="content">{{timeline.content}}</p>
+
+      <!--图片区-->
+      <div class="media-container clearfix">
+        <div class="media-wrap" *ngFor="let mediaSrc of timeline.mediaSrcs">
+          <cy-img [src]="mediaSrc | imgSrc" width="100%" height="100%"></cy-img>
+        </div>
+      </div>
+      <div>
+        <span class="publishTime">{{timeline.publishTime | timediff}}</span>
+        <div class="cb-wrap clearfix">
+          <div class="comment-btn-wrap">
+            <!--点赞按钮-->
+            <button ion-button icon-left clear small (click)="likeTimeline(timeline._id,!timeline._isLike)">
+        			<ion-icon name="heart" color="fourthly" *ngIf="timeline._isLike"></ion-icon>
+							<ion-icon name="heart-outline" color="fourthly" *ngIf="!timeline._isLike"></ion-icon>
+      			</button>
+            <!--评论按钮-->
+            <button ion-button icon-left clear small (click)="onCommentBtnClick($event,timeline._id)">
+							<ion-icon name="md-chatboxes" color="grey"></ion-icon>
+						</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="cc-wrap" *ngIf="(timeline._likeUsers && timeline._likeUsers.length) || (timeline._comments && timeline._comments.length)">
+        <div class="comment-content-wrap">
+          <!--点赞-->
+          <div class="likes" *ngIf="timeline._likeUsers && timeline._likeUsers.length">
+            <ion-icon name="heart-outline"></ion-icon>
+            <template ngFor let-likeUser [ngForOf]="timeline._likeUsers" let-i="index">
+              <span *ngIf="i>0">,</span>
+              <span class="likeUser" (click)="gotoUserDetailPage(timeline.userId)">
+							 {{likeUser.nickname}}
+              </span>
+            </template>
+
+
+          </div>
+          <!--评论-->
+          <div class="comments" *ngIf="timeline._comments && timeline._comments.length">
+            <div class="comment" *ngFor="let comment of timeline._comments" (click)="onCommentBtnClick($event, timeline._id, comment.userId, comment._user.nickname)">
+              <span>{{comment._user && comment._user.nickname}}</span>
+              <span *ngIf="comment._atUser">@ {{comment._atUser && comment._atUser.nickname}}</span>：{{comment.content}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</ion-content>
+
+<ion-footer [ngClass]="{hide:!commenting}">
+  <ion-toolbar>
+    <form [formGroup]="form" (ngSubmit)="commentTimeline()">
+      <input #input type="text" [attr.placeholder]="getPlaceholder()" formControlName="content" />
+    </form>
+  </ion-toolbar>
+</ion-footer>

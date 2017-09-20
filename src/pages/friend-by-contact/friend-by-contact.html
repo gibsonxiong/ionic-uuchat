@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>通讯录朋友</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-item detail-none *ngFor="let user of userList">
+      <ion-thumbnail item-left>
+        <img [src]="user.avatarSrc">
+      </ion-thumbnail>
+
+      <h2 class="displayName">{{user.displayName}}</h2>
+      <p class="nickname">uu昵称:{{user.nickname}}</p>
+
+      <button ion-button item-right *ngIf="!user._isFriend" (click)=" gotoFriendRequestPage(user._id)">添加</button>
+      <ion-note item-right *ngIf="user._isFriend">已添加</ion-note>
+    </ion-item>
+
+
+  </ion-list>
+
+</ion-content>

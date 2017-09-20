@@ -1,0 +1,17 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>个人头像</ion-title>
+    <ion-buttons end >
+      <button ion-button icon-only (click)="presentActionSheet()">
+          <ion-icon name="more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+<ion-content>
+	<div class="img-box">
+		<img [src]="avatarSrc | avatarSrc"/>
+	</div>
+</ion-content>

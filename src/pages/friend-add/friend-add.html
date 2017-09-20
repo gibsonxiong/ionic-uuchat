@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>添加朋友</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <form (ngSubmit)="submitForm()">
+    <ion-list padding-top>
+      <ion-item >
+        <ion-label>
+          <ion-icon name="search" color="primary"></ion-icon>
+        </ion-label>
+        <ion-input [(ngModel)]="search" type="search" name="search" placeholder="微信号/手机号"></ion-input>
+      </ion-item>
+      <button type="submit">搜索</button>
+    </ion-list>
+  </form>
+  <ion-list margin-top>
+    <button ion-item (click)="gotoFriendByContactPage()">
+      <ion-icon item-left name="phone-portrait"></ion-icon>
+      <h2>手机联系人</h2>
+      <ion-note>添加通讯录中的朋友</ion-note>
+    </button>
+  </ion-list>
+</ion-content>

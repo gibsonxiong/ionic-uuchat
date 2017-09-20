@@ -1,0 +1,41 @@
+<ion-content>
+  <form [formGroup]="form" (ngSubmit)="signin()">
+    <div class="logo-wrap">
+      <img src="assets/img/logo.png" />
+    </div>
+    <ion-list>
+      <ion-item>
+        <ion-label>帐号</ion-label>
+        <ion-input type="text" placeholder="用户名/手机号" formControlName="username"></ion-input>
+        <!--<span item-right *ngIf="form.controls.username.pending && form.controls.username.dirty">...</span>
+				<span item-right *ngIf="form.controls.username.valid && form.controls.username.dirty">√</span>
+				<span item-right *ngIf="form.controls.username.invalid && form.controls.username.dirty">×</span>-->
+      </ion-item>
+
+      <ion-item>
+        <ion-label>密码</ion-label>
+        <ion-input type="password" placeholder="密码" formControlName="password"></ion-input>
+        <!--<span item-right *ngIf="form.controls.password.pending && form.controls.password.dirty">...</span>
+				<span item-right *ngIf="form.controls.password.valid && form.controls.password.dirty">√</span>
+				<span item-right *ngIf="form.controls.password.invalid && form.controls.password.dirty">×</span>-->
+      </ion-item>
+
+    </ion-list>
+    <div padding-horizontal>
+      <a href="javascript:;" (click)="gotoSignupPage()">注册</a>
+    </div>
+    <!--<div padding-horizontal><button ion-button block [disabled]="form.invalid" @flyInOut>登录</button></div>-->
+    <div padding-horizontal>
+      <button ion-button block icon-start disabled="{{ signining? 'disabled' : '' }}">
+          <ion-spinner color="light" style="margin-right:6px;" *ngIf="signining"></ion-spinner>
+          登录
+      </button>
+    </div>
+  </form>
+
+  <div padding-horizontal style="display: none;">
+    <button ion-button block color="secondary" (click)="gotoSignupPage()">注册</button>
+    <!-- <button ion-button block color="secondary" (click)="_$testSignin(1)">test1</button>
+    <button ion-button block color="secondary" (click)="_$testSignin(2)">test2</button> -->
+  </div>
+</ion-content>

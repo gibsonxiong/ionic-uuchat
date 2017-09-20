@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-navbar>
+
+    <!-- <ion-buttons start >
+      <button ion-button icon-only (click)="gotoFriendListPage()">
+          <ion-icon name="contacts"></ion-icon>
+      </button>
+    </ion-buttons> -->
+
+    <ion-title>聊天{{connectState | connectState}}</ion-title>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="presentPopover($event)">
+          <ion-icon name="more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-item-sliding *ngFor="let chat of chatList">
+      <button ion-item detail-none (click)="gotoChatContentPage(chat.relationId,chat.name)">
+		<ion-thumbnail item-left>
+			<img [src]="chat.avatarSrc | avatarSrc"/>
+		</ion-thumbnail>
+		
+		<h2>{{chat.name}} <ion-note>{{chat.lastSendTime | timediff}}</ion-note></h2>
+		<p>{{chat.lastContent}}</p>
+
+		<ion-badge color="danger" *ngIf="chat.unread > 0">{{chat.unread}}</ion-badge>
+	  </button>
+      <ion-item-options side="right">
+        <button ion-button color="danger" (click)="deleteChat(chat.relationId)">
+        <ion-icon name="trash"></ion-icon>
+        <span class="button-title">删除</span>
+      </button>
+      </ion-item-options>
+    </ion-item-sliding>
+
+
+  </ion-list>
+
+</ion-content>

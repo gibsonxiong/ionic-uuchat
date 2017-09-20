@@ -1,0 +1,26 @@
+cy-img {
+  display: inline-block;
+  overflow: hidden;
+
+  img{
+    max-width: initial;
+    max-height: initial;
+    min-width: initial;
+    min-height: initial;
+  }
+
+  &.img-landscape img {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+  }
+  &.img-portrait img {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+  }
+}

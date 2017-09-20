@@ -1,0 +1,42 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>个人信息</ion-title>
+  </ion-navbar>
+
+</ion-header>
+<ion-content>
+	<ion-list>
+		<button ion-item (click)="gotoModAvatarPage()">
+			<span>个人头像</span>
+			<ion-thumbnail item-right>
+	           <img [src]="own.avatarSrc | avatarSrc" />
+	        </ion-thumbnail>
+		</button>
+		<button ion-item (click)="gotoModNicknamePage()">
+			<span >昵称</span>
+			<ion-note item-right>{{own.nickname}}</ion-note>
+		</button>
+		<ion-item>
+			<span>用户名</span>
+			<ion-note item-right>{{own.username}}</ion-note>
+		</ion-item>
+		<button ion-item (click)="gotoModGenderPage()">
+			<span>性别</span>
+			<ion-note item-right>{{own.gender | gender}}</ion-note>
+		</button>
+		<button ion-item (click)="gotoModGenderPage()">
+			<span>我的二维码</span>
+			<ion-note item-right>{{own.gender | gender}}</ion-note>
+		</button>
+		<!--<button ion-item>
+			<span>地区</span>
+			<ion-note item-right>广东 东莞</ion-note>
+		</button>-->
+		<button ion-item (click)="gotoModMottoPage()">
+			<span>个性签名</span>
+			<ion-note item-right>{{own.motto || '没填写'}}</ion-note>
+		</button>
+	</ion-list>
+
+</ion-content>

@@ -1,0 +1,22 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>朋友验证</ion-title>
+
+    <ion-buttons end>
+      <button ion-button (click)="markFriend()">发送</button>
+    </ion-buttons>
+  </ion-navbar>
+
+
+
+</ion-header>
+<ion-content>
+
+  <ion-list>
+    <ion-item>
+      <ion-input type="text" placeholder="请求信息" [(ngModel)]="requestMsg"></ion-input>
+    </ion-item>
+  </ion-list>
+  <p class="hint">你需要发送验证申请，等对方通过</p>
+</ion-content>

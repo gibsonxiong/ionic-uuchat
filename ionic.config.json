@@ -1,0 +1,8 @@
+{
+  "name": "uuchat-ionic-master",
+  "app_id": "f4c1b1ee",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}

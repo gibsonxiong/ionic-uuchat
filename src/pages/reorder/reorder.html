@@ -1,0 +1,12 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>排序</ion-title>
+  </ion-navbar>
+
+</ion-header>
+<ion-content>
+	<ion-list reorder="true" (ionItemReorder)="reorderItems($event)">
+        <ion-item *ngFor="let team of ladder; let i = index;">{{team}}</ion-item>
+    </ion-list>
+</ion-content>

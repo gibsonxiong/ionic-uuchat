@@ -1,0 +1,36 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>性别</ion-title>
+
+    <ion-buttons end >
+      <button ion-button icon-only  (click)="submit()">
+          完成
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+<ion-content>
+	<form [formGroup]="form" (ngSubmit)="submit()">
+		<ion-list radio-group formControlName="gender">
+		  <ion-item>
+		    <ion-label>男</ion-label>
+		    <ion-radio value="0"></ion-radio>
+		  </ion-item>
+
+		  <ion-item>
+		    <ion-label>女</ion-label>
+		    <ion-radio value="1"></ion-radio>
+		  </ion-item>
+
+		</ion-list>
+
+		<!-- <ion-list radio-group formArrayName="genders">
+		  <ion-item *ngFor="let gender of genders.controls;let i= index">
+		    	<ion-label>{{gender.value}}</ion-label>
+		    	<ion-radio [value]="gender.value"></ion-radio>
+		  </ion-item>
+		</ion-list> -->
+	</form>
+</ion-content>
