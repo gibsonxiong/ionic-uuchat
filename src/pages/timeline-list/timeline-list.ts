@@ -12,6 +12,11 @@ import 'rxjs/add/operator/do'
 
 import { Keyboard } from 'ionic-native'; //键盘
 
+
+function isStringLike(s) {
+	return s !== undefined && s !== null && s !== '';
+}
+
 @Component({
 	selector: 'cy-timeline-list-page',
 	templateUrl: 'timeline-list.html'
@@ -21,13 +26,14 @@ export class TimelineListPage {
 	private timelines: any[] = [];
 	private commentTimelineId;
 	private atUserId;
+	private atUserName;
 	private commenting = false;
 
 	@ViewChild('input') input;
 	@ViewChild(Content) contentComponent;
 
 	constructor(
-		private ref: ChangeDetectorRef,
+		private cdRef: ChangeDetectorRef,
 		private renderer: Renderer,
 		private fb: FormBuilder,
 		private navCtrl: NavController,
@@ -47,7 +53,6 @@ export class TimelineListPage {
 			e => {
 				// console.log(e);
 				this.hideCommentInput();
-				this.ref.detectChanges();
 			},
 			err => {
 				console.log(err);
@@ -58,7 +63,6 @@ export class TimelineListPage {
 			v => {
 				console.log(v);
 				this.hideCommentInput();
-				this.ref.detectChanges();
 			},
 			err => {
 
@@ -122,10 +126,77 @@ export class TimelineListPage {
 			);
 	}
 
+	onContentClick() {
+		if (!this.commenting) return;
+
+		this.hideCommentInput();
+	}
+
+	onCommentBtnClick(e, timelineId, atUserId?, atUserName?) {
+		e.stopPropagation();
+
+		if (this.commenting === true) {
+			this.hideCommentInput();
+			return;
+		}
+
+		if (atUserId === this.backEnd.getOwnId()) {
+
+		} else {
+			this.showCommentInput(timelineId, atUserId, atUserName);
+		}
+
+	}
+
+	showCommentInput(timelineId, atUserId?, atUserName?) {
+		this.commentTimelineId = timelineId;
+		this.atUserId = atUserId;
+		this.atUserName = atUserName;
+		this.commenting = true;
+		this.contentComponent.resize();
+		this.cdRef.detectChanges();
+
+		//反显草稿
+		var content = this.timelineService.getCacheComment(timelineId, atUserId);
+		if (!isStringLike(content)) {
+			content = '';
+		}
+		this.form.setValue({
+			content: content
+		});
+
+
+		//input获得焦点
+		setTimeout(() => {
+			this.renderer.invokeElementMethod(this.input.nativeElement,
+				'focus');
+			Keyboard.show();
+		}, 0);
+	}
+
+	hideCommentInput() {
+		//保存草稿
+		var content = this.form.value.content;
+		this.timelineService.cacheComment(this.commentTimelineId, this.atUserId, content);
+
+		//清除评论框状态
+		this.commentTimelineId = null;
+		this.atUserId = null;
+		this.atUserName = null;
+		this.commenting = false;
+		this.contentComponent.resize();
+		this.cdRef.detectChanges();
+	}
+
+
 	commentTimeline() {
 		let timelineId = this.commentTimelineId;
 		let atUserId = this.atUserId;
 		let content = this.form.value.content;
+
+		this.hideCommentInput();
+		this.timelineService.removeCacheComment(timelineId,atUserId);
+
 		this.timelineService.commentTimeline(timelineId, content, atUserId).subscribe(
 			res => {
 				var timeline = res.data;
@@ -142,35 +213,16 @@ export class TimelineListPage {
 
 	}
 
-	onContentClick() {
-		console.log('onContentClick');
-
-		if (!this.commenting) return;
-
-		this.hideCommentInput();
-	}
-
-
-	showCommentInput(e, timelineId) {
-		e.stopPropagation();
-		this.commentTimelineId = timelineId;
-		this.commenting = true;
-		this.contentComponent.resize();
-		setTimeout(() => {
-			this.renderer.invokeElementMethod(this.input.nativeElement,
-				'focus');
-			Keyboard.show();
-		}, 0);
-	}
-
-	hideCommentInput() {
-		this.commentTimelineId = null;
-		this.commenting = false;
-		this.contentComponent.resize();
+	getPlaceholder() {
+		return this.atUserId ? `回复${this.atUserName}：` : `评论`;
 	}
 
 	gotoTimelineAddPage() {
 		this.navCtrl.push(TimelineAddPage);
+	}
+
+	gotoUserDetailPage(userId) {
+		this.navCtrl.push(UserDetailPage, { userId: userId });
 	}
 
 	// ngOnDestroy(){

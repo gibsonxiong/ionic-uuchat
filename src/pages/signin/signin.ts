@@ -58,7 +58,7 @@ export class SigninPage {
 			username: ['',
 				[
 					Validators.required,
-					Validators.pattern(/[a-zA-Z]\w{5,10}/g)
+					// Validators.pattern(/[a-zA-Z]\w{5,10}/g)
 				],
 				UserValidator.existsAsync()
 			],

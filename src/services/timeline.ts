@@ -13,6 +13,7 @@ import { BackEnd } from '../providers/backend';
 @Injectable()
 export class TimelineService {
 
+	private commentsCache = {};
 
 	constructor(
 		private myHttp: MyHttp,
@@ -55,6 +56,18 @@ export class TimelineService {
 	// 评论
 	commentTimeline(timelineId, content, atUserId?): Observable<any> {
 		return this.myHttp.post(HOST + '/timeline/commentTimeline/' + timelineId, { content, atUserId });
+	}
+
+	cacheComment(timelineId, atUserId = '', content) {
+		this.commentsCache[timelineId + '/' + atUserId] = content;
+	}
+
+	getCacheComment(timelineId, atUserId = '') {
+		return this.commentsCache[timelineId + '/' + atUserId];
+	}
+
+	removeCacheComment(timelineId, atUserId = '') {
+		delete this.commentsCache[timelineId + '/' + atUserId];
 	}
 
 

@@ -55,13 +55,13 @@ cy-chat-content-page {
         transform: rotate(90deg);
       }
     }
-    img {
-      margin: 5px 10px;
-      min-width: 45px;
-      width: 45px;
-      height: 45px;
-      border-radius: 4px;
-    }
+    // img {
+    //   margin: 5px 10px;
+    //   min-width: 45px;
+    //   width: 45px;
+    //   height: 45px;
+    //   border-radius: 4px;
+    // }
     .msg-content {
       position: relative;
       padding: 10px;
@@ -137,4 +137,8 @@ cy-chat-content-page {
       }
     }
   }
+}
+
+.ion-thumbnail .cy-img{
+  height:100%;
 }

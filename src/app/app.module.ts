@@ -41,6 +41,7 @@ import { myHttpFactory } from '../factorys';
 
 /*components*/
 import { Highlight } from '../components/highlight/highlight';
+import { ImgComponent } from '../components/img/img';
 
 /*services*/
 import { UserService } from '../services/user';
@@ -57,6 +58,7 @@ import { GenderPipe } from '../pipes/gender';
 import { ConnectStatePipe } from '../pipes/connect-state';
 import { TimediffPipe } from '../pipes/timediff';
 import { AvatarSrcPipe } from '../pipes/avatar-src';
+import { ImgSrcPipe } from '../pipes/img-src';
 
 /*validators*/
 import { UserValidator } from '../validators/user';
@@ -98,12 +100,14 @@ import { UserValidator } from '../validators/user';
 
 		/*components*/
 		Highlight,
+		ImgComponent,
 
 		/*pipes*/
 		GenderPipe,
 		ConnectStatePipe,
 		TimediffPipe,
-		AvatarSrcPipe
+		AvatarSrcPipe,
+		ImgSrcPipe
 	],
 	imports: [
 		IonicModule.forRoot(MyApp, {

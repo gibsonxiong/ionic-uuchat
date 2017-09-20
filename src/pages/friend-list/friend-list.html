@@ -22,7 +22,7 @@
 	<ion-list *ngIf="list.length">
 		<button  ion-item detail-none *ngFor="let item of list" (click)="gotoUserDetailPage(item._id)">
 			<ion-thumbnail item-left>
-	           <img [src]="item.avatarSrc">
+	           <img [src]="item.avatarSrc | avatarSrc">
 	        </ion-thumbnail>
 	        <h2>{{item.nickname}}</h2>
 		</button>

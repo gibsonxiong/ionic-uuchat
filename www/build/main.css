@@ -39866,6 +39866,36 @@ ion-note {
   clear: both;
 }
 
+cy-img {
+  display: inline-block;
+  overflow: hidden;
+}
+
+cy-img img {
+  max-width: initial;
+  max-height: initial;
+  min-width: initial;
+  min-height: initial;
+}
+
+cy-img.img-landscape img {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  height: 100%;
+}
+
+cy-img.img-portrait img {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  width: 100%;
+}
+
 cy-chat-page .button-title {
   padding: 0 10px;
 }
@@ -39963,14 +39993,6 @@ cy-chat-content-page .msg-wrap.other-msg .audio-duartion {
 cy-chat-content-page .msg-wrap.other-msg .audio-icon {
   -webkit-transform: rotate(90deg);
   transform: rotate(90deg);
-}
-
-cy-chat-content-page .msg-wrap img {
-  margin: 5px 10px;
-  min-width: 45px;
-  width: 45px;
-  height: 45px;
-  border-radius: 4px;
 }
 
 cy-chat-content-page .msg-wrap .msg-content {
@@ -40078,6 +40100,10 @@ cy-chat-content-page .foot-wrapper .audio-msg-wrapper button {
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
+}
+
+.ion-thumbnail .cy-img {
+  height: 100%;
 }
 
 cy-chat-popover-page ion-list {
@@ -40298,10 +40324,6 @@ cy-timeline-list-page .right-container .media-container .media-wrap {
   overflow: hidden;
 }
 
-cy-timeline-list-page .right-container .media-container .media-wrap img {
-  width: 100%;
-}
-
 cy-timeline-list-page .right-container .publishTime {
   margin-top: 8px;
   font-size: 12px;
@@ -40347,12 +40369,16 @@ cy-timeline-list-page .cc-wrap .comment-content-wrap .likes .likeUser {
   margin: 0 1px;
 }
 
-.likes cy-timeline-list-page .cc-wrap .comment-content-wrap .comments {
+cy-timeline-list-page .cc-wrap .comment-content-wrap .likes + .comments {
   border-top: 0.55px solid #e3e3e3;
 }
 
 cy-timeline-list-page .cc-wrap .comment-content-wrap .comments .comment {
   padding: 5px 10px;
+}
+
+cy-timeline-list-page .cc-wrap .comment-content-wrap .comments .comment:active {
+  background-color: #ccc;
 }
 
 cy-timeline-list-page .cc-wrap .comment-content-wrap .comments .comment + .comment {

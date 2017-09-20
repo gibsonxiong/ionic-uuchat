@@ -27,9 +27,7 @@ cy-timeline-list-page {
         height: 75px;
         margin: 4px;
         overflow: hidden;
-        img {
-          width: 100%;
-        }
+
       }
     }
     .publishTime {
@@ -66,17 +64,26 @@ cy-timeline-list-page {
       .likes {
         padding: 5px 10px;
         // border-bottom: $hairlines-width solid #ddd;
+
+
         .likeUser {
           color: color($colors, font);
           margin: 0 1px;
         }
-      }
-      .comments {
-        .likes & {
+
+
+        & + .comments {
           border-top: 0.55px solid #e3e3e3;
         }
+      }
+      .comments {
         .comment {
           padding: 5px 10px;
+
+          &:active{
+            background-color: #ccc;
+          }
+
           +.comment {
             border-top: $hairlines-width solid #ddd;
           }

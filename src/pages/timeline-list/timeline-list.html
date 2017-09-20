@@ -18,17 +18,17 @@
 
   <div class="timeline" *ngFor="let timeline of timelines">
 
-    <img class="avatar" [src]="timeline._user && timeline._user.avatarSrc | avatarSrc">
+    <img class="avatar" [src]="timeline._user && timeline._user.avatarSrc | avatarSrc" (click)="gotoUserDetailPage(timeline.userId)">
 
     <div class="right-container ">
-      <a class="nickname">{{timeline._user && timeline._user.nickname}}</a>
+      <a class="nickname" (click)="gotoUserDetailPage(timeline.userId)">{{timeline._user && timeline._user.nickname}}</a>
       <!--内容-->
       <p class="content">{{timeline.content}}</p>
 
       <!--图片区-->
       <div class="media-container clearfix">
         <div class="media-wrap" *ngFor="let mediaSrc of timeline.mediaSrcs">
-          <img [src]="mediaSrc">
+          <cy-img [src]="mediaSrc | imgSrc" width="100%" height="100%"></cy-img>
         </div>
       </div>
       <div>
@@ -41,7 +41,7 @@
 							<ion-icon name="heart-outline" color="fourthly" *ngIf="!timeline._isLike"></ion-icon>
       			</button>
             <!--评论按钮-->
-            <button ion-button icon-left clear small (click)="showCommentInput($event,timeline._id)">
+            <button ion-button icon-left clear small (click)="onCommentBtnClick($event,timeline._id)">
 							<ion-icon name="md-chatboxes" color="grey"></ion-icon>
 						</button>
           </div>
@@ -55,7 +55,7 @@
             <ion-icon name="heart-outline"></ion-icon>
             <template ngFor let-likeUser [ngForOf]="timeline._likeUsers" let-i="index">
               <span *ngIf="i>0">,</span>
-              <span class="likeUser">
+              <span class="likeUser" (click)="gotoUserDetailPage(timeline.userId)">
 							 {{likeUser.nickname}}
               </span>
             </template>
@@ -64,7 +64,7 @@
           </div>
           <!--评论-->
           <div class="comments" *ngIf="timeline._comments && timeline._comments.length">
-            <div class="comment" *ngFor="let comment of timeline._comments">
+            <div class="comment" *ngFor="let comment of timeline._comments" (click)="onCommentBtnClick($event, timeline._id, comment.userId, comment._user.nickname)">
               <span>{{comment._user && comment._user.nickname}}</span>
               <span *ngIf="comment._atUser">@ {{comment._atUser && comment._atUser.nickname}}</span>：{{comment.content}}
             </div>
@@ -80,7 +80,7 @@
 <ion-footer [ngClass]="{hide:!commenting}">
   <ion-toolbar>
     <form [formGroup]="form" (ngSubmit)="commentTimeline()">
-      <input #input type="text" placeholder="评论" formControlName="content" />
+      <input #input type="text" [attr.placeholder]="getPlaceholder()" formControlName="content" />
     </form>
   </ion-toolbar>
 </ion-footer>
