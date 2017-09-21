@@ -147,7 +147,10 @@ export class ModAvatarPage {
 				this.systemService.closeLoading(loading);
 				this.avatarSrc = res.data.avatarSrc;
 			})
-			.catch(err => this.myHttp.handleError(err, '设置头像失败'));
+			.catch(err => {
+				this.systemService.closeLoading(loading);
+				this.myHttp.handleError(err, '设置头像失败')
+			});
 	}
 
 	//通过手机相册设置头像

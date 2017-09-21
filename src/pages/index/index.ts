@@ -50,6 +50,7 @@ export class IndexPage {
     ngOnInit() {
         this.connectServer();
 
+        alert(1);
 
         //强迫下线通知
         this.subscriptions.add(
