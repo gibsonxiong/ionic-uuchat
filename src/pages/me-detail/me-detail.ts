@@ -25,7 +25,9 @@ export class MeDetailPage implements OnInit {
 
 	ngOnInit() {
 
-		this.own_Subscription = this.userService.own$.subscribe(own => this.own = own);
+		this.own_Subscription = this.userService.own$.subscribe(own => {
+			this.own = own
+		});
 
 	}
 

@@ -29,11 +29,7 @@ export class QRcodePage implements OnInit {
 
 	ngOnInit() {
 		var qrcode = new QRCode('qrcode', {
-<<<<<<< HEAD
 			text: API_HOST +'/qrcode?userId=111&&action=markfriend',
-=======
-			text: HOST +'/qrcode?userId=111&&action=markfriend',
->>>>>>> 874cd1e5c181be6f0d2d67cbdb44d0d23a751782
 			width: 256,
 			height: 256,
 			colorDark: '#000000',
