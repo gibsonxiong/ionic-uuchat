@@ -2,183 +2,175 @@ import { Component, Input, Renderer, ElementRef, HostBinding, ViewChild, HostLis
 import { DomUtils } from '../../utils/dom-utils';
 
 @Component({
-  selector: 'cy-img',
-  templateUrl: 'img.html'
+	selector: 'cy-img',
+	templateUrl: 'img.html'
 })
 export class ImgComponent {
 
-  @Input('src') src: string;
-  @Input('width') w: any;
-  @Input('height') h: any;
+	@Input('src') src: string;
+	@Input('width') w: any;
+	@Input('height') h: any;
 
-  private _width = 0;
-  private _height = 0;
+	get width() {
+		return DomUtils.getWidth(this.elemRef.nativeElement);
+	}
 
-  get width() {
-    return this._width;
-  }
+	set width(value) {
+		this.renderer.setElementStyle(this.elemRef.nativeElement, 'width', value);
+	}
 
-  set width(value) {
-    this._width = value;
-    this.renderer.setElementStyle(this.elemRef.nativeElement, 'width', value + '');
-  }
+	get height() {
+		return DomUtils.getHeight(this.elemRef.nativeElement);
+	}
 
-  get height() {
-    return this._height;
-  }
+	set height(value) {
+		this.renderer.setElementStyle(this.elemRef.nativeElement, 'height', value);
+	}
 
-  set height(value) {
-    this._height = value;
-    this.renderer.setElementStyle(this.elemRef.nativeElement, 'height', value + '');
-  }
+	@ViewChild('img')
+	private img: ElementRef;
 
-  private ratio: number = 0;
+	private naturalWidth: number = 0;
+	private naturalHeight: number = 0;
+	private naturalRatio: number = 0;
 
-  @ViewChild('img')
-  private img: ElementRef;
+	constructor(
+		private elemRef: ElementRef,
+		private renderer: Renderer
+	) {
 
-  private naturalWidth: number = 0;
-  private naturalHeight: number = 0;
-  private naturalRatio: number = 0;
+	}
 
-  constructor(
-    private elemRef: ElementRef,
-    private renderer: Renderer
-  ) {
+	ngOnInit() {
+		this.img.nativeElement.onload = () => {
+			this.onLoaded();
+		}
 
-  }
+	}
 
-  ngOnInit() {
-    this.img.nativeElement.onload = () => {
-      this.onLoaded();
-    }
+	onLoaded() {
+		var position = DomUtils.getStyle(this.elemRef.nativeElement, 'position');
+		//图片初始大小
+		this.naturalWidth = this.img.nativeElement.naturalWidth;
+		this.naturalHeight = this.img.nativeElement.naturalHeight;
+		this.naturalRatio = this.naturalWidth / this.naturalHeight;
 
-  }
+		if (position === 'static') this.renderer.setElementStyle(this.elemRef.nativeElement, 'position', 'relative');
 
-  onLoaded() {
-    var position = DomUtils.getStyle(this.elemRef.nativeElement, 'position');
-    //图片初始大小
-    this.naturalWidth = this.img.nativeElement.naturalWidth;
-    this.naturalHeight = this.img.nativeElement.naturalHeight;
-    this.naturalRatio = this.naturalWidth / this.naturalHeight;
+		this.resize();
+	}
 
-    if (position === 'static') this.renderer.setElementStyle(this.elemRef.nativeElement, 'position', 'relative');
+	resize() {
+		var elem = this.elemRef.nativeElement;
+		var styleWidth = elem.style.width;
+		var styleHeight = elem.style.height;
 
-    this.resize();
-  }
+		if (!styleWidth && !styleHeight) {
+			this.width = this.naturalWidth + 'px';
+			this.height = this.naturalHeight + 'px';
 
-  resize() {
-    var elem = this.elemRef.nativeElement;
-    var styleWidth = elem.style.width;
-    var styleHeight = elem.style.height;
+		} else if (styleWidth && !styleHeight) {
+			this.width = styleWidth;
+			this.height = (this.width / this.naturalRatio) + 'px';
 
+		} else if (!styleWidth && styleHeight) {
+			this.height = styleHeight;
+			this.width = (this.height * this.naturalRatio) + 'px';
 
-    // if (!this.w && !this.h) {
-    //   this.width = naturalWidth;
-    //   this.height = naturalHeight;
+		} else {
+			this.width = styleWidth;
+			this.height = styleHeight;
+		}
 
-    // } else if (this.w && !this.h) {
-    //   this.width = this.w;
-    //   var width = elem.width;
-    //   this.height = width / naturalRatio;
+		var ratio = this.width / this.height;
 
-    // } else if (!this.w && this.h) {
-    //   this.height = this.h;
-    //   var height = elem.width;
-    //   this.width = height * naturalRatio;
+		//0-全屏填充, 1-适应填充
+		var fillMode = 0;
 
-    // } else {
-    //   this.width = this.w;
-    //   this.height = this.h;
-    // }
+		if (ratio > this.naturalRatio) {
+			if (fillMode == 0) {
+				this.renderer.setElementClass(elem, 'img-portrait', true);
+				this.renderer.setElementClass(elem, 'img-landscape', false);
 
-    // var width = this.width = DomUtils.getWidth(elem);
-    // var height = this.height = DomUtils.getWidth(elem);
-    // var ratio = this.ratio = width / height;
+			} else if (fillMode == 1) {
+				this.renderer.setElementClass(elem, 'img-landscape', true);
+				this.renderer.setElementClass(elem, 'img-portrait', false);
+			}
+		} else {
+			if (fillMode == 0) {
+				this.renderer.setElementClass(elem, 'img-landscape', true);
+				this.renderer.setElementClass(elem, 'img-portrait', false);
 
-    // //0-全屏填充, 1-适应填充
-    // var fillMode = 0;
+			} else if (fillMode == 1) {
+				this.renderer.setElementClass(elem, 'img-portrait', true);
+				this.renderer.setElementClass(elem, 'img-landscape', false);
+			}
+		}
+	}
 
-    // if (ratio > naturalRatio) {
-    //   if (fillMode == 0) {
-    //     this.renderer.setElementClass(elem, 'img-portrait', true);
-    //     this.renderer.setElementClass(elem, 'img-landscape', false);
-
-    //   } else if (fillMode == 1) {
-    //     this.renderer.setElementClass(elem, 'img-landscape', true);
-    //     this.renderer.setElementClass(elem, 'img-portrait', false);
-    //   }
-    // } else {
-    //   if (fillMode == 0) {
-    //     this.renderer.setElementClass(elem, 'img-landscape', true);
-    //     this.renderer.setElementClass(elem, 'img-portrait', false);
-    //   } else if (fillMode == 1) {
-    //     this.renderer.setElementClass(elem, 'img-portrait', true);
-    //     this.renderer.setElementClass(elem, 'img-landscape', false);
-    //   }
-    // }
-  }
-
-  @HostListener('click')
-  onClick() {
-    var overlay;
-    var elem = this.elemRef.nativeElement;
-    var offset = DomUtils.getOffset(elem);
-    var clone = DomUtils.cloneDom(elem);
-    var overlayWidth = DomUtils.getWidth(overlay);
-    var overlayHeight = DomUtils.getHeight(overlay);
-
-    var beginWidth = this.width;
-    var beginHeight = this.height;
-    var beginTop = offset.top;
-    var beginLeft = offset.left;
-
-    var endWidth = overlayWidth;
-    var endHeight = endWidth / this.naturalRatio;
-    var endTop = (overlayHeight - endHeight) / 2;
-    var endLeft = 0;
-
-    if (endTop < 0) endTop = 0;
+	@HostListener('click')
+	onClick() {
+		var overlay = document.createElement('div');
+		overlay.className = 'cy-img-overlay';
+		overlay.addEventListener('click', function () {
+			zoomOut();
+		});
+		var elem = this.elemRef.nativeElement;
+		var offset = DomUtils.getOffset(elem);
+		var clone = DomUtils.cloneDom(elem);
 
 
-    zoomIn();
+		document.body.appendChild(overlay);
+		overlay.appendChild(clone[0]);
 
-    function zoomIn() {
-      clone
-        .css({
-          position: 'absolute',
-          top: beginTop,
-          left: beginLeft,
-          width: beginWidth,
-          height: beginHeight
-        });
+		var overlayWidth = DomUtils.getWidth(overlay);
+		var overlayHeight = DomUtils.getHeight(overlay);
 
-        this.renderer
+		var beginWidth = this.width;
+		var beginHeight = this.height;
+		var beginTop = offset.top;
+		var beginLeft = offset.left;
 
-      overlay.append(clone);
+		var endWidth = overlayWidth;
+		var endHeight = endWidth / this.naturalRatio;
+		var endTop = (overlayHeight - endHeight) / 2;
+		var endLeft = 0;
 
-      clone.animate({
-        top: endTop,
-        left: endLeft,
-        width: endWidth,
-        height: endHeight
-      }, 200);
-    }
+		if (endTop < 0) endTop = 0;
 
-    function zoomOut() {
-      overlay.animate({
-        'background-color': '#fff'
-      }, 200, function () {
-        overlay.remove();
-      });
+		zoomIn();
 
-      clone.animate({
-        top: beginTop,
-        left: beginLeft,
-        width: beginWidth,
-        height: beginHeight
-      }, 200);
-    }
-  }
+		function zoomIn() {
+			clone
+				.css({
+					position: 'absolute',
+					top: beginTop,
+					left: beginLeft,
+					width: beginWidth,
+					height: beginHeight
+				})
+				.animate({
+					top: endTop,
+					left: endLeft,
+					width: endWidth,
+					height: endHeight
+				}, 200);
+		}
+
+		function zoomOut() {
+			clone.animate({
+				top: beginTop,
+				left: beginLeft,
+				width: beginWidth,
+				height: beginHeight
+			}, 200,function(){
+				document.body.removeChild(overlay);
+			});
+
+			
+		}
+
+		
+	}
 
 }

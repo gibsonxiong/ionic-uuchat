@@ -97,6 +97,10 @@ export class SigninPage {
 	//登录
 	signin(): void {
 
+		if(this.form.invalid){
+			return ;
+		}
+
 		this.signining = true;
 		var obser = this.userservice.signin(this.form.value);
 

@@ -10,7 +10,7 @@ import { Storage } from '@ionic/storage';
 import { Transfer } from 'ionic-native';
 import 'rxjs/add/operator/filter';
 
-import { HOST } from '../../config';
+import { UPLOAD_HOST } from '../../config';
 
 import { UserDetailPage } from '../user-detail/user-detail';
 import { ReorderPage } from '../reorder/reorder';
@@ -158,7 +158,7 @@ export class ChatContentPage {
     }
 
     playRecord(audioSrc) {
-        this.audio.nativeElement.src = audioSrc;
+        this.audio.nativeElement.src = UPLOAD_HOST + audioSrc;
     }
 
     setVolumeImgSrc(persents) {
