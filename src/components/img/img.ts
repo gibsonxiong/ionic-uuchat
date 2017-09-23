@@ -7,11 +7,13 @@ import { DomUtils } from '../../utils/dom-utils';
 })
 export class ImgComponent {
 
-	@Input('src') src: string;
-	@Input('width') w: any;
-	@Input('height') h: any;
+	private naturalWidth: number = 0;
+	private naturalHeight: number = 0;
+	private naturalRatio: number = 0;
 
-	get width() {
+	@Input('src') src: string;
+
+	@Input('width') get width() {
 		return DomUtils.getWidth(this.elemRef.nativeElement);
 	}
 
@@ -19,7 +21,7 @@ export class ImgComponent {
 		this.renderer.setElementStyle(this.elemRef.nativeElement, 'width', value);
 	}
 
-	get height() {
+	@Input('height') get height() {
 		return DomUtils.getHeight(this.elemRef.nativeElement);
 	}
 
@@ -27,12 +29,8 @@ export class ImgComponent {
 		this.renderer.setElementStyle(this.elemRef.nativeElement, 'height', value);
 	}
 
-	@ViewChild('img')
-	private img: ElementRef;
+	@ViewChild('img') img: ElementRef;
 
-	private naturalWidth: number = 0;
-	private naturalHeight: number = 0;
-	private naturalRatio: number = 0;
 
 	constructor(
 		private elemRef: ElementRef,
@@ -119,7 +117,6 @@ export class ImgComponent {
 		var offset = DomUtils.getOffset(elem);
 		var clone = DomUtils.cloneDom(elem);
 
-
 		document.body.appendChild(overlay);
 		overlay.appendChild(clone[0]);
 
@@ -155,6 +152,8 @@ export class ImgComponent {
 					width: endWidth,
 					height: endHeight
 				}, 200);
+
+			
 		}
 
 		function zoomOut() {
