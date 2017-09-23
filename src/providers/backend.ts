@@ -2,7 +2,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { MyReplaySubject } from '../utils/MyRelaySubject';
-import { HOST } from '../config';
+import { HOST } from '../config/config';
 import { MyHttp } from './my-http';
 import { UserService } from '../services/user';
 import { MsgService } from '../services/msg';

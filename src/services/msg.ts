@@ -12,7 +12,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/combineLatest';
-import { API_HOST } from '../config';
+import { API_HOST } from '../config/config';
 import { MyHttp } from '../providers/my-http';
 import { BackEnd } from '../providers/backend';
 import { UserService } from '../services/user';

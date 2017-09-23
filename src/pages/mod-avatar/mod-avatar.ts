@@ -14,7 +14,7 @@ import { SystemService } from '../../services/system';
 import { MyHttp } from '../../providers/my-http';
 import 'rxjs/add/operator/toPromise';
 
-import {API_HOST} from '../../config';
+import {API_HOST} from '../config/config';
 
 var fileFactory = {
 	createByDataURL:function(dataURL,fileName,callback,options= {}){

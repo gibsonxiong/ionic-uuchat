@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
-import { API_HOST } from '../config';
+import { API_HOST } from '../config/config';
 import { MyHttp } from '../providers/my-http';
 import { BackEnd } from '../providers/backend';
 

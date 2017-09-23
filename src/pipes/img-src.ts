@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {UPLOAD_HOST} from '../config';
+import {UPLOAD_HOST} from '../config/config';
 
 
 @Pipe({
