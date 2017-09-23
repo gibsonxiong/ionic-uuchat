@@ -3,7 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
-import { API_HOST } from '../../config';
+import { API_HOST } from '../../config/config';
 
 declare var require;
 var QRCode = require('../../assets/js/qrcode');
