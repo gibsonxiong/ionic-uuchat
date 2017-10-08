@@ -105,7 +105,7 @@ export class SignupPage {
 							{
 								text: '去登录',
 								handler: () => {
-									this.navCtrl.popTo(SigninPage, { username: mobile });
+									this.navCtrl.setRoot(SigninPage, { username: mobile });
 								}
 							}
 						]

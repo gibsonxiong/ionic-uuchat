@@ -2,7 +2,11 @@ import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavParams, NavController, ActionSheetController } from 'ionic-angular';
-import { Camera, Crop, ImagePicker } from 'ionic-native';
+
+import { ImagePicker } from '@ionic-native/image-picker';
+import { Camera } from '@ionic-native/camera';
+import { Crop } from '@ionic-native/crop';
+
 import { SystemService } from '../../services/system';
 
 import { SigninPage } from '../signin/signin';
@@ -10,11 +14,9 @@ import { UserService } from '../../services/user';
 import { UserValidator } from '../../validators/user';
 import { patterns } from '../../patterns';
 
-import { File as CordovaFile, FileEntry } from 'ionic-native';
-
 import { MyHttp } from '../../providers/my-http';
 
-declare var cordova: any;
+// declare var cordova: any;
 
 @Component({
 	selector: 'cy-signup-complete-page',
@@ -29,6 +31,9 @@ export class SignupCompletePage {
 		private sanitizer: DomSanitizer,
 		private navCtrl: NavController,
 		private navParams: NavParams,
+		private imagePicker: ImagePicker,
+		private camera: Camera,
+		private crop: Crop,
 		private actionSheetCtrl: ActionSheetController,
 		private userservice: UserService,
 		private fb: FormBuilder,
@@ -151,70 +156,70 @@ export class SignupCompletePage {
 	//通过拍照设置头像
 	setByPhotograph() {
 
-		this.photograph()
-			.then((imageData) => {
-				return this.cropImg(imageData);
-			})
-			.then(newImagePath => {
-				return CordovaFile.resolveLocalFilesystemUrl(newImagePath)
-			})
-			.then((fileEntry: FileEntry) => {
-				return new Promise<CordovaFile>((resolve, reject) => {
-					fileEntry.file(
-						file => {
-							resolve(file);
-						},
-						err => {
-							reject(err);
-						}
-					);
-				});
-			})
-			.then((file: CordovaFile) => {
-				var reader = new FileReader();
-				reader.onloadend = (e) => {
-					var Html5File = new Blob([e.target['result']], { type: 'image/png' });
-					Html5File['name'] = 'avatar.png';
-					this.avatarSrc = this.sanitizer.bypassSecurityTrustUrl(file['localURL']);
-					this.form.controls['avatar'].setValue([Html5File, Html5File]);
-				};
-				reader.readAsArrayBuffer(file as Blob);
-			})
-			.catch((err) => this.myHttp.handleError(err, '设置头像失败'));
+		// this.photograph()
+		// 	.then((imageData) => {
+		// 		return this.cropImg(imageData);
+		// 	})
+		// 	.then(newImagePath => {
+		// 		return this.file.resolveLocalFilesystemUrl(newImagePath)
+		// 	})
+		// 	.then((fileEntry: FileEntry) => {
+		// 		return new Promise<CordovaFile>((resolve, reject) => {
+		// 			fileEntry.file(
+		// 				file => {
+		// 					resolve(file);
+		// 				},
+		// 				err => {
+		// 					reject(err);
+		// 				}
+		// 			);
+		// 		});
+		// 	})
+		// 	.then((file: CordovaFile) => {
+		// 		var reader = new FileReader();
+		// 		reader.onloadend = (e) => {
+		// 			var Html5File = new Blob([e.target['result']], { type: 'image/png' });
+		// 			Html5File['name'] = 'avatar.png';
+		// 			this.avatarSrc = this.sanitizer.bypassSecurityTrustUrl(file['localURL']);
+		// 			this.form.controls['avatar'].setValue([Html5File, Html5File]);
+		// 		};
+		// 		reader.readAsArrayBuffer(file as Blob);
+		// 	})
+		// 	.catch((err) => this.myHttp.handleError(err, '设置头像失败'));
 	}
 
 	//通过手机相册设置头像
 	setByAlbum() {
-		this.openAlbum()
-			.then((uri) => {
-				return this.cropImg(uri);
-			})
-			.then(newImagePath => {
-				return CordovaFile.resolveLocalFilesystemUrl(newImagePath)
-			})
-			.then((fileEntry: FileEntry) => {
-				return new Promise<CordovaFile>((resolve, reject) => {
-					fileEntry.file(
-						file => {
-							resolve(file);
-						},
-						err => {
-							reject(err);
-						}
-					);
-				});
-			})
-			.then((file: CordovaFile) => {
-				var reader = new FileReader();
-				reader.onloadend = (e) => {
-					var Html5File = new Blob([e.target['result']], { type: 'image/png' });
-					Html5File['name'] = 'avatar.png';
-					this.avatarSrc = this.sanitizer.bypassSecurityTrustUrl(file['localURL']);
-					this.form.controls['avatar'].setValue([Html5File, Html5File]);
-				};
-				reader.readAsArrayBuffer(file as Blob);
-			})
-			.catch((err) => this.myHttp.handleError(err, '设置头像失败'));
+		// this.openAlbum()
+		// 	.then((uri) => {
+		// 		return this.cropImg(uri);
+		// 	})
+		// 	.then(newImagePath => {
+		// 		return CordovaFile.resolveLocalFilesystemUrl(newImagePath)
+		// 	})
+		// 	.then((fileEntry: FileEntry) => {
+		// 		return new Promise<CordovaFile>((resolve, reject) => {
+		// 			fileEntry.file(
+		// 				file => {
+		// 					resolve(file);
+		// 				},
+		// 				err => {
+		// 					reject(err);
+		// 				}
+		// 			);
+		// 		});
+		// 	})
+		// 	.then((file: CordovaFile) => {
+		// 		var reader = new FileReader();
+		// 		reader.onloadend = (e) => {
+		// 			var Html5File = new Blob([e.target['result']], { type: 'image/png' });
+		// 			Html5File['name'] = 'avatar.png';
+		// 			this.avatarSrc = this.sanitizer.bypassSecurityTrustUrl(file['localURL']);
+		// 			this.form.controls['avatar'].setValue([Html5File, Html5File]);
+		// 		};
+		// 		reader.readAsArrayBuffer(file as Blob);
+		// 	})
+		// 	.catch((err) => this.myHttp.handleError(err, '设置头像失败'));
 	}
 
 	//拍照
@@ -225,11 +230,11 @@ export class SignupCompletePage {
 			targetHeight: 350,
 		};
 
-		return Camera.getPicture(options);
+		return this.camera.getPicture(options);
 	}
 
 	cropImg(uri) {
-		return Crop.crop(uri, { quality: 100 });
+		return this.crop.crop(uri, { quality: 100 });
 	}
 
 
@@ -238,7 +243,7 @@ export class SignupCompletePage {
 		var options = {
 			maximumImagesCount: 1
 		};
-		return ImagePicker.getPictures(options).then(res => {
+		return this.imagePicker.getPictures(options).then(res => {
 			return res[0];
 		})
 	}

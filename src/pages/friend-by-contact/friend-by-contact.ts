@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, Platform } from 'ionic-angular';
-import { Contacts, Contact, ContactField, ContactName, ContactFieldType, IContactFindOptions } from 'ionic-native';
+import { Contacts, ContactFieldType, IContactFindOptions } from '@ionic-native/contacts';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 
@@ -19,6 +19,7 @@ export class FriendByContactPage implements OnInit {
 
 	constructor(
 		private platform: Platform,
+		private contacts: Contacts,
 		private navCtrl: NavController,
 		private userService: UserService,
 		private systemService: SystemService,
@@ -66,10 +67,10 @@ export class FriendByContactPage implements OnInit {
 	}
 
 	findContacts(): Observable<any> {
-		let fields: ContactFieldType[] = ['displayName'];
-		let options: IContactFindOptions = { hasPhoneNumber: true };
+		let fields:ContactFieldType[] = ['displayName'];
+		let options:IContactFindOptions = { hasPhoneNumber: true };
 
-		let p = Contacts.find(fields, options)
+		let p = this.contacts.find(fields, options)
 			.then(contacts => {
 				var newContacts = [];
 				contacts.forEach(contact => {

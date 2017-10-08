@@ -8,10 +8,10 @@ import { TimelineAddPage } from '../timeline-add/timeline-add';
 import { BackEnd } from '../../providers/backend';
 import { TimelineService } from '../../services/timeline';
 import { SystemService } from '../../services/system';
-import { Keyboard } from 'ionic-native'; //键盘
+import { Keyboard } from '@ionic-native/keyboard';
 import { MyHttp } from '../../providers/my-http';
 
-import 'rxjs/add/operator/do'
+import 'rxjs/add/operator/do';
 
 
 function isStringLike(s) {
@@ -38,6 +38,7 @@ export class TimelineListPage {
 		private renderer: Renderer,
 		private fb: FormBuilder,
 		private navCtrl: NavController,
+		private keyboard: Keyboard,
 		private timelineService: TimelineService,
 		private systemService: SystemService,
 		private backEnd: BackEnd,
@@ -72,7 +73,7 @@ export class TimelineListPage {
 			}
 		)
 
-		Keyboard.onKeyboardHide().subscribe(
+		this.keyboard.onKeyboardHide().subscribe(
 			v => {
 				console.log(v);
 				this.hideCommentInput();
@@ -203,7 +204,7 @@ export class TimelineListPage {
 		setTimeout(() => {
 			this.renderer.invokeElementMethod(this.input.nativeElement,
 				'focus');
-			Keyboard.show();
+			this.keyboard.show();
 		}, 0);
 	}
 

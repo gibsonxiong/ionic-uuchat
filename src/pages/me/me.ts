@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { App, Platform } from 'ionic-angular';
-import { BarcodeScanner } from 'ionic-native';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 import { DownloadPage } from '../download/download';
 import { SettingPage } from '../setting/setting';
@@ -25,6 +25,7 @@ export class MePage implements OnInit {
 	constructor(
 		private platform: Platform,
 		private appCtrl: App,
+		private barcodeScanner: BarcodeScanner,
 		private userService: UserService,
 		private backend: BackEnd,
 		private systemService: SystemService,
@@ -52,7 +53,7 @@ export class MePage implements OnInit {
 			showTorchButton: true,
 			orientation: 'portrait'
 		}
-		BarcodeScanner.scan(options)
+		this.barcodeScanner.scan(options)
 			.then((barcodeData) => {
 				console.log('barcodeData', barcodeData);
 				// Success! Barcode data is here

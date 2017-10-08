@@ -6,7 +6,7 @@
     <ion-list>
       <ion-item>
         <ion-label>帐号</ion-label>
-        <ion-input type="text" placeholder="用户名/手机号" formControlName="username"></ion-input>
+        <ion-input type="text" placeholder="用户名/手机号" formControlName="username" [clearInput]="true"></ion-input>
         <!--<span item-right *ngIf="form.controls.username.pending && form.controls.username.dirty">...</span>
 				<span item-right *ngIf="form.controls.username.valid && form.controls.username.dirty">√</span>
 				<span item-right *ngIf="form.controls.username.invalid && form.controls.username.dirty">×</span>-->
@@ -14,7 +14,7 @@
 
       <ion-item>
         <ion-label>密码</ion-label>
-        <ion-input type="password" placeholder="密码" formControlName="password"></ion-input>
+        <ion-input type="password" placeholder="密码" formControlName="password" [clearInput]="true"></ion-input>
         <!--<span item-right *ngIf="form.controls.password.pending && form.controls.password.dirty">...</span>
 				<span item-right *ngIf="form.controls.password.valid && form.controls.password.dirty">√</span>
 				<span item-right *ngIf="form.controls.password.invalid && form.controls.password.dirty">×</span>-->

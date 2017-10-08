@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
-import { Vibration } from 'ionic-native';
-import { LocalNotifications } from 'ionic-native';
+import { Vibration } from '@ionic-native/vibration';
+import { LocalNotifications } from '@ionic-native/local-notifications';
 
 import { Storage } from '@ionic/storage';
 
@@ -37,6 +37,8 @@ export class IndexPage {
 
     constructor(
         private navCtrl: NavController,
+        private vibration: Vibration,
+        private localNotifications: LocalNotifications,
         private storage: Storage,
         private alertCtrl: AlertController,
         private userService: UserService,
@@ -156,7 +158,9 @@ export class IndexPage {
         if (ownId === msg.fromUserId) return;
 
         var content = msg.type === 0 ? msg.content : '[语音]';
-        LocalNotifications.schedule({
+        
+        //通知
+        this.localNotifications.schedule({
             id: msg._id,
             title: msg._fromUser.nickname,
             text: content,
@@ -164,7 +168,8 @@ export class IndexPage {
             // smallIcon: 'http://www.classscript.com/static/img/avatar2.png',
         });
 
-        Vibration.vibrate(100);
+        //震动
+        this.vibration.vibrate(100);
     }
 
 

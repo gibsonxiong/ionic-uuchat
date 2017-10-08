@@ -2,11 +2,9 @@ import { Component, ViewChild } from '@angular/core';
 import { Headers } from '@angular/http';
 import { NavController, NavParams, ActionSheetController, Platform } from 'ionic-angular';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ImagePicker } from 'ionic-native';
-import { FileChooser } from 'ionic-native';
-import { Camera } from 'ionic-native';
-import { Crop } from 'ionic-native';
-import { Transfer } from 'ionic-native';
+import { ImagePicker } from '@ionic-native/image-picker';
+import { Camera } from '@ionic-native/camera';
+import { Crop } from '@ionic-native/crop';
 import { Storage } from '@ionic/storage';
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
@@ -60,6 +58,9 @@ export class ModAvatarPage {
 		private navCtrl: NavController,
 		private navParams: NavParams,
 		private storage: Storage,
+		private imagePicker: ImagePicker,
+		private camera: Camera,
+		private crop: Crop,
 		private actionSheetCtrl: ActionSheetController,
 		private userService: UserService,
 		private systemService: SystemService,
@@ -219,12 +220,12 @@ export class ModAvatarPage {
 			targetHeight: 400,
 		};
 
-		return Camera.getPicture(options);
+		return this.camera.getPicture(options);
 	}
 
 	//裁剪图片
 	cropImg(uri) {
-		return Crop.crop(uri, { quality: 100 });
+		return this.crop.crop(uri, { quality: 100 });
 	}
 
 	//打开手机相册
@@ -233,7 +234,7 @@ export class ModAvatarPage {
 		var options = {
 			maximumImagesCount: 1
 		};
-		return ImagePicker.getPictures(options).then(val => {
+		return this.imagePicker.getPictures(options).then(val => {
 			return val[0];
 		})
 	}

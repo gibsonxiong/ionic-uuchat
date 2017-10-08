@@ -1,13 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Platform, App, NavController, NavParams, Content } from 'ionic-angular';
-import { MediaPlugin } from 'ionic-native';
+import { Media, MediaObject } from '@ionic-native/media';
 import { MsgService } from '../../services/msg';
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
 import { BackEnd } from '../../providers/backend';
 import { Storage } from '@ionic/storage';
-import { Transfer } from 'ionic-native';
 import 'rxjs/add/operator/filter';
 
 import { UPLOAD_HOST } from '../../config/config';
@@ -36,7 +35,7 @@ export class ChatContentPage {
 
     //语音
     private recordFileSrc = 'record.mp3';
-    private recordFile;
+    private recordFile: MediaObject;
     private recording = false;
     private volumeImgSrc;
     private recordDuration = 0;
@@ -52,6 +51,7 @@ export class ChatContentPage {
         private fb: FormBuilder,
         private platform: Platform,
         private storage: Storage,
+        private media: Media,
         private userService: UserService,
         private msgService: MsgService,
         private systemService: SystemService,
@@ -116,7 +116,7 @@ export class ChatContentPage {
             this.recordFile.release();
         }
 
-        this.recordFile = new MediaPlugin(this.recordFileSrc);
+        this.recordFile = this.media.create(this.recordFileSrc);
 
         if (!this.recording) {
             this.recording = true;

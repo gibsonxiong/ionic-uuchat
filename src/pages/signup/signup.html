@@ -12,7 +12,7 @@
       </ion-item>
       <ion-item>
         <ion-label>验证码</ion-label>
-        <ion-input type="number" formControlName="code" placeholder="验证码"></ion-input>
+        <ion-input type="tel" formControlName="code" placeholder="验证码"></ion-input>
         <button ion-button item-right (click)="getVerificationCode($event)" [disabled]="disableButton || form.controls.mobile.invalid">{{buttonName}}</button>
       </ion-item>
     </ion-list>

@@ -1,6 +1,6 @@
 {
-  "name": "UU Chat",
-  "short_name": "UU Chat",
+  "name": "Ionic",
+  "short_name": "Ionic",
   "start_url": "index.html",
   "display": "standalone",
   "icons": [{

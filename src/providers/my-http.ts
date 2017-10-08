@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
-import { Transfer } from 'ionic-native';
+// import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 import { SystemService } from '../services/system';
 
 
@@ -23,7 +23,7 @@ export class MyHttp extends Http {
 		_backend: ConnectionBackend,
 		_defaultOptions: RequestOptions,
 		private loadingCtrl: LoadingController,
-		private systemService : SystemService
+		private systemService : SystemService,
 
 	) {
 		super(_backend, _defaultOptions);
@@ -54,43 +54,43 @@ export class MyHttp extends Http {
 
 	get(url: string, options?: RequestOptionsArgs): Observable<any> {
 		return super.get(url, options)
-			.timeout(this.timeoutLimit, new Error(this.timeoutErrorMsg))
+			.timeout(this.timeoutLimit)
 			.map(this.convertResponse)
 	}
 
 	post(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
 		return super.post(url, body, options)
-			.timeout(this.timeoutLimit, new Error(this.timeoutErrorMsg))
+			.timeout(this.timeoutLimit)
 			.map(this.convertResponse)
 	}
 
 	put(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
 		return super.put(url, body, options)
-			.timeout(this.timeoutLimit, new Error(this.timeoutErrorMsg))
+			.timeout(this.timeoutLimit)
 			.map(this.convertResponse)
 	}
 
 	delete(url: string, options?: RequestOptionsArgs): Observable<any> {
 		return super.delete(url, options)
-			.timeout(this.timeoutLimit, new Error(this.timeoutErrorMsg))
+			.timeout(this.timeoutLimit)
 			.map(this.convertResponse)
 	}
 
 	patch(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
 		return super.patch(url, body, options)
-			.timeout(this.timeoutLimit, new Error(this.timeoutErrorMsg))
+			.timeout(this.timeoutLimit)
 			.map(this.convertResponse)
 	}
 
 	head(url: string, options?: RequestOptionsArgs): Observable<any> {
 		return super.head(url, options)
-			.timeout(this.timeoutLimit, new Error(this.timeoutErrorMsg))
+			.timeout(this.timeoutLimit)
 			.map(this.convertResponse)
 	}
 
 	options(url: string, options?: RequestOptionsArgs): Observable<any> {
 		return super.options(url, options)
-			.timeout(this.timeoutLimit, new Error(this.timeoutErrorMsg))
+			.timeout(this.timeoutLimit)
 			.map(this.convertResponse)
 	}
 
@@ -111,32 +111,35 @@ export class MyHttp extends Http {
 
 	upload(filePath, fileName, remoteUrl, params?): Observable<any> {
 
-		const fileTransfer = new Transfer();
-		let options = {
-			fileKey: 'file',
-			fileName: fileName,
-			headers: this.requestHeaders,
-			params: params
-		};
+		// const fileTransfer: FileTransferObject = this.transfer.create();
 
-		let p = fileTransfer.upload(filePath, remoteUrl, options);
+		// let options = {
+		// 	fileKey: 'file',
+		// 	fileName: fileName,
+		// 	headers: this.requestHeaders,
+		// 	params: params
+		// };
 
-		return Observable.fromPromise(p)
-			.timeout(this.timeoutLimit, new Error(this.timeoutErrorMsg))
-			.map(result => {
-				var res = JSON.parse(result.response);
+		// let p = fileTransfer.upload(filePath, remoteUrl, options);
 
-				if (res.code) {
-					throw {
-						$custom: 1,
-						code: res.code,
-						msg: res.msg,
-						data: res.data
-					};
-				}
+		// return Observable.fromPromise(p)
+		// 	.timeout(this.timeoutLimit)
+		// 	.map(result => {
+		// 		var res = JSON.parse(result.response);
 
-				return res;
-			})
+		// 		if (res.code) {
+		// 			throw {
+		// 				$custom: 1,
+		// 				code: res.code,
+		// 				msg: res.msg,
+		// 				data: res.data
+		// 			};
+		// 		}
+
+		// 		return res;
+		// 	})
+
+		return Observable.create();
 
 	}
 

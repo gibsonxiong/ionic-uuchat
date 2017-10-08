@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Platform, AlertController } from 'ionic-angular';
-import { StatusBar, Splashscreen } from 'ionic-native';
+import { StatusBar } from '@ionic-native/status-bar';
+import { SplashScreen } from '@ionic-native/splash-screen';
 import { Storage } from '@ionic/storage';
 
 
@@ -20,6 +21,8 @@ export class MyApp {
 
 	constructor(
 		private platform: Platform,
+		private statusBar: StatusBar,
+		private splashScreen: SplashScreen,
 		private storage: Storage,
 		private alertCtrl: AlertController,
 	) {
@@ -41,8 +44,8 @@ export class MyApp {
 		platform.ready().then(() => {
 			// Okay, so the platform is ready and our plugins are available.
 			// Here you can do any higher level native things you might need.
-			StatusBar.styleDefault();
-			Splashscreen.hide();
+			statusBar.styleDefault();
+			splashScreen.hide();
 
 		});
 	}
@@ -80,14 +83,14 @@ export class MyApp {
 
 }
 
-window.onerror = function (msg, url, line) {
-	var idx = url.lastIndexOf("/");
-	if (idx > -1) {
-		url = url.substring(idx + 1);
-	}
-	alert("ERROR in " + url + " (line #" + line + "): " + msg);
-	return false;
-};
+// window.onerror = function (msg, url, line) {
+// 	var idx = url.lastIndexOf("/");
+// 	if (idx > -1) {
+// 		url = url.substring(idx + 1);
+// 	}
+// 	alert("ERROR in " + url + " (line #" + line + "): " + msg);
+// 	return false;
+// };
 
 document.addEventListener("resume", function () {
 	console.log("应用回到前台运行！");
