@@ -60,8 +60,8 @@
       <!--文本-->
       <div *ngIf="!isAudio" class="msg-input-wrapper">
         <form [formGroup]="form" (ngSubmit)="sendMsg()">
-          <input type="text" formControlName="content" (focus)="scrollToBottom()" #input/>
-          <button ion-button [disabled]="form.invalid">发送</button>
+          <input #input type="text" formControlName="content" (focus)="scrollToBottom()" />
+          <button type="submit" ion-button [disabled]="form.invalid">发送</button>
         </form>
       </div>
       <!--语音-->
