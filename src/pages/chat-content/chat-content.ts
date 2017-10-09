@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, Renderer } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Platform, App, NavController, NavParams, Content } from 'ionic-angular';
 import { Media, MediaObject } from '@ionic-native/media';
@@ -43,12 +43,14 @@ export class ChatContentPage {
     private recordDuration_Timer;
 
     @ViewChild(Content) contentComponent;
+    @ViewChild('input') input;
     @ViewChild('audio') audio;
 
     constructor(
         private navCtrl: NavController,
         private params: NavParams,
         private fb: FormBuilder,
+        private renderer:Renderer,
         private platform: Platform,
         private storage: Storage,
         private media: Media,
@@ -201,7 +203,9 @@ export class ChatContentPage {
     }
 
     scrollToBottom() {
-        this.contentComponent.scrollTo(null, this.contentComponent.scrollHeight);
+        setTimeout(()=>{
+            this.contentComponent.scrollTo(null, this.contentComponent.scrollHeight);
+        },0);
     }
 
     
@@ -215,6 +219,12 @@ export class ChatContentPage {
         this.msgService.sendMsg(this.relationId, content);
 
         this.form.controls['content'].setValue('');
+
+        this.scrollToBottom();
+        //得焦
+        setTimeout(()=>{
+            this.renderer.invokeElementMethod(this.input.nativeElement,'focus');
+        },0);
     }
 
     gotoReorderPage() {
