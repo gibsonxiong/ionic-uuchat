@@ -143,6 +143,15 @@ export class ChatContentPage {
             this.recording = false;
             this.recordFile.stopRecord();
             this.stopTime();
+            
+            var audio = new Audio('/sdcard/' + this.recordFileSrc);
+            alert(audio.srcObject);
+
+            var formData = new formData();
+            var file = new File([<any>audio.srcObject],'record.mp3');
+
+            this.userService.modAvatar2(file).subscribe(()=>{});
+                        
             this.msgService.sendAudioMsg(this.relationId, this.recordFileSrc, this.recordDuration);
 
         }

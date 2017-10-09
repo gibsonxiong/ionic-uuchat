@@ -266,6 +266,20 @@ export class MsgService {
 			err => {
 				console.log(err)
 			});
+			
+	}
+
+	//发送语音
+	sendAudioMsg2(relationId, audioUri, audioDuration): void {
+		console.log(audioDuration)
+		this.myHttp.upload('/sdcard/' + audioUri, 'record.mp3', API_HOST + '/msg/sendAudioMsg', { relationId, audioDuration })
+			.subscribe(res => {
+				this.newMsgSubject.next(res.data);
+			},
+			err => {
+				console.log(err)
+			});
+			
 	}
 
 
