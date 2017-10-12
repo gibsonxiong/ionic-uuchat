@@ -224,7 +224,8 @@ export class ModAvatarPage {
 		.then((values)=>{
 			let dataURL = values[0];
 			let file = values[1];
-			return utils.imgDataURL2File(dataURL, file.name, { destWidth: 100, destHeight: 100 })
+			// return utils.imgDataURL2File(dataURL, file.name, { destWidth: 100, destHeight: 100 })
+			return utils.imgDataURL2File(dataURL, file.name)
 		})
 		.then(function (_file) {
 			that.userService.modAvatar2(_file)

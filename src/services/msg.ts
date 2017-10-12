@@ -48,7 +48,56 @@ export class MsgService {
 
 		this.backEnd.pushMsg$.subscribe(
 			msg => this.newMsgSubject.next(msg)
-		)
+		);
+
+		Observable.combineLatest(
+			Observable.merge(
+				this.userService.own$,
+				this.backEnd.pushUserModed$
+			),
+			this.userService.relationList$
+		).subscribe(combine => {
+			let user = combine[0];
+			let relationList = combine[1];
+			//根据userId查找所有的relationIds
+			let ids = ((userId)=>{
+				var ids = [];
+				relationList.forEach(relation=>{
+					if(relation._friend._id === userId ){
+						ids.push(relation['_id']);
+					}
+				});
+
+				return ids;
+			})(user['_id']);
+
+			//会话列表
+			let chatList = this.chatListSubject.getValue();
+
+			chatList.forEach(chat => {
+				
+				if (ids.indexOf(chat.relationId) !== -1 ) {
+					chat['avatarSrc'] = user['avatarSrc'];
+					chat['name'] = user['nickname'];
+				}
+			});
+
+			this.storageChatList(chatList);
+			this.chatListSubject.next(chatList);
+
+			//消息列表
+			let msgList = this.msgListSubject.getValue();
+			
+			msgList.forEach(msg => {
+				if (msg._fromUser._id === user['_id']) {
+					msg._fromUser = user;
+				}
+			});
+			
+			this.storageMsgList(msgList);
+			this.msgListSubject.next(msgList);
+
+		});
 
 		//msg
 		let msgListByNewMsg_Subscription;
@@ -85,7 +134,7 @@ export class MsgService {
 
 				//先从本地存储拿数据，在绑定，避免顺序搞错
 				msgListByNewMsg_Subscription = msgListByNewMsg$.subscribe(list => {
-					this.storageMsgList(list)
+					this.storageMsgList(list);
 					this.msgListSubject.next(list);
 				})
 			}

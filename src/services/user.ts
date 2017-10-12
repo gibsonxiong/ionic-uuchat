@@ -43,7 +43,8 @@ export class UserService {
 			});
 
 			this.relationListSubject.next(relationList);
-		})
+
+		});
 
 		//relationList 改变通知 friendList改变
 		this.relationListSubject
