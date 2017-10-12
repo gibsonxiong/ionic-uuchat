@@ -110,8 +110,8 @@ export class UserService {
 	}
 
 	//登录
-	signin(postData): Observable<any> {
-		return this.myHttp.post(API_HOST + '/user/signin', postData);
+	login(postData): Observable<any> {
+		return this.myHttp.post(API_HOST + '/user/login', postData);
 	}
 
 	//登录
@@ -134,6 +134,11 @@ export class UserService {
 	//注册
 	signup(formData): Observable<any> {
 		return this.myHttp.post(API_HOST + '/user/signup', formData);
+	}
+
+	signup1(mobileToken, username, password): Observable<any> {
+		var postData = { mobileToken, username, password};
+		return this.myHttp.post(API_HOST + '/user/signup1', postData);
 	}
 
 	//搜索用户

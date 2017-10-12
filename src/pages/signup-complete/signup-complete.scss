@@ -3,12 +3,10 @@ cy-signup-complete-page {
     width: 70px;
     color: color($colors, primary)
   }
-  .title {
-    text-align: center;
-    padding-bottom: 2.5rem;
-  }
-  .sub-title {
-    text-align: center;
+  .tip {
+      text-align: center;
+      margin-top: 4.5rem;
+      margin-bottom: 4rem;
   }
   .avatar-wrap {
     padding: 10px;

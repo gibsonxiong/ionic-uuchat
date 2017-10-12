@@ -239,16 +239,6 @@ export class MsgService {
 
 
 	sendMsg(relationId, content): void {
-		// let msgList = this.msgListSubject.getValue();
-		// msgList.push({
-		// 	relationId: relationId,
-		// 	fromUserId: this.backEnd.getOwnId(),
-		// 	content: content,
-		// 	pending: true,
-		// 	type: 0
-		// })
-		// this.msgListSubject.next(msgList);
-
 		this.myHttp.post(API_HOST + '/msg/sendMsg', { relationId, content })
 			.subscribe(
 			res => { this.newMsgSubject.next(res.data) },
@@ -258,7 +248,6 @@ export class MsgService {
 
 	//发送语音
 	sendAudioMsg(relationId, audioUri, audioDuration): void {
-		console.log(audioDuration)
 		this.myHttp.upload('/sdcard/' + audioUri, 'record.mp3', API_HOST + '/msg/sendAudioMsg', { relationId, audioDuration })
 			.subscribe(res => {
 				this.newMsgSubject.next(res.data);
@@ -268,20 +257,6 @@ export class MsgService {
 			});
 			
 	}
-
-	//发送语音
-	sendAudioMsg2(relationId, audioUri, audioDuration): void {
-		console.log(audioDuration)
-		this.myHttp.upload('/sdcard/' + audioUri, 'record.mp3', API_HOST + '/msg/sendAudioMsg', { relationId, audioDuration })
-			.subscribe(res => {
-				this.newMsgSubject.next(res.data);
-			},
-			err => {
-				console.log(err)
-			});
-			
-	}
-
 
 	readChat(relationId) {
 		this.readingId = relationId;

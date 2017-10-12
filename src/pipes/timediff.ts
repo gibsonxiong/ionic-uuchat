@@ -14,10 +14,7 @@ export class TimediffPipe implements PipeTransform {
 	  Takes a value and makes it lowercase.
 	 */
 	transform(value) {
-		var time = new Date(value);
-		var timeStamp = time.getTime();
-		var currTime = Date.now();
-		var diff = (currTime - timeStamp) / 1000;
+		var diff = value / 1000;
 
 		if (diff < 60 && diff >= 0) {
 			return "刚刚";

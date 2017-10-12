@@ -13,6 +13,7 @@ import { UPLOAD_HOST } from '../../config/config';
 
 import { UserDetailPage } from '../user-detail/user-detail';
 import { ReorderPage } from '../reorder/reorder';
+import { clone, getDiff } from '../../utils/utils';
 
 @Component({
     selector: 'cy-chat-content-page',
@@ -20,6 +21,7 @@ import { ReorderPage } from '../reorder/reorder';
 
 })
 export class ChatContentPage {
+    private timer;
     private isAudio = false;
 
     private relationId: string;
@@ -50,7 +52,7 @@ export class ChatContentPage {
         private navCtrl: NavController,
         private params: NavParams,
         private fb: FormBuilder,
-        private renderer:Renderer,
+        private renderer: Renderer,
         private platform: Platform,
         private storage: Storage,
         private media: Media,
@@ -70,7 +72,7 @@ export class ChatContentPage {
             content: ['', Validators.required]
         });
         //
-        
+
 
 
     }
@@ -98,6 +100,19 @@ export class ChatContentPage {
             });
 
 
+        this.updateDiff();
+        this.timer = setInterval(() => {
+            this.updateDiff();
+        }, 60000);
+
+
+    }
+
+    updateDiff() {
+        this.msgList.forEach(function (item) {
+            item['timediff'] = getDiff(item.sendTime);
+            return item;
+        });
     }
 
 
@@ -105,6 +120,8 @@ export class ChatContentPage {
         // this.userSubscription.unsubscribe();
         this.msgListSubscription.unsubscribe();
         this.newMsgSubscription.unsubscribe();
+
+        clearInterval(this.timer);
     }
 
     //语音
@@ -204,18 +221,18 @@ export class ChatContentPage {
     }
 
     scrollToBottom() {
-        setTimeout(()=>{
+        setTimeout(() => {
             this.contentComponent.scrollTo(null, this.contentComponent.scrollHeight);
-        },0);
+        }, 0);
     }
 
-    
+
     sendMsg() {
         if (this.form.invalid) return;
 
         let content = this.form.value.content;
 
-        if(/^\s+$/g.test(content)) return this.systemService.showToast('不能发送空白消息');
+        if (/^\s+$/g.test(content)) return this.systemService.showToast('不能发送空白消息');
 
         this.msgService.sendMsg(this.relationId, content);
 
@@ -223,9 +240,9 @@ export class ChatContentPage {
 
         this.scrollToBottom();
         //得焦
-        setTimeout(()=>{
-            this.renderer.invokeElementMethod(this.input.nativeElement,'focus');
-        },0);
+        setTimeout(() => {
+            this.renderer.invokeElementMethod(this.input.nativeElement, 'focus');
+        }, 0);
     }
 
     gotoReorderPage() {

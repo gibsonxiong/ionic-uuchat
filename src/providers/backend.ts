@@ -129,7 +129,7 @@ export class BackEnd {
 
 
             //登录
-            this.socket.emit('signin', token, (isOK) => {
+            this.socket.emit('login', token, (isOK) => {
                 this.stateSubject.next(2);
                 resolve();
             });

@@ -3,27 +3,11 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <h2 class="title">完善你的帐号</h2>
+  
   <form [formGroup]="form" (ngSubmit)="signup()">
-    <ion-list>
-      <ion-item>
-        <ion-label>用户名</ion-label>
-        <ion-input type="text" formControlName="username"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>密码</ion-label>
-        <ion-input type="password" formControlName="password"></ion-input>
-      </ion-item>
-    </ion-list>
-
-    <h3 class="sub-title">个人资料</h3>
+    <h2 class="tip">完善个人资料</h2>
     <div class="avatar-wrap">
-
       <img [src]="avatarSrc | avatarSrc" (click)="presentActionSheet()"/>
-      <!--<label>
-      <img [src]="avatarSrc | avatarSrc"/>
-      <input type="file" style="display: none;" formContorlName="avatar" (change)="fileInputChange($event)"/>
-      </label>-->
       <p class="avatar-tip">点击图片，上传头像</p>
     </div>
     <ion-list>
@@ -42,7 +26,7 @@
       </ion-item>
     </ion-list>
     <div padding-horizontal>
-      <button ion-button block [disabled]="form.invalid">注册</button>
+      <button ion-button block>保存</button>
     </div>
   </form>
 </ion-content>

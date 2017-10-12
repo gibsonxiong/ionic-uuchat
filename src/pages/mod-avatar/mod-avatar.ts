@@ -12,37 +12,74 @@ import { SystemService } from '../../services/system';
 import { MyHttp } from '../../providers/my-http';
 import 'rxjs/add/operator/toPromise';
 
-import {API_HOST} from '../../config/config';
+import { API_HOST } from '../../config/config';
 
 var fileFactory = {
-	createByDataURL:function(dataURL,fileName,callback,options= {}){
-		var imgDOM = new Image();
-		var canvasDOM = document.createElement('canvas');
-		var ctx = canvasDOM.getContext('2d');
 
-		imgDOM.onload = function(){
-			//裁剪
-			canvasDOM.width = options['destWidth'] || imgDOM.width;
-			canvasDOM.height = options['destHeight'] || imgDOM.height;
+};
 
-			//ctx.drawImage(imgDOM,0,0,null,null); 会出现全透明的情况
-			if(options['imgWidth'] && options['imgHeight']){
-				ctx.drawImage(imgDOM,0,0,options['imgWidth'] ,options['imgHeight']);
-			}else{
-				ctx.drawImage(imgDOM,0,0);
-			}
+var utils = {
+	openAlbum(): Promise<File> {
+		return new Promise((resolve, reject) => {
+			var fileDOM = document.createElement('input');
+			fileDOM.setAttribute('type', 'file');
+			document.body.appendChild(fileDOM);
+
+			fileDOM.addEventListener('change', function () {
+				resolve(this.files[0]);
+
+				document.body.removeChild(fileDOM);
+
+			}, false);
+
+			fileDOM.click();
+		});
+	},
+
+	imgDataURL2File(dataURL, fileName, options = {}): Promise<File> {
+		return new Promise((resolve, reject) => {
+
+			var imgDOM = new Image();
+			var canvasDOM = document.createElement('canvas');
+			var ctx = canvasDOM.getContext('2d');
+
+			imgDOM.onload = function () {
+				//裁剪
+				canvasDOM.width = options['destWidth'] || imgDOM.width;
+				canvasDOM.height = options['destHeight'] || imgDOM.height;
+
+				//ctx.drawImage(imgDOM,0,0,null,null); 会出现全透明的情况
+				if (options['imgWidth'] && options['imgHeight']) {
+					ctx.drawImage(imgDOM, 0, 0, options['imgWidth'], options['imgHeight']);
+				} else {
+					ctx.drawImage(imgDOM, 0, 0);
+				}
+
+				canvasDOM.toBlob(function (blob) {
+					var file = new File([blob], fileName);
+
+					resolve(file);
+				});
+
+			};
+			imgDOM.src = dataURL;
+		});
+	},
+
+	File2DataURL(file): Promise<string> {
+		return new Promise((resolve, reject) => {
+			var fr = new FileReader();
 			
+			fr.onload = function (res) {
+				resolve(res.target['result']);
+			};
 
-			canvasDOM.toBlob(function(blob){
-				var file = new File([blob],fileName);
-			
-				callback(file);
-			});
+			fr.readAsDataURL(file);
 
-		};
-		imgDOM.src = dataURL;
+		});
 	}
-}
+
+};
 
 @Component({
 	selector: 'cy-mod-avatar-page',
@@ -54,7 +91,7 @@ export class ModAvatarPage {
 
 	constructor(
 		private sanitizer: DomSanitizer,
-		private platform:Platform,
+		private platform: Platform,
 		private navCtrl: NavController,
 		private navParams: NavParams,
 		private storage: Storage,
@@ -70,7 +107,7 @@ export class ModAvatarPage {
 
 	}
 
-	ngOnInit(){
+	ngOnInit() {
 		this.userService.own$.subscribe(own => {
 			this.avatarSrc = own.avatarSrc;
 		});
@@ -81,8 +118,8 @@ export class ModAvatarPage {
 		let supportCordova = this.platform.is('cordova');
 
 		var buttons;
-		
-		if(supportCordova){
+
+		if (supportCordova) {
 			buttons = [
 				{
 					text: '拍照',
@@ -103,13 +140,13 @@ export class ModAvatarPage {
 					}
 				}
 			];
-		}else{
+		} else {
 			buttons = [
 				{
 					text: '从手机相册选择',
 					handler: () => {
 						this.setByAlbum_html5();
-	
+
 					}
 				},
 				{
@@ -121,7 +158,7 @@ export class ModAvatarPage {
 				}
 			];
 		}
-		
+
 
 		let actionSheet = this.actionSheetCtrl.create({
 			buttons: buttons
@@ -137,8 +174,8 @@ export class ModAvatarPage {
 
 		let loading;
 		this.photograph()
-			.then((imageData) => {
-				return this.cropImg(imageData);
+			.then((fileURI) => {
+				return this.cropImg(fileURI);
 			})
 			.then(newImagePath => {
 				loading = this.systemService.showLoading();
@@ -157,13 +194,13 @@ export class ModAvatarPage {
 	//通过手机相册设置头像
 	setByAlbum() {
 		let supportCordova = this.platform.is('cordova');
-		
+
 		if (!supportCordova) return this.systemService.showToast('该功能暂不支持浏览器，请下载APP体验');
 
 		let loading;
 		this.openAlbum()
-			.then((uri) => {
-				return this.cropImg(uri);
+			.then((fileURI) => {
+				return this.cropImg(fileURI);
 			})
 			.then(newImagePath => {
 				loading = this.systemService.showLoading();
@@ -177,55 +214,35 @@ export class ModAvatarPage {
 
 	}
 
-	setByAlbum_html5(){
+	setByAlbum_html5() {
 		var that = this;
-		
-		var fileDOM = document.createElement('input');
-		fileDOM.setAttribute('type','file');
-		document.body.appendChild(fileDOM);
 
-		fileDOM.addEventListener('change',function(){
-			var file = this.files[0];
-			var fr = new FileReader();
-
-			fr.readAsDataURL(file);
-
-			fr.onload = function(res){
-
-				var dataURL = res.target['result'];
-
-				fileFactory.createByDataURL(dataURL,file.name,function(_file){
-					that.userService.modAvatar2(_file)
-					.subscribe(
-						res=>{
-							// that.avatarSrc = that.sanitizer.bypassSecurityTrustUrl(res['data'].avatarSrc);
-							//that.avatarSrc = res['data'].avatarSrc;
-						}
-					);
-				},{destWidth:100,destHeight:100});
-
-			};
-
-			
-		},false);
-
-		fileDOM.click();
+		utils.openAlbum()
+		.then((file)=>{
+			return Promise.all([utils.File2DataURL(file),file]);
+		})
+		.then((values)=>{
+			let dataURL = values[0];
+			let file = values[1];
+			return utils.imgDataURL2File(dataURL, file.name, { destWidth: 100, destHeight: 100 })
+		})
+		.then(function (_file) {
+			that.userService.modAvatar2(_file)
+				.subscribe(
+				res => {}
+				);
+		});
 	}
 
 	//拍照
-	photograph() {
+	photograph(): Promise<string> {
 		var options = {
-			allowEdit: false,
+			allowEdit: true,
 			targetWidth: 400,
 			targetHeight: 400,
 		};
 
 		return this.camera.getPicture(options);
-	}
-
-	//裁剪图片
-	cropImg(uri) {
-		return this.crop.crop(uri, { quality: 100 });
 	}
 
 	//打开手机相册
@@ -239,7 +256,10 @@ export class ModAvatarPage {
 		})
 	}
 
-
+	//裁剪图片
+	cropImg(fileURI): Promise<string> {
+		return this.crop.crop(fileURI, { quality: 100 });
+	}
 
 
 }

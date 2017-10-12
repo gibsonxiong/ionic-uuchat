@@ -6,10 +6,10 @@ import { Storage } from '@ionic/storage';
 
 
 import { IndexPage } from '../pages/index/index';
-import { SigninPage } from '../pages/signin/signin';
+import { LoginPage } from '../pages/login/login';
 /*test*/
-import { SignupCompletePage } from '../pages/signup-complete/signup-complete';
-import { TimelineAddPage } from '../pages/timeline-add/timeline-add';
+// import { SignupCompletePage } from '../pages/signup-complete/signup-complete';
+// import { TimelineAddPage } from '../pages/timeline-add/timeline-add';
 
 
 @Component({
@@ -34,7 +34,7 @@ export class MyApp {
 			if (token) {
 				this.rootPage = IndexPage;
 			} else {
-				this.rootPage = SigninPage;
+				this.rootPage = LoginPage;
 			}
 			// this.rootPage = SignupCompletePage;
 			// this.rootPage = TimelineAddPage;

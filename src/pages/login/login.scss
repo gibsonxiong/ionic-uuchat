@@ -1,4 +1,4 @@
-cy-signin-page {
+cy-login-page {
   .list-ios{
     margin-bottom: 8px;
   }
@@ -10,7 +10,7 @@ cy-signin-page {
     color: color($colors, primary)
   }
   .logo-wrap {
-    padding: 2.5rem;
+    padding: 3.5rem 0 3rem;
     text-align: center;
     img {
       width: 8rem;
@@ -18,5 +18,11 @@ cy-signin-page {
   }
   form {
     padding-bottom: .2rem;
+  }
+
+  .signup-btn{
+    font-size:1.6rem;
+    color: color($colors, primary);
+    text-decoration: underline;
   }
 }

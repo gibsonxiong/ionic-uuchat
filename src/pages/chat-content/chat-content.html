@@ -17,7 +17,7 @@
 
   <div *ngFor="let msg of msgList">
     <!--发送时间-->
-    <div class="send-time-wrap"><span class="send-time">{{msg.sendTime | timediff}}</span></div>
+    <div class="send-time-wrap"><span class="send-time">{{msg.timediff | timediff}}</span></div>
     <!--消息-->
     <div class="msg-wrap {{ msg.fromUserId === ownId?'me-msg':'other-msg' }}">
       <!--头像-->

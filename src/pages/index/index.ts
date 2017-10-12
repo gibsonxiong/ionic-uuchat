@@ -9,7 +9,7 @@ import { ChatPage } from '../chat/chat';
 import { FriendListPage } from '../friend-list/friend-list';
 import { DiscoverPage } from '../discover/discover';
 import { MePage } from '../me/me';
-import { SigninPage } from '../signin/signin';
+import { LoginPage } from '../login/login';
 
 import { UserService } from '../../services/user';
 import { MsgService } from '../../services/msg';
@@ -112,7 +112,7 @@ export class IndexPage {
 
                 } else {
                     this.systemService.showToast('请先登录');
-                    this.gotoSigninPage();
+                    this.gotoLoginPage();
                 }
             })
     }
@@ -188,7 +188,7 @@ export class IndexPage {
                 {
                     text: '切换账号',
                     handler: data => {
-                        this.gotoSigninPage();
+                        this.gotoLoginPage();
                     }
                 },
 
@@ -197,8 +197,8 @@ export class IndexPage {
         alert.present();
     }
 
-    gotoSigninPage() {
-        this.navCtrl.setRoot(SigninPage);
+    gotoLoginPage() {
+        this.navCtrl.setRoot(LoginPage);
     }
 
 

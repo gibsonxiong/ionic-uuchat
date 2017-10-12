@@ -12,33 +12,7 @@ export class UserValidator {
 
 	}
 
-	static aa(): ValidatorFn {
-		return function (control) {
-			let value = control.value;
-			return {
-				full: true
-			}
-		}
-	}
-
-	static existsAsync(): AsyncValidatorFn {
-
-		return function (contorl): Promise<{ [key: string]: any }> {
-			return new Promise((resole, reject) => {
-				setTimeout(() => {
-					if (contorl.value === 'false') {
-						resole({ existsAsync: true });
-					} else {
-						resole(null);
-					}
-
-				}, 500);
-			});
-		}
-
-	}
-
-	existsByUsernameAsync() {
+	existsByUsernameAsync(): AsyncValidatorFn  {
 		var timer;
 		return (contorl): Promise<{ [key: string]: any }> => {
 			return new Promise((resolve, reject) => {

@@ -30,6 +30,14 @@ a{
   color: #333;
 }
 
+.item-ios .item-button {
+  height: 34px;
+}
+
+.item-input ion-input, .item-input ion-textarea {
+  position: relative;
+}
+
 .toast-ios {
   .toast-wrapper {
     right: auto;

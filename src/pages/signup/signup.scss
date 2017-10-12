@@ -1,13 +1,14 @@
 cy-signup-page {
   ion-label {
-    width: 65px;
-    text-align: right;
-    padding-right: 1px;
+    width: 70px;
     color: color($colors, primary)
   }
   .tip {
-    text-align: center;
-	margin-top:2.5rem;
-    margin-bottom: 4rem;
+      text-align: center;
+      margin-top: 4.5rem;
+      margin-bottom: 4rem;
+  }
+  ion-textarea {
+    height: 80px;
   }
 }

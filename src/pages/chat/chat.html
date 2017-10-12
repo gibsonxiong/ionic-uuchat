@@ -27,7 +27,7 @@
 			<img [src]="chat.avatarSrc | avatarSrc"/>
 		</ion-thumbnail>
 		
-		<h2>{{chat.name}} <ion-note>{{chat.lastSendTime | timediff}}</ion-note></h2>
+		<h2>{{chat.name}} <ion-note>{{chat.timediff | timediff}}</ion-note></h2>
 		<p>{{chat.lastContent}}</p>
 
 		<ion-badge color="danger" *ngIf="chat.unread > 0">{{chat.unread}}</ion-badge>

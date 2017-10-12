@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
-import { SigninPage } from '../signin/signin';
+import { LoginPage } from '../login/login';
 
 @Component({
 	selector: 'cy-setting-page',
@@ -25,7 +25,7 @@ export class SettingPage {
 		var that = this;
 
 		this.storage.remove('token').then(() => {
-			that.navCtrl.setRoot(SigninPage);
+			that.navCtrl.setRoot(LoginPage);
 		});
 	}
 

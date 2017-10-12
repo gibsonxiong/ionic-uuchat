@@ -1,5 +1,5 @@
 {
-  "name": "uuchat-master",
+  "name": "uuchat-app",
   "version": "0.0.1",
   "author": "gibsonxiong",
   "private": true,
@@ -45,5 +45,5 @@
   },
   "cordovaPlugins": [],
   "cordovaPlatforms": [],
-  "description": "uuchat-master"
+  "description": "uuchat-app"
 }

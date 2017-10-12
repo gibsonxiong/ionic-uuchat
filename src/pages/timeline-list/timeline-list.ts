@@ -12,6 +12,7 @@ import { Keyboard } from '@ionic-native/keyboard';
 import { MyHttp } from '../../providers/my-http';
 
 import 'rxjs/add/operator/do';
+import { getDiff } from '../../utils/utils';
 
 
 function isStringLike(s) {
@@ -23,6 +24,7 @@ function isStringLike(s) {
 	templateUrl: 'timeline-list.html'
 })
 export class TimelineListPage {
+	private timer;
 	private form: FormGroup;
 	private timelines: any[] = [];
 	private commentTimelineId;
@@ -59,19 +61,19 @@ export class TimelineListPage {
 		obser.subscribe(
 			res => {
 				this.timelines = res.data;
+				this.updateDiff();
 			},
 			err => this.myHttp.handleError(err, '查看朋友圈出错啦')
 		)
 
 		this.contentComponent.ionScrollStart.subscribe(
 			e => {
-				// console.log(e);
 				this.hideCommentInput();
 			},
 			err => {
 				console.log(err);
 			}
-		)
+		);
 
 		this.keyboard.onKeyboardHide().subscribe(
 			v => {
@@ -81,7 +83,12 @@ export class TimelineListPage {
 			err => {
 
 			}
-		)
+		);
+
+		
+        this.timer = setInterval(() => {
+            this.updateDiff();
+        }, 60000);
 
 		// document.addEventListener("resize", () => {
 		// 	console.log(123123);
@@ -89,8 +96,15 @@ export class TimelineListPage {
 		// }, false);
 	}
 
-	ngOnDestroy() {
+	updateDiff() {
+        this.timelines.forEach(function (item) {
+            item['timediff'] = getDiff(item.publishTime);
+            return item;
+        });
+    }
 
+	ngOnDestroy() {
+		clearTimeout(this.timer);
 	}
 
 	// ionViewDidEnter() {

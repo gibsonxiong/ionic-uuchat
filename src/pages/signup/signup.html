@@ -3,21 +3,21 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <h2 class="tip">请输入你的手机号</h2>
-  <form [formGroup]="form" (ngSubmit)="checkVerificationCode()">
+  <form [formGroup]="form" (ngSubmit)="signup()">
+    <h2 class="tip">注册帐号</h2>
     <ion-list>
       <ion-item>
-        <ion-label>手机号</ion-label>
-        <ion-input type="tel" formControlName="mobile" placeholder="手机号"></ion-input>
+        <ion-label>用户名</ion-label>
+        <ion-input type="text" formControlName="username"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label>验证码</ion-label>
-        <ion-input type="tel" formControlName="code" placeholder="验证码"></ion-input>
-        <button ion-button item-right (click)="getVerificationCode($event)" [disabled]="disableButton || form.controls.mobile.invalid">{{buttonName}}</button>
+        <ion-label>密码</ion-label>
+        <ion-input type="password" formControlName="password"></ion-input>
       </ion-item>
     </ion-list>
+
     <div padding-horizontal>
-      <button ion-button block [disabled]="form.invalid">下一步</button>
+      <button ion-button block [disabled]="form.invalid">注册</button>
     </div>
   </form>
 </ion-content>

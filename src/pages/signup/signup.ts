@@ -1,13 +1,17 @@
 import { Component } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavController,  AlertController } from 'ionic-angular';
+import { NavParams, NavController, ActionSheetController } from 'ionic-angular';
+
+import { SystemService } from '../../services/system';
 
 import { UserService } from '../../services/user';
-import { SystemService } from '../../services/system';
+import { UserValidator } from '../../validators/user';
+import { patterns } from '../../patterns';
+
 import { MyHttp } from '../../providers/my-http';
 
-import { SignupCompletePage } from '../signup-complete/signup-complete';
-import { SigninPage } from '../signin/signin';
+// declare var cordova: any;
 
 @Component({
 	selector: 'cy-signup-page',
@@ -16,112 +20,52 @@ import { SigninPage } from '../signin/signin';
 export class SignupPage {
 	private form: FormGroup;
 
-	private timer;
-	private disableButton = false;
-	private buttonName = '获取验证码';
-	private countdown = 60;
+	private avatarSrc;
 
 	constructor(
+		private sanitizer: DomSanitizer,
 		private navCtrl: NavController,
+		private navParams: NavParams,
+		private actionSheetCtrl: ActionSheetController,
 		private userservice: UserService,
 		private fb: FormBuilder,
+		private userService: UserService,
+		private userValidator: UserValidator,
 		private systemService: SystemService,
-		private myHttp: MyHttp,
-		private alertCtrl: AlertController
+		private myHttp:MyHttp
+
 	) {
+		let mobileToken = navParams.data['mobileToken'];
+
 		this.form = fb.group({
-			mobile: ['',
+			mobileToken: mobileToken,
+			username: ['',
 				[
 					Validators.required,
-					Validators.pattern(/^1[3|4|5|8]\d{9}$/)
-				]
+				],
+				this.userValidator.existsByUsernameAsync()
 			],
-			code: ['',
-				[
-					Validators.required,
-					Validators.pattern(/^\d{6}$/)
-				]
-			]
-		})
+			password: '',
+		});
 	}
 
-	_countdown() {
-		if (this.countdown === 0) {
-			this.disableButton = false;
-			this.buttonName = '获取验证码';
-			this.countdown = 60;
+	signup() {
+		var formData = this.form.value;
 
-			clearInterval(this.timer);
-		} else {
-			this.disableButton = true;
-			this.countdown--;
-			this.buttonName = `获取验证码(${this.countdown})`;
-
-			this.timer = setTimeout(() => {
-				this._countdown();
-			}, 1000);
-		}
-	}
-
-	//获取短信验证码
-	getVerificationCode(e) {
-		e.preventDefault();
-
-		this._countdown();
-
-		//获取验证码
-		let mobile = this.form.value.mobile;
-		this.userservice.getVerificationCode(mobile).subscribe(
-			res => {
-				this.systemService.showToast(res.msg);
-			},
-			err => this.myHttp.handleError(err, '发送短信失败')
-		);
-	}
-
-	//验证短信验证码
-	checkVerificationCode() {
-		let mobile = this.form.value.mobile;
-		let code = this.form.value.code;
-
-		var obser = this.userservice.checkVerificationCode(mobile, code);
+		var obser = this.userService.signup1(formData.mobileToken, formData.username, formData.password);
 		obser = this.systemService.linkLoading(obser);
 
 		obser.subscribe(
 			res => {
-				//手机号已经注册
-				if (res.code === 1) {
-					let confirm = this.alertCtrl.create({
-						title: '该手机号码已经注册过',
-						message: '该手机号码已经注册过，如果是你的号码，你可以直接登录。',
-						buttons: [
-							{
-								text: '重新注册',
-								handler: () => {
-									this.form.reset();
-									this.countdown = 0;
-								}
-							},
-							{
-								text: '去登录',
-								handler: () => {
-									this.navCtrl.setRoot(SigninPage, { username: mobile });
-								}
-							}
-						]
-					});
-					confirm.present();
-					return;
-				}
-				let mobileToken = res.data.mobileToken;
-				this.gotoSignupCompletePage(mobileToken);
-			},
-			err => this.myHttp.handleError(err, '手机验证失败')
-		);
-	}
+				this.systemService.showToast('注册成功');
 
-	gotoSignupCompletePage(mobileToken) {
-		this.navCtrl.push(SignupCompletePage, { mobileToken });
+				setTimeout(() => {
+					this.navCtrl.popToRoot();
+				}, 2000);
+
+			},
+			err => this.myHttp.handleError(err, '注册失败')
+		);
 	}
 
 }

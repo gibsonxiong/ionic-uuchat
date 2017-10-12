@@ -1,5 +1,5 @@
 <ion-content>
-  <form [formGroup]="form" (ngSubmit)="signin()">
+  <form [formGroup]="form" (ngSubmit)="login()">
     <div class="logo-wrap">
       <img src="assets/img/logo.png" />
     </div>
@@ -22,19 +22,19 @@
 
     </ion-list>
     <div padding-horizontal>
-      <a href="javascript:;" (click)="gotoSignupPage()">注册</a>
+      <a href="javascript:;" (click)="gotoVerifyMobilePage()" class="signup-btn">注册</a>
     </div>
     <!--<div padding-horizontal><button ion-button block [disabled]="form.invalid" @flyInOut>登录</button></div>-->
     <div padding>
-      <button type="submit" ion-button block icon-start disabled="{{ signining? 'disabled' : '' }}">
-          <ion-spinner color="light" style="margin-right:6px;" *ngIf="signining"></ion-spinner>
+      <button type="submit" ion-button block icon-start disabled="{{ logining? 'disabled' : '' }}">
+          <ion-spinner color="light" style="margin-right:6px;" *ngIf="logining"></ion-spinner>
           登录
       </button>
     </div>
   </form>
 
   <div padding-horizontal style="display: none;">
-    <!-- <button ion-button block color="secondary" (click)="_$testSignin(1)">test1</button>
-    <button ion-button block color="secondary" (click)="_$testSignin(2)">test2</button> -->
+    <!-- <button ion-button block color="secondary" (click)="_$testLogin(1)">test1</button>
+    <button ion-button block color="secondary" (click)="_$testLogin(2)">test2</button> -->
   </div>
 </ion-content>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { App, PopoverController } from 'ionic-angular';
 import { ChatContentPage } from '../chat-content/chat-content';
 import { ChatPopoverPage } from '../chat-popover/chat-popover';
@@ -8,6 +8,8 @@ import { MsgService } from '../../services/msg';
 import { BackEnd } from '../../providers/backend';
 
 import { Subscription } from 'rxjs';
+import { clone, getDiff } from '../../utils/utils';
+
 
 @Component({
 	selector: 'cy-chat-page',
@@ -21,7 +23,6 @@ export class ChatPage implements OnInit {
 	private subscriptions = new Subscription();
 
 	constructor(
-		private ref: ChangeDetectorRef,
 		private zone: NgZone,
 		private appCtrl: App,
 		private popoverCtrl: PopoverController,
@@ -40,23 +41,30 @@ export class ChatPage implements OnInit {
 				this.connectState = state;
 			})
 
-		)
+		);
 
+		this.updateDiff();
 		this.timer = setInterval(() => {
-			let chatList = this.chatList;
-			this.chatList = [];
-			this.ref.detectChanges();
-			this.chatList = chatList;
-
+			this.updateDiff();
 		}, 60000);
 
-		this.msgService.chatList$.subscribe(
-			chatList => {
-				this.chatList = chatList;
-			}
+
+		this.subscriptions.add(
+			this.msgService.chatList$.subscribe(
+				chatList => {
+					this.chatList = chatList;
+				}
+			)
 		);
 
 	}
+
+	updateDiff() {
+        this.chatList.forEach(function(item){
+			item['timediff'] = getDiff(item.lastSendTime);
+			return item;
+		});
+    }
 
 	ngAfterViewInit(a, b, c) {
 		// viewChild is set after the view has been initialized
@@ -92,10 +100,7 @@ export class ChatPage implements OnInit {
 	}
 
 	gotoChatContentPage(relationId, chatName): void {
-		this.appCtrl.getRootNav().push(
-			ChatContentPage,
-			{ relationId, chatName }
-		);
+		this.appCtrl.getRootNav().push(ChatContentPage,{ relationId, chatName });
 	}
 
 	gotoFriendAddPage(): void {

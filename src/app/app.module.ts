@@ -20,8 +20,8 @@ import { MyApp } from './app.component';
 
 /*pages*/
 import { IndexPage } from '../pages/index/index';
-import { ChatPage } from '../pages/chat/chat';
 import { ChatPopoverPage } from '../pages/chat-popover/chat-popover';
+import { ChatPage } from '../pages/chat/chat';
 import { ChatContentPage } from '../pages/chat-content/chat-content';
 import { DailyPage } from '../pages/daily/daily';
 import { DiscoverPage } from '../pages/discover/discover';
@@ -35,9 +35,9 @@ import { QuestionPage } from '../pages/question/question';
 import { ShopPage } from '../pages/shop/shop';
 import { FriendAddPage } from '../pages/friend-add/friend-add';
 import { UserDetailPage } from '../pages/user-detail/user-detail';
+import { VerifyMobilePage } from '../pages/verifymobile/verifymobile';
 import { SignupPage } from '../pages/signup/signup';
-import { SignupCompletePage } from '../pages/signup-complete/signup-complete';
-import { SigninPage } from '../pages/signin/signin';
+import { LoginPage } from '../pages/login/login';
 import { FriendListPage } from '../pages/friend-list/friend-list';
 import { FriendNewPage } from '../pages/friend-new/friend-new';
 import { FriendRequestPage } from '../pages/friend-request/friend-request';
@@ -45,17 +45,17 @@ import { FriendByContactPage } from '../pages/friend-by-contact/friend-by-contac
 import { ReorderPage } from '../pages/reorder/reorder';
 import { DownloadPage } from '../pages/download/download';
 import { SettingPage } from '../pages/setting/setting';
-import { TimelineAddPage } from '../pages/timeline-add/timeline-add';
 import { TimelineListPage } from '../pages/timeline-list/timeline-list';
+import { TimelineAddPage } from '../pages/timeline-add/timeline-add';
 import { QRcodePage } from '../pages/qrcode/qrcode';
-
-
 
 import { myHttpFactory } from '../factorys';
 
 /*components*/
-import { Highlight } from '../components/highlight/highlight';
-import { ImgComponent } from '../components/img/img';
+import { ComponentsModule } from '../components/components.module';
+
+/* pipes */
+import { PipesModule } from '../pipes/pipes.module';
 
 /*services*/
 import { UserService } from '../services/user';
@@ -67,15 +67,9 @@ import { SystemService } from '../services/system';
 import { MyHttp } from '../providers/my-http';
 import { BackEnd } from '../providers/backend';
 
-/*pipes*/
-import { GenderPipe } from '../pipes/gender';
-import { ConnectStatePipe } from '../pipes/connect-state';
-import { TimediffPipe } from '../pipes/timediff';
-import { AvatarSrcPipe } from '../pipes/avatar-src';
-import { ImgSrcPipe } from '../pipes/img-src';
-
 /*validators*/
 import { UserValidator } from '../validators/user';
+
 
 @NgModule({
 	declarations: [
@@ -84,8 +78,8 @@ import { UserValidator } from '../validators/user';
 		/*pages*/
 		IndexPage,
 		ChatPage,
-		ChatPopoverPage,
 		ChatContentPage,
+		ChatPopoverPage,
 		DailyPage,
 		DiscoverPage,
 		MePage,
@@ -100,28 +94,17 @@ import { UserValidator } from '../validators/user';
 		FriendRequestPage,
 		FriendByContactPage,
 		UserDetailPage,
-		SignupCompletePage,
 		SignupPage,
-		SigninPage,
+		VerifyMobilePage,
+		LoginPage,
 		FriendListPage,
 		FriendNewPage,
 		ReorderPage,
 		DownloadPage,
 		SettingPage,
-		TimelineAddPage,
 		TimelineListPage,
+		TimelineAddPage,
 		QRcodePage,
-
-		/*components*/
-		Highlight,
-		ImgComponent,
-
-		/*pipes*/
-		GenderPipe,
-		ConnectStatePipe,
-		TimediffPipe,
-		AvatarSrcPipe,
-		ImgSrcPipe
 	],
 	imports: [
 		BrowserModule,
@@ -134,7 +117,9 @@ import { UserValidator } from '../validators/user';
 			mode: 'ios'
 
 		}),
-		IonicStorageModule.forRoot()
+		IonicStorageModule.forRoot(),
+		PipesModule,
+		ComponentsModule
 	],
 	bootstrap: [IonicApp],
 	entryComponents: [
@@ -142,8 +127,8 @@ import { UserValidator } from '../validators/user';
 
 		/*pages*/
 		IndexPage,
-		ChatPage,
 		ChatPopoverPage,
+		ChatPage,
 		ChatContentPage,
 		DailyPage,
 		DiscoverPage,
@@ -159,16 +144,16 @@ import { UserValidator } from '../validators/user';
 		FriendRequestPage,
 		FriendByContactPage,
 		UserDetailPage,
-		SignupCompletePage,
 		SignupPage,
-		SigninPage,
+		VerifyMobilePage,
+		LoginPage,
 		FriendListPage,
 		FriendNewPage,
 		ReorderPage,
 		DownloadPage,
 		SettingPage,
-		TimelineAddPage,
 		TimelineListPage,
+		TimelineAddPage,
 		QRcodePage
 
 	],
@@ -196,7 +181,7 @@ import { UserValidator } from '../validators/user';
 		{
 			provide: MyHttp,
 			useFactory: myHttpFactory,
-			deps: [XHRBackend, RequestOptions, LoadingController, SystemService]
+			deps: [XHRBackend, RequestOptions, LoadingController, SystemService, FileTransfer]
 		},
 
 		UserValidator,

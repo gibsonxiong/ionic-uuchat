@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
-// import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 import { SystemService } from '../services/system';
 
 
@@ -24,7 +24,7 @@ export class MyHttp extends Http {
 		_defaultOptions: RequestOptions,
 		private loadingCtrl: LoadingController,
 		private systemService : SystemService,
-
+		private fileTransfer:FileTransfer
 	) {
 		super(_backend, _defaultOptions);
 	}
@@ -111,35 +111,33 @@ export class MyHttp extends Http {
 
 	upload(filePath, fileName, remoteUrl, params?): Observable<any> {
 
-		// const fileTransfer: FileTransferObject = this.transfer.create();
+		const fileTransferObject: FileTransferObject = this.fileTransfer.create();
 
-		// let options = {
-		// 	fileKey: 'file',
-		// 	fileName: fileName,
-		// 	headers: this.requestHeaders,
-		// 	params: params
-		// };
+		let options = {
+			fileKey: 'file',
+			fileName: fileName,
+			headers: this.requestHeaders,
+			params: params
+		};
 
-		// let p = fileTransfer.upload(filePath, remoteUrl, options);
+		let p = fileTransferObject.upload(filePath, remoteUrl, options);
 
-		// return Observable.fromPromise(p)
-		// 	.timeout(this.timeoutLimit)
-		// 	.map(result => {
-		// 		var res = JSON.parse(result.response);
+		return Observable.fromPromise(p)
+			.timeout(this.timeoutLimit)
+			.map(result => {
+				var res = JSON.parse(result.response);
 
-		// 		if (res.code) {
-		// 			throw {
-		// 				$custom: 1,
-		// 				code: res.code,
-		// 				msg: res.msg,
-		// 				data: res.data
-		// 			};
-		// 		}
+				if (res.code) {
+					throw {
+						$custom: 1,
+						code: res.code,
+						msg: res.msg,
+						data: res.data
+					};
+				}
 
-		// 		return res;
-		// 	})
-
-		return Observable.create();
+				return res;
+			});
 
 	}
 

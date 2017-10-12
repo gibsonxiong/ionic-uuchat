@@ -32,7 +32,7 @@
         </div>
       </div>
       <div>
-        <span class="publishTime">{{timeline.publishTime | timediff}}</span>
+        <span class="publishTime">{{timeline.timediff | timediff}}</span>
         <div class="cb-wrap clearfix">
           <div class="comment-btn-wrap">
             <!--点赞按钮-->
@@ -53,12 +53,12 @@
           <!--点赞-->
           <div class="likes" *ngIf="timeline._likeUsers && timeline._likeUsers.length">
             <ion-icon name="heart-outline"></ion-icon>
-            <template ngFor let-likeUser [ngForOf]="timeline._likeUsers" let-i="index">
+            <ng-template ngFor let-likeUser [ngForOf]="timeline._likeUsers" let-i="index">
               <span *ngIf="i>0">,</span>
               <span class="likeUser" (click)="gotoUserDetailPage(timeline.userId)">
 							 {{likeUser.nickname}}
               </span>
-            </template>
+            </ng-template>
 
 
           </div>

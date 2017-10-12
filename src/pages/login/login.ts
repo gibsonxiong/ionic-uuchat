@@ -7,16 +7,16 @@ import 'rxjs/add/operator/mergeMap';
 import { Storage } from '@ionic/storage';
 
 import { IndexPage } from '../index/index';
-import { SignupPage } from '../signup/signup';
+import { VerifyMobilePage } from '../verifymobile/verifymobile';
 import { UserService } from '../../services/user';
 import { SystemService } from '../../services/system';
-import { UserValidator } from '../../validators/user';
+import { getErrorMsgByFormGroup } from '../../validators/index';
 
 import { MyHttp } from '../../providers/my-http';
 
 @Component({
-	selector: 'cy-signin-page',
-	templateUrl: 'signin.html',
+	selector: 'cy-login-page',
+	templateUrl: 'login.html',
 	// animations: [
 	// 	trigger('flyInOut', [
 	// 		state('in', style({ width: '*', transform: 'translateX(0)', opacity: 1 })),
@@ -46,9 +46,14 @@ import { MyHttp } from '../../providers/my-http';
 	// 	])
 	// ]
 })
-export class SigninPage {
-	public form: FormGroup;
-	private signining = false;
+export class LoginPage {
+	private form: FormGroup;
+	private logining = false;
+
+	private formLabelMap = {
+		username : '帐号',
+		password:'密码'
+	}
 
 	constructor(
 		private navCtrl: NavController,
@@ -95,14 +100,16 @@ export class SigninPage {
 	}
 
 	//登录
-	signin(): void {
+	login(): void {
 
 		if(this.form.invalid){
-			return ;
+			var msg = getErrorMsgByFormGroup(this.form, this.formLabelMap);
+			this.systemService.showToast(msg);
+			return;
 		}
 
-		this.signining = true;
-		var obser = this.userservice.signin(this.form.value);
+		this.logining = true;
+		var obser = this.userservice.login(this.form.value);
 
 		obser
 			.mergeMap((res) => {
@@ -114,10 +121,10 @@ export class SigninPage {
 			})
 			.do(
 				() => {
-					this.signining = false;
+					this.logining = false;
 				},
 				() => {
-					this.signining = false;
+					this.logining = false;
 				}
 			)
 			.subscribe(
@@ -132,17 +139,17 @@ export class SigninPage {
 
 
 
-	gotoSignupPage(): void {
-		this.navCtrl.push(SignupPage);
+	gotoVerifyMobilePage(): void {
+		this.navCtrl.push(VerifyMobilePage);
 	}
 
-	_$testSignin(n) {
+	_$testLogin(n) {
 		this.form.setValue({
 			username: 'test' + n,
 			password: 123456
 		});
 
-		this.signin();
+		this.login();
 	}
 
 	private saveToken(token: any, ownId: any) {
