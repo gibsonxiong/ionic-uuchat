@@ -24,7 +24,7 @@
   </ion-list>
 
   <div padding>
-    <button ion-button block *ngIf="isFriend != true && user._id !== ownId" (click)="gotoFriendRequestPage()">添加好友</button>
+    <button ion-button block *ngIf="isFriend != true && ownId &&  user._id !== ownId" (click)="gotoFriendRequestPage()">添加好友</button>
 
     <button ion-button block *ngIf="isFriend == true" (click)="gotoChatContentPage()">开始聊天</button>
 

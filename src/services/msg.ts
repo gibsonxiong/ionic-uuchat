@@ -16,6 +16,7 @@ import { API_HOST } from '../config/config';
 import { MyHttp } from '../providers/my-http';
 import { BackEnd } from '../providers/backend';
 import { UserService } from '../services/user';
+import { createFormData } from '../utils/utils';
 
 @Injectable()
 export class MsgService {
@@ -244,7 +245,7 @@ export class MsgService {
 			return chat.relationId === msg.relationId;
 		});
 
-		let content = msg.type === 0 ? msg.content : '[语音]';
+		let content = msg.type === 0 ? msg.content : msg.type === 1 ? '[图片]' : '[语音]';
 
 		//该信息存在聊天列表中
 		if (index !== -1) {
@@ -286,13 +287,25 @@ export class MsgService {
 	}
 
 
-
+	//发送文本消息
 	sendMsg(relationId, content): void {
 		this.myHttp.post(API_HOST + '/msg/sendMsg', { relationId, content })
 			.subscribe(
 			res => { this.newMsgSubject.next(res.data) },
 			err => { console.log(err) }
 			);
+	}
+
+	//发送语音消息
+	sendImgMsg(relationId, imgFile:File): void {
+		var formData = createFormData({relationId, imgFile});
+
+		this.myHttp.post(API_HOST + '/msg/sendImgMsg', formData)
+			.subscribe(
+			res => { this.newMsgSubject.next(res.data) },
+			err => { console.log(err) }
+			);
+			
 	}
 
 	//发送语音

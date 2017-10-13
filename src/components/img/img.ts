@@ -37,12 +37,18 @@ export class ImgComponent {
 		private elemRef: ElementRef,
 		private renderer: Renderer
 	) {
-
+		
 	}
 
 	ngOnInit() {
+		this.renderer.setElementStyle(this.img.nativeElement, 'display', 'none');
+
 		this.img.nativeElement.onload = () => {
 			this.onLoaded();
+		}
+
+		this.img.nativeElement.onerror = () => {
+			console.log('img onerror');
 		}
 
 	}
@@ -57,28 +63,30 @@ export class ImgComponent {
 		if (position === 'static') this.renderer.setElementStyle(this.elemRef.nativeElement, 'position', 'relative');
 
 		this.resize();
+
+		this.renderer.setElementStyle(this.img.nativeElement, 'display', '');
 	}
 
 	resize() {
 		var elem = this.elemRef.nativeElement;
-		var styleWidth = elem.style.width;
-		var styleHeight = elem.style.height;
+		var width = DomUtils.getWidth(elem);
+		var height = DomUtils.getHeight(elem);
 
-		if (!styleWidth && !styleHeight) {
+		if (!width && !height) {
 			this.width = this.naturalWidth + 'px';
 			this.height = this.naturalHeight + 'px';
 
-		} else if (styleWidth && !styleHeight) {
-			this.width = styleWidth;
+		} else if (width && !height) {
+			this.width = width;
 			this.height = (this.width / this.naturalRatio) + 'px';
 
-		} else if (!styleWidth && styleHeight) {
-			this.height = styleHeight;
+		} else if (!width && height) {
+			this.height = height;
 			this.width = (this.height * this.naturalRatio) + 'px';
 
 		} else {
-			this.width = styleWidth;
-			this.height = styleHeight;
+			this.width = width;
+			this.height = height;
 		}
 
 		var ratio = this.width / this.height;
@@ -107,6 +115,11 @@ export class ImgComponent {
 		}
 	}
 
+	@HostListener('window:resize')
+	onResize(){
+		this.resize();
+	}
+
 	@HostListener('click')
 	onClick() {
 		if(!this.zoom) return;
@@ -119,7 +132,12 @@ export class ImgComponent {
 		});
 		var elem = this.elemRef.nativeElement;
 		var offset = DomUtils.getOffset(elem);
-		var clone = DomUtils.cloneDom(elem);
+		var clone = DomUtils.cloneDom(elem).css({
+			minWidth:'initial',
+			maxWidth:'initial',
+			minHeight:'initial',
+			maxHeight:'initial'
+		});
 
 		document.body.appendChild(overlay);
 		overlay.appendChild(clone[0]);

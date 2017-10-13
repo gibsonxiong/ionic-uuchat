@@ -77,6 +77,17 @@ export function clone(obj){
     }
 }
 
+export function createFormData(obj):FormData{
+    var formData = new FormData();
+    
+	for(var name in obj){
+        if(obj.hasOwnProperty(name)){
+            formData.append(name,obj[name]);
+        }
+    }
+    return formData;
+}
+
 export function getDiff(date){
 	var time = new Date(date);
 	var timeStamp = time.getTime();

@@ -1,3 +1,9 @@
+.item-ios ion-thumbnail cy-img,
+.item-ios ion-thumbnail cy-img {
+  width: 56px; 
+  height: 56px; 
+}
+
 cy-img {
   display: inline-block;
   overflow: hidden;
@@ -14,6 +20,7 @@ cy-img {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
+    width:initial;
     height: 100%;
   }
   &.img-portrait img {
@@ -22,6 +29,7 @@ cy-img {
     top: 50%;
     transform: translateY(-50%);
     width: 100%;
+    height: initial;
   }
 }
 

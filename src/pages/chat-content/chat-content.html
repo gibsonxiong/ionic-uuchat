@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header #header>
 
   <ion-navbar>
     <ion-title>{{pageTitle}}</ion-title>
@@ -23,18 +23,23 @@
       <!--头像-->
 
       <ion-thumbnail>
-        <cy-img [src]="msg._fromUser && msg._fromUser.avatarSrc | avatarSrc"  (click)="gotoUserDetailPage(msg.fromUserId)" style="width:56px;"></cy-img>
+        <cy-img [src]="msg._fromUser && msg._fromUser.avatarSrc | avatarSrc" (click)="gotoUserDetailPage(msg._fromUser._id)"  style="width:56px;height:56px;"></cy-img>
         <!-- <cy-img [src]="msg._fromUser && msg._fromUser.avatarSrc | avatarSrc"  style="width:56px;"></cy-img> -->
       </ion-thumbnail>
 
       <!--文本消息-->
       <p class="msg-content" *ngIf="msg.type===0">{{msg.content}}</p>
 
-      <!--文本消息-->
+      <!--图片消息-->
+      <p *ngIf="msg.type===1" style="padding: 0 10px;">
+        <cy-img [src]="msg.content | imgSrc" [zoom]="true" style="max-width:100px;max-height:100px;"></cy-img>
+      </p>
+
+      <!--语音消息-->
       <p class="msg-content" *ngIf="msg.type===3" (click)="playRecord(msg.content)">
         <ion-icon class="audio-icon" name="wifi"></ion-icon>
-
       </p>
+
       <span class="audio-duartion" *ngIf="msg.type===3">{{msg.audioDuration}}"</span>
 
       <ion-spinner *ngIf="msg.fromUserId === ownId && msg.pending"></ion-spinner>
@@ -53,20 +58,23 @@
   <ion-toolbar>
     <div class="foot-wrapper">
       <!--切换按钮-->
-      <button ion-button icon-only outline small (click)="switchInput()">
+      <a ion-button icon-only outline small (click)="switchInput()">
         <ion-icon *ngIf="!isAudio" name="wifi" class="switch-toggle"></ion-icon>
         <ion-icon *ngIf="isAudio" name="barcode"></ion-icon>
-      </button>
+      </a>
       <!--文本-->
       <div *ngIf="!isAudio" class="msg-input-wrapper">
         <form [formGroup]="form" (ngSubmit)="sendMsg()">
-          <input #input type="text" formControlName="content" (focus)="scrollToBottom()" />
+          <input #input type="text" formControlName="content" (focus)="onInputFocus()" />
+          <a ion-button icon-only outline small (click)="presentActionSheet()">        
+            <ion-icon name="image-outline"></ion-icon>
+          </a>
           <button type="submit" ion-button [disabled]="form.invalid">发送</button>
         </form>
       </div>
       <!--语音-->
       <div *ngIf="isAudio" class="audio-msg-wrapper">
-        <button ion-button block outline small (click)="recordToggle()">{{recording? '停止录音':'开始录音'}}</button>
+        <a ion-button block outline small (click)="recordToggle()">{{recording? '停止录音':'开始录音'}}</a>
       </div>
 
       <!--<button ion-button icon-only outline small><ion-icon name="add-outline"></ion-icon></button>-->

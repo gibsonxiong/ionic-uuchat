@@ -14,8 +14,11 @@ import { UPLOAD_HOST } from '../../config/config';
 import { UserDetailPage } from '../user-detail/user-detail';
 import { ReorderPage } from '../reorder/reorder';
 import { clone, getDiff } from '../../utils/utils';
+import {fileUtils} from '../../utils/file-utils';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Keyboard } from '@ionic-native/keyboard';
+
 
 @Component({
     selector: 'cy-chat-content-page',
@@ -50,6 +53,7 @@ export class ChatContentPage {
     private recordDuration_Timer;
 
     @ViewChild(Content) contentComponent;
+    @ViewChild('header') header;
     @ViewChild('input') input;
     @ViewChild('audio') audio;
 
@@ -63,6 +67,7 @@ export class ChatContentPage {
         private platform: Platform,
         private storage: Storage,
         private media: Media,
+        private keyboard:Keyboard,
         private userService: UserService,
         private msgService: MsgService,
         private systemService: SystemService,
@@ -105,19 +110,10 @@ export class ChatContentPage {
                     });
 
                     this.msgList = msgList;
-                    let scrollHeight = this.contentComponent.scrollHeight;
-                    this._ref.detectChanges();
+                    // let scrollHeight = this.contentComponent.scrollHeight;
+                    // this._ref.detectChanges();
 
-                    this._ngZone.onStable.subscribe(()=>{
-                        console.log('onStable');
-                    });
-                    this._ngZone.onMicrotaskEmpty.subscribe(()=>{
-                        console.log('onMicrotaskEmpty');
-                    });
-                    this._ngZone.onUnstable.subscribe(()=>{
-                        console.log('onUnstable');
-                    });
-
+                    this.updateDiff();
 
                     // setTimeout(()=> {
                     //     this.contentComponent.resize();
@@ -130,7 +126,8 @@ export class ChatContentPage {
 
         this.newMsgSubscription = this.msgService.newMsg$
             .filter(msg => msg.relationId === this.relationId)
-            .subscribe(() => {
+            .subscribe((msg) => {
+                if(msg.length === 0) return;
                 this.scrollToBottom();
             });
 
@@ -146,10 +143,10 @@ export class ChatContentPage {
         );
 
 
-        // this.updateDiff();
-        // this.timer = setInterval(() => {
-        //     this.updateDiff();
-        // }, 60000);
+        this.timer = setInterval(() => {
+            this.updateDiff();
+        }, 60000);
+         
 
 
     }
@@ -159,6 +156,13 @@ export class ChatContentPage {
             item['timediff'] = getDiff(item.sendTime);
             return item;
         });
+    }
+
+    ngAfterViewInit(){
+        setTimeout(()=>{
+            this.renderer.invokeElementMethod(this.input.nativeElement, 'focus');
+        },1000);
+        
     }
 
 
@@ -172,9 +176,9 @@ export class ChatContentPage {
 
     //语音
     recordToggle() {
-        let nonsupport = this.platform.is('mobileweb');
-
-        if (nonsupport) return this.systemService.showToast('发送语音暂不支持浏览器，请下载APP体验');
+		let supportCordova = this.platform.is('cordova');
+        
+        if (!supportCordova) return this.systemService.showToast('该功能暂不支持浏览器，请下载APP体验');
 
         //语音
         if (this.recordFile) {
@@ -207,8 +211,6 @@ export class ChatContentPage {
             this.recordFile.stopRecord();
             this.stopTime();
             this.msgService.sendAudioMsg(this.relationId, this.recordFileSrc, this.recordDuration);
-
-
         }
     }
 
@@ -258,7 +260,7 @@ export class ChatContentPage {
         //读取消息
         this.msgService.readChat(this.relationId);
 
-        this.scrollToBottom();
+        // this.scrollToBottom();
     }
 
     ionViewWillLeave() {
@@ -268,8 +270,25 @@ export class ChatContentPage {
 
     scrollToBottom() {
         setTimeout(() => {
-            this.contentComponent.scrollTo(null, this.contentComponent.scrollHeight);
+            this.contentComponent.scrollToBottom();
         }, 0);
+    }
+
+    onInputFocus() {
+        // this.scrollToBottom();
+
+        //解决手机键盘弹出后遮挡住输入框
+        if(this.platform.is('mobileweb')){
+            setTimeout(()=>{
+                // var innerHeight = window.innerHeight;
+                // var offsetHeight = document.documentElement.offsetHeight;
+
+                this.input.nativeElement.scrollIntoView(true);
+                this.input.nativeElement.scrollIntoViewIfNeeded();
+
+            },200);
+        }
+
     }
 
 
@@ -284,7 +303,8 @@ export class ChatContentPage {
 
         this.form.controls['content'].setValue('');
 
-        this.scrollToBottom();
+        // this.scrollToBottom();
+
         //得焦
         setTimeout(() => {
             this.renderer.invokeElementMethod(this.input.nativeElement, 'focus');
@@ -298,6 +318,84 @@ export class ChatContentPage {
     gotoUserDetailPage(userId) {
         this.navCtrl.push(UserDetailPage, { userId });
     }
+
+    //上传图片
+    presentActionSheet() {
+		// let supportCordova = this.platform.is('cordova');
+
+		// if (supportCordova) {
+		// 	let buttons = [
+		// 		{
+		// 			text: '拍照',
+		// 			handler: () => {
+		// 				this.setByPhotograph();
+		// 			}
+		// 		}, {
+		// 			text: '从手机相册选择',
+		// 			handler: () => {
+		// 				this.setByAlbum();
+
+		// 			}
+		// 		}, {
+		// 			text: '取消',
+		// 			role: 'cancel',
+		// 			handler: () => {
+
+		// 			}
+		// 		}
+		// 	];
+
+		// 	let actionSheet = this.actionSheetCtrl.create({
+		// 		buttons: buttons
+		// 	});
+		// 	actionSheet.present();
+		// }else{
+			this.setByAlbum_html5();
+		// }
+
+	}
+
+	//通过拍照设置头像
+	setByPhotograph() {
+	}
+
+	//通过手机相册设置头像
+	setByAlbum() {
+	}
+
+	setByAlbum_html5() {
+		fileUtils.openAlbum()
+			.then(file=>{
+				this.msgService.sendImgMsg(this.relationId, file);
+			});
+	}
+
+	// //拍照
+	// photograph(): Promise<string> {
+	// 	var options = {
+	// 		allowEdit: true,
+	// 		targetWidth: 400,
+	// 		targetHeight: 400,
+	// 	};
+
+	// 	return this.camera.getPicture(options);
+	// }
+
+	// //打开手机相册
+	// openAlbum(): Promise<string> {
+
+	// 	var options = {
+	// 		maximumImagesCount: 1
+	// 	};
+	// 	return this.imagePicker.getPictures(options).then(val => {
+	// 		return val[0];
+	// 	})
+	// }
+
+	// //裁剪图片
+	// cropImg(fileURI): Promise<string> {
+	// 	return this.crop.crop(fileURI, { quality: 100 });
+	// }
 
 
 }

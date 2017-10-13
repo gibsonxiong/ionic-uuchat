@@ -15,6 +15,7 @@ cy-chat-content-page {
   .msg-wrap {
     display: flex;
     align-items: center;
+    padding: 0 10px;
     &.me-msg {
       flex-direction: row-reverse;
       .msg-content {
@@ -125,7 +126,7 @@ cy-chat-content-page {
           border: $hairlines-width solid #bbb;
           border-radius: 4px;
         }
-        button {
+        [ion-button] {
           height: 30px;
           margin: 0 0 0 0.6rem;
         }
