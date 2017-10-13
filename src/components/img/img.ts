@@ -29,8 +29,9 @@ export class ImgComponent {
 		this.renderer.setElementStyle(this.elemRef.nativeElement, 'height', value);
 	}
 
-	@ViewChild('img') img: ElementRef;
+	@Input('zoom') zoom:boolean = false;
 
+	@ViewChild('img') img: ElementRef;
 
 	constructor(
 		private elemRef: ElementRef,
@@ -108,9 +109,12 @@ export class ImgComponent {
 
 	@HostListener('click')
 	onClick() {
+		if(!this.zoom) return;
+
 		var overlay = document.createElement('div');
 		overlay.className = 'cy-img-overlay';
-		overlay.addEventListener('click', function () {
+		overlay.addEventListener('click', ()=>{
+			if(!this.zoom) return;
 			zoomOut();
 		});
 		var elem = this.elemRef.nativeElement;

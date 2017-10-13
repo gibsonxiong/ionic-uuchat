@@ -11,7 +11,8 @@
   <ion-list>
     <ion-item>
       <ion-thumbnail item-left>
-        <img [src]="user.avatarSrc | avatarSrc" />
+        <!-- <img [src]="user.avatarSrc | avatarSrc" /> -->
+        <cy-img [src]="user.avatarSrc | avatarSrc" style="width:56px;" [zoom]="true"></cy-img>
       </ion-thumbnail>
       <h2>
         <span class="nickname">{{user.nickname}}</span>
@@ -23,7 +24,7 @@
   </ion-list>
 
   <div padding>
-    <button ion-button block *ngIf="isFriend != true" (click)="gotoFriendRequestPage()">添加好友</button>
+    <button ion-button block *ngIf="isFriend != true && user._id !== ownId" (click)="gotoFriendRequestPage()">添加好友</button>
 
     <button ion-button block *ngIf="isFriend == true" (click)="gotoChatContentPage()">开始聊天</button>
 

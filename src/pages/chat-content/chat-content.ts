@@ -1,4 +1,4 @@
-import { Component, ViewChild, Renderer } from '@angular/core';
+import { Component, ViewChild, Renderer, ChangeDetectorRef, NgZone } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Platform, App, NavController, NavParams, Content } from 'ionic-angular';
 import { Media, MediaObject } from '@ionic-native/media';
@@ -14,6 +14,8 @@ import { UPLOAD_HOST } from '../../config/config';
 import { UserDetailPage } from '../user-detail/user-detail';
 import { ReorderPage } from '../reorder/reorder';
 import { clone, getDiff } from '../../utils/utils';
+import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Component({
     selector: 'cy-chat-content-page',
@@ -23,6 +25,7 @@ import { clone, getDiff } from '../../utils/utils';
 export class ChatContentPage {
     private timer;
     private isAudio = false;
+    private isLoading = false;
 
     private relationId: string;
     private msgList: any[] = [];
@@ -32,6 +35,8 @@ export class ChatContentPage {
     // private userSubscription;
     private msgListSubscription;
     private newMsgSubscription;
+
+    private pageIndexSubject = new BehaviorSubject<number>(1);
 
     private pageTitle = '';
 
@@ -49,6 +54,8 @@ export class ChatContentPage {
     @ViewChild('audio') audio;
 
     constructor(
+        private _ngZone: NgZone,
+        private _ref:ChangeDetectorRef,
         private navCtrl: NavController,
         private params: NavParams,
         private fb: FormBuilder,
@@ -79,19 +86,47 @@ export class ChatContentPage {
 
     ngOnInit() {
 
-        // this.userSubscription = this.userService.own$.subscribe(
-        //     own => {
-        //         this.ownId = own._id;
-        //     }
-        // );
 
-        this.msgListSubscription = this.msgService.msgList$.subscribe(
-            msgList => {
-                this.msgList = msgList.filter(msg => {
-                    return msg.relationId === this.relationId;
-                });
-            }
-        );
+        this.msgListSubscription = 
+            Observable.combineLatest(
+                this.msgService.msgList$,
+                this.pageIndexSubject
+            )
+            .subscribe(
+                combine => {
+                    let msgList = combine[0];
+                    let pageIndex = combine[1];
+
+                    msgList = msgList.filter(msg => {
+                        return msg.relationId === this.relationId;
+                    });
+                    msgList = msgList.filter((msg,i)=>{
+                        return i > (msgList.length - 1) - pageIndex * 10;
+                    });
+
+                    this.msgList = msgList;
+                    let scrollHeight = this.contentComponent.scrollHeight;
+                    this._ref.detectChanges();
+
+                    this._ngZone.onStable.subscribe(()=>{
+                        console.log('onStable');
+                    });
+                    this._ngZone.onMicrotaskEmpty.subscribe(()=>{
+                        console.log('onMicrotaskEmpty');
+                    });
+                    this._ngZone.onUnstable.subscribe(()=>{
+                        console.log('onUnstable');
+                    });
+
+
+                    // setTimeout(()=> {
+                    //     this.contentComponent.resize();
+                    //     this.contentComponent.scrollTo(null, this.contentComponent.scrollHeight- scrollHeight );
+                    //     this.isLoading = false;
+                    // }, 3000);
+                    
+                }
+            );
 
         this.newMsgSubscription = this.msgService.newMsg$
             .filter(msg => msg.relationId === this.relationId)
@@ -99,11 +134,22 @@ export class ChatContentPage {
                 this.scrollToBottom();
             });
 
+        this.contentComponent.ionScrollEnd.subscribe(
+            ()=>{
+                var scrollTop = this.contentComponent.scrollTop;
+                
+                if(scrollTop < 10 && !this.isLoading){
+                    this.isLoading = true;
+                    this.pageIndexSubject.next(this.pageIndexSubject.getValue()+1);
+                }
+            }
+        );
 
-        this.updateDiff();
-        this.timer = setInterval(() => {
-            this.updateDiff();
-        }, 60000);
+
+        // this.updateDiff();
+        // this.timer = setInterval(() => {
+        //     this.updateDiff();
+        // }, 60000);
 
 
     }

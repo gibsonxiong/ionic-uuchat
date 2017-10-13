@@ -6,27 +6,31 @@ import { FriendRequestPage } from '../friend-request/friend-request';
 import { ChatContentPage } from '../chat-content/chat-content';
 
 import { MyHttp } from '../../providers/my-http';
+import { BackEnd } from '../../providers/backend';
 
 @Component({
 	selector: 'cy-user-detail-page',
 	templateUrl: 'user-detail.html'
 })
 export class UserDetailPage implements OnInit {
-	public userId;
+	private ownId: any;
+	private userId;
 
-	public user: any = {};
-	public isFriend: boolean = false;
-	public relationId: string;
+	private user: any = {};
+	private isFriend: boolean = false;
+	private relationId: string;
 
 	constructor(
-		public navCtrl: NavController,
-		public navParams: NavParams,
-		public userService: UserService,
+		private navCtrl: NavController,
+		private navParams: NavParams,
+		private userService: UserService,
 		private systemService: SystemService,
-		private myHttp: MyHttp
+		private myHttp: MyHttp,
+		private backEnd:BackEnd
 	) {
 
 		this.userId = navParams.data.userId;
+		this.ownId = backEnd.getOwnId();
 	}
 
 	ngOnInit() {
