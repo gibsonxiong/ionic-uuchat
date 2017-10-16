@@ -5,3 +5,5 @@ export const HOST = 'http://116.62.69.218';
 export const API_HOST = HOST + '/api';
 //上传文件地址
 export const UPLOAD_HOST = HOST + '';
+//上传文件地址
+export const ANDROID_DOWNLOAD_URL = HOST + '/uuchat.apk';
