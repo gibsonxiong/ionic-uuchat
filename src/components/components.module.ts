@@ -1,13 +1,16 @@
 import { NgModule } from '@angular/core';
 import { ImgComponent } from './img/img';
+import { ContentInputComponent } from './content-input/content-input';
 
 @NgModule({
 	declarations: [
-		ImgComponent
+		ImgComponent,
+		ContentInputComponent
 	],
 	imports: [],
 	exports: [
-		ImgComponent
+		ImgComponent,
+		ContentInputComponent
 	]
 })
 export class ComponentsModule {}

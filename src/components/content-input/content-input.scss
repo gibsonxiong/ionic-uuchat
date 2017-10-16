@@ -1,0 +1,19 @@
+cy-content-input {
+  display: inline-block;
+  width: 350px;
+  border: 1px solid #ccc;
+  padding: 2px;
+  word-break: break-all;
+  min-height: 30px;
+  font-size: 16px;
+  
+  > div {
+    user-select: text;
+    width: 100%;
+    height: 100%;
+  }
+
+  > div img{
+    vertical-align: bottom;
+  }
+}

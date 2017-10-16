@@ -28,7 +28,7 @@
       </ion-thumbnail>
 
       <!--文本消息-->
-      <p class="msg-content" *ngIf="msg.type===0">{{msg.content}}</p>
+      <p class="msg-content" *ngIf="msg.type===0" [innerHTML]="decodeMsgContent(msg.content)"></p>
 
       <!--图片消息-->
       <p *ngIf="msg.type===1" style="padding: 0 10px;">
@@ -65,10 +65,14 @@
       <!--文本-->
       <div *ngIf="!isAudio" class="msg-input-wrapper">
         <form [formGroup]="form" (ngSubmit)="sendMsg()">
-          <input #input type="text" formControlName="content" (focus)="onInputFocus()" />
+          <!-- <input #input type="text" formControlName="content" (focus)="onInputFocus()" /> -->
+          <cy-content-input #input formControlName="content" (focus)="onInputFocus()"></cy-content-input>
           <a ion-button icon-only outline small (click)="presentActionSheet()">        
             <ion-icon name="image-outline"></ion-icon>
           </a>
+          <a ion-button icon-only outline small (click)="toggleFace()">        
+              <ion-icon [name]="isShowFace?'happy':'happy-outline'"></ion-icon>
+            </a>
           <button type="submit" ion-button [disabled]="form.invalid">发送</button>
         </form>
       </div>
@@ -80,4 +84,10 @@
       <!--<button ion-button icon-only outline small><ion-icon name="add-outline"></ion-icon></button>-->
     </div>
   </ion-toolbar>
+    <!-- 表情栏 -->
+    <div class="face-wrap" [hidden]="!isShowFace">
+      <div class="face-item" *ngFor="let item of faceItems;" (click)="insertFace(item.src)">
+        <img src="{{item.src}}" />
+      </div>
+    </div>
 </ion-footer>

@@ -14,7 +14,7 @@ import { UPLOAD_HOST } from '../../config/config';
 import { UserDetailPage } from '../user-detail/user-detail';
 import { ReorderPage } from '../reorder/reorder';
 import { clone, getDiff } from '../../utils/utils';
-import {fileUtils} from '../../utils/file-utils';
+import { fileUtils } from '../../utils/file-utils';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Keyboard } from '@ionic-native/keyboard';
@@ -29,9 +29,11 @@ export class ChatContentPage {
     private timer;
     private isAudio = false;
     private isLoading = false;
+    private isShowFace = false;
 
     private relationId: string;
     private msgList: any[] = [];
+    private faceItems = [];
     private ownId: string;
     private form: FormGroup;
 
@@ -59,7 +61,7 @@ export class ChatContentPage {
 
     constructor(
         private _ngZone: NgZone,
-        private _ref:ChangeDetectorRef,
+        private _ref: ChangeDetectorRef,
         private navCtrl: NavController,
         private params: NavParams,
         private fb: FormBuilder,
@@ -67,7 +69,7 @@ export class ChatContentPage {
         private platform: Platform,
         private storage: Storage,
         private media: Media,
-        private keyboard:Keyboard,
+        private keyboard: Keyboard,
         private userService: UserService,
         private msgService: MsgService,
         private systemService: SystemService,
@@ -84,20 +86,25 @@ export class ChatContentPage {
             content: ['', Validators.required]
         });
         //
-
-
-
     }
 
     ngOnInit() {
+        for (var i = 100; i <= 219; i++) {
+            var suffix = i < 200 ? '.gif' : '.png';
+            this.faceItems.push({
+                src: './assets/img/face/wechat/' + i + suffix,
+                name: '表情' + i
+            });
+        }
 
+        var first = true;
 
-        this.msgListSubscription = 
+        this.msgListSubscription =
             Observable.combineLatest(
                 this.msgService.msgList$,
                 this.pageIndexSubject
             )
-            .subscribe(
+                .subscribe(
                 combine => {
                     let msgList = combine[0];
                     let pageIndex = combine[1];
@@ -105,13 +112,18 @@ export class ChatContentPage {
                     msgList = msgList.filter(msg => {
                         return msg.relationId === this.relationId;
                     });
-                    msgList = msgList.filter((msg,i)=>{
+                    msgList = msgList.filter((msg, i) => {
                         return i > (msgList.length - 1) - pageIndex * 10;
                     });
 
                     this.msgList = msgList;
                     // let scrollHeight = this.contentComponent.scrollHeight;
                     // this._ref.detectChanges();
+
+                    if(first){
+                        this.scrollToBottom();
+                        first = false;
+                    }
 
                     this.updateDiff();
 
@@ -120,24 +132,24 @@ export class ChatContentPage {
                     //     this.contentComponent.scrollTo(null, this.contentComponent.scrollHeight- scrollHeight );
                     //     this.isLoading = false;
                     // }, 3000);
-                    
+
                 }
-            );
+                );
 
         this.newMsgSubscription = this.msgService.newMsg$
             .filter(msg => msg.relationId === this.relationId)
             .subscribe((msg) => {
-                if(msg.length === 0) return;
+                if (msg.length === 0) return;
                 this.scrollToBottom();
             });
 
         this.contentComponent.ionScrollEnd.subscribe(
-            ()=>{
+            () => {
                 var scrollTop = this.contentComponent.scrollTop;
-                
-                if(scrollTop < 10 && !this.isLoading){
+
+                if (scrollTop < 10 && !this.isLoading) {
                     this.isLoading = true;
-                    this.pageIndexSubject.next(this.pageIndexSubject.getValue()+1);
+                    this.pageIndexSubject.next(this.pageIndexSubject.getValue() + 1);
                 }
             }
         );
@@ -146,7 +158,7 @@ export class ChatContentPage {
         this.timer = setInterval(() => {
             this.updateDiff();
         }, 60000);
-         
+
 
 
     }
@@ -158,11 +170,11 @@ export class ChatContentPage {
         });
     }
 
-    ngAfterViewInit(){
-        setTimeout(()=>{
-            this.renderer.invokeElementMethod(this.input.nativeElement, 'focus');
-        },1000);
-        
+    ngAfterViewInit() {
+        setTimeout(() => {
+            this.renderer.invokeElementMethod(this.input.input.nativeElement, 'focus');
+        }, 300);
+
     }
 
 
@@ -176,8 +188,8 @@ export class ChatContentPage {
 
     //语音
     recordToggle() {
-		let supportCordova = this.platform.is('cordova');
-        
+        let supportCordova = this.platform.is('cordova');
+
         if (!supportCordova) return this.systemService.showToast('该功能暂不支持浏览器，请下载APP体验');
 
         //语音
@@ -278,15 +290,12 @@ export class ChatContentPage {
         // this.scrollToBottom();
 
         //解决手机键盘弹出后遮挡住输入框
-        if(this.platform.is('mobileweb')){
-            setTimeout(()=>{
-                // var innerHeight = window.innerHeight;
-                // var offsetHeight = document.documentElement.offsetHeight;
+        if (this.platform.is('mobileweb')) {
+            setTimeout(() => {
+                this.input.input.nativeElement.scrollIntoView(true);
+                this.input.input.nativeElement.scrollIntoViewIfNeeded();
 
-                this.input.nativeElement.scrollIntoView(true);
-                this.input.nativeElement.scrollIntoViewIfNeeded();
-
-            },200);
+            }, 200);
         }
 
     }
@@ -299,7 +308,7 @@ export class ChatContentPage {
 
         if (/^\s+$/g.test(content)) return this.systemService.showToast('不能发送空白消息');
 
-        this.msgService.sendMsg(this.relationId, content);
+        this.msgService.sendMsg(this.relationId, this.encodeMsgContent(content));
 
         this.form.controls['content'].setValue('');
 
@@ -307,7 +316,7 @@ export class ChatContentPage {
 
         //得焦
         setTimeout(() => {
-            this.renderer.invokeElementMethod(this.input.nativeElement, 'focus');
+            this.renderer.invokeElementMethod(this.input.input.nativeElement, 'focus');
         }, 0);
     }
 
@@ -321,81 +330,132 @@ export class ChatContentPage {
 
     //上传图片
     presentActionSheet() {
-		// let supportCordova = this.platform.is('cordova');
+        // let supportCordova = this.platform.is('cordova');
 
-		// if (supportCordova) {
-		// 	let buttons = [
-		// 		{
-		// 			text: '拍照',
-		// 			handler: () => {
-		// 				this.setByPhotograph();
-		// 			}
-		// 		}, {
-		// 			text: '从手机相册选择',
-		// 			handler: () => {
-		// 				this.setByAlbum();
+        // if (supportCordova) {
+        // 	let buttons = [
+        // 		{
+        // 			text: '拍照',
+        // 			handler: () => {
+        // 				this.setByPhotograph();
+        // 			}
+        // 		}, {
+        // 			text: '从手机相册选择',
+        // 			handler: () => {
+        // 				this.setByAlbum();
 
-		// 			}
-		// 		}, {
-		// 			text: '取消',
-		// 			role: 'cancel',
-		// 			handler: () => {
+        // 			}
+        // 		}, {
+        // 			text: '取消',
+        // 			role: 'cancel',
+        // 			handler: () => {
 
-		// 			}
-		// 		}
-		// 	];
+        // 			}
+        // 		}
+        // 	];
 
-		// 	let actionSheet = this.actionSheetCtrl.create({
-		// 		buttons: buttons
-		// 	});
-		// 	actionSheet.present();
-		// }else{
-			this.setByAlbum_html5();
-		// }
+        // 	let actionSheet = this.actionSheetCtrl.create({
+        // 		buttons: buttons
+        // 	});
+        // 	actionSheet.present();
+        // }else{
+        this.setByAlbum_html5();
+        // }
 
-	}
+    }
 
-	//通过拍照设置头像
-	setByPhotograph() {
-	}
+    //通过拍照设置头像
+    setByPhotograph() {
+    }
 
-	//通过手机相册设置头像
-	setByAlbum() {
-	}
+    //通过手机相册设置头像
+    setByAlbum() {
+    }
 
-	setByAlbum_html5() {
-		fileUtils.openAlbum()
-			.then(file=>{
-				this.msgService.sendImgMsg(this.relationId, file);
-			});
-	}
+    setByAlbum_html5() {
+        fileUtils.openAlbum()
+            .then(file => {
+                this.msgService.sendImgMsg(this.relationId, file);
+            });
+    }
 
-	// //拍照
-	// photograph(): Promise<string> {
-	// 	var options = {
-	// 		allowEdit: true,
-	// 		targetWidth: 400,
-	// 		targetHeight: 400,
-	// 	};
+    showFace(){
+        this.isShowFace = true;
+        this.contentComponent.resize();
+    }
 
-	// 	return this.camera.getPicture(options);
-	// }
+    hideFace(){
+        this.isShowFace = false;
+        this.contentComponent.resize();
+    }
 
-	// //打开手机相册
-	// openAlbum(): Promise<string> {
+    toggleFace(){
+        this.isShowFace = !this.isShowFace;
+        this.contentComponent.resize();
+    }
 
-	// 	var options = {
-	// 		maximumImagesCount: 1
-	// 	};
-	// 	return this.imagePicker.getPictures(options).then(val => {
-	// 		return val[0];
-	// 	})
-	// }
+    insertFace(src) {
+        this.input.insertImg(src);
+    }
 
-	// //裁剪图片
-	// cropImg(fileURI): Promise<string> {
-	// 	return this.crop.crop(fileURI, { quality: 100 });
-	// }
+    encodeMsgContent(content = '') {
+        content = content.replace(/<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*["']?[\s\t\r\n]*([^\s\t\r\n"'<>]*)[^<>]*?\/?[\s\t\r\n]*>/gi, (match, src) => {
+            var faceItem = this.faceItems.filter(item => item.src == src)[0];
+            if (faceItem) {
+                return '[' + faceItem.name + ']';
+            } else {
+                return match;
+            }
+        });
+        content = content.replace(/&nbsp;?/gi, function (match) {
+            return ' ';
+        });
+        return content;
+
+    }
+
+    decodeMsgContent(content = '') {
+        content = content.replace(/\s/gi, function(match){
+            return '&nbsp;';
+        });
+        content = content.replace(/\[([^\]]*)\]/gi, (match, name) => {
+            var faceItem = this.faceItems.filter(item => item.name == name)[0];
+            if (faceItem) {
+                return '<img src="' + faceItem.src + '" />';
+            } else {
+                return match;
+            }
+
+        });
+        return content;
+    }
+
+    // //拍照
+    // photograph(): Promise<string> {
+    // 	var options = {
+    // 		allowEdit: true,
+    // 		targetWidth: 400,
+    // 		targetHeight: 400,
+    // 	};
+
+    // 	return this.camera.getPicture(options);
+    // }
+
+    // //打开手机相册
+    // openAlbum(): Promise<string> {
+
+    // 	var options = {
+    // 		maximumImagesCount: 1
+    // 	};
+    // 	return this.imagePicker.getPictures(options).then(val => {
+    // 		return val[0];
+    // 	})
+    // }
+
+    // //裁剪图片
+    // cropImg(fileURI): Promise<string> {
+    // 	return this.crop.crop(fileURI, { quality: 100 });
+    // }
 
 
 }

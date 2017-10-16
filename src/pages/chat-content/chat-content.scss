@@ -22,6 +22,7 @@ cy-chat-content-page {
         background-color: nth($color-msg-content-bg, 1);
         color: nth($color-msg-content, 1);
         margin: 10px 5px 10px 40px;
+        word-break: break-all;
         &:after {
           border: 5px solid nth($color-msg-content-bg, 1);
           right: -4px;
@@ -42,10 +43,15 @@ cy-chat-content-page {
         background-color: nth($color-msg-content-bg, 2);
         color: nth($color-msg-content, 2);
         margin: 10px 40px 10px 5px;
+        word-break: break-all;
         &:after {
           border: 5px solid nth($color-msg-content-bg, 2);
           left: -4px;
           transform: translateY(-50%) rotate(135deg);
+        }
+
+        > img {
+          vertical-align: bottom;
         }
       }
       .audio-duartion {
@@ -55,8 +61,7 @@ cy-chat-content-page {
       .audio-icon {
         transform: rotate(90deg);
       }
-    }
-    // img {
+    } // img {
     //   margin: 5px 10px;
     //   min-width: 45px;
     //   width: 45px;
@@ -78,6 +83,9 @@ cy-chat-content-page {
         height: 0;
         border-top-color: transparent;
         border-left-color: transparent;
+      }
+      > img {
+        vertical-align: bottom;
       }
     }
   }
@@ -113,15 +121,14 @@ cy-chat-content-page {
       display: flex;
       align-items: center;
       padding: 0 10px;
-
       form {
         display: flex;
         flex: 1;
-        input {
+        input,
+        cy-content-input {
           flex: 1;
-          width: 100%;
-          // margin: 0 10px;
-          height: 30px;
+          width: 100%; // margin: 0 10px;
+          min-height: 30px;
           font-size: 16px;
           border: $hairlines-width solid #bbb;
           border-radius: 4px;
@@ -143,6 +150,31 @@ cy-chat-content-page {
   }
 }
 
-.ion-thumbnail .cy-img{
-  height:100%;
+.ion-thumbnail .cy-img {
+  height: 100%;
+}
+
+.face-wrap {
+  // position: absolute;
+  // left: 0;
+  // bottom: 0;
+  width: 100%;
+  height: 150px;
+  padding: 2px;
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+  >.face-item {
+    text-align: center;
+    float: left;
+    width: 12.5%;
+    padding: 4px 0;
+  }
 }
