@@ -120,10 +120,10 @@ export class ChatContentPage {
                     // let scrollHeight = this.contentComponent.scrollHeight;
                     // this._ref.detectChanges();
 
-                    if(first){
-                        this.scrollToBottom();
-                        first = false;
-                    }
+                    // if(first){
+                    //     this.scrollToBottom();
+                    //     first = false;
+                    // }
 
                     this.updateDiff();
 
