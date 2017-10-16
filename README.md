@@ -1,26 +1,43 @@
-This is a starter template for [Ionic](http://ionicframework.com/docs/) projects.
+## 项目介绍
 
-## How to use this template
+实时聊天app，部分兼容web端。该项目只是前端部分，所有数据需要请求后端服务器，需要配套[uuchat-api-express-master](https://github.com/gibsonxiong/uuchat-api-express-master)使用。
 
-*This template does not work on its own*. The shared files for each starter are found in the [ionic2-app-base repo](https://github.com/ionic-team/ionic2-app-base).
+[项目地址](http://116.62.69.218/)
 
-To use this template, either create a new ionic project using the ionic node.js utility, or copy the files from this repository into the [Starter App Base](https://github.com/ionic-team/ionic2-app-base).
+[android下载](http://116.62.69.218/uuchat.apk)
 
-### With the Ionic CLI:
+## 环境依赖
 
-Take the name after `ionic2-starter-`, and that is the name of the template to be used when using the `ionic start` command below:
+nodejs 
 
-```bash
-$ sudo npm install -g ionic cordova
-$ ionic start myBlank blank
-```
+## 快速运行
 
-Then, to run it, cd into `myBlank` and run:
 
 ```bash
-$ ionic cordova platform add ios
-$ ionic cordova run ios
+git clone git@github.com:gibsonxiong/uuchat-api-express-master.git
+cd uuchat-api-express-master
 ```
 
-Substitute ios for android if not on a Mac.
+### 安装项目依赖
+```bash
+npm install
+```
+
+### 安装ionic、cordova命令行
+
+```bash
+npm install -g cordova ionic
+```
+
+### 开启服务
+
+```bash
+ionic serve
+```
+
+### 浏览器访问：http://localhost:8100，
+
+## 注意事项
+
+## 更新日志
 

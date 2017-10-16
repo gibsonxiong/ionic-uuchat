@@ -51,8 +51,8 @@ export class ChatContentPage {
     private recording = false;
     private volumeImgSrc;
     private recordDuration = 0;
-    private media_Timer;
-    private recordDuration_Timer;
+    private media_timer;
+    private recordDuration_timer;
 
     @ViewChild(Content) contentComponent;
     @ViewChild('header') header;
@@ -143,14 +143,27 @@ export class ChatContentPage {
                 this.scrollToBottom();
             });
 
+        
+        this.contentComponent.ionScrollStart.subscribe(
+            e => {
+                this.hideFace();
+            },
+            err => {
+                console.log(err);
+            }
+        );
+
         this.contentComponent.ionScrollEnd.subscribe(
-            () => {
+            e => {
                 var scrollTop = this.contentComponent.scrollTop;
 
                 if (scrollTop < 10 && !this.isLoading) {
                     this.isLoading = true;
                     this.pageIndexSubject.next(this.pageIndexSubject.getValue() + 1);
                 }
+            },
+            err=>{
+
             }
         );
 
@@ -158,6 +171,7 @@ export class ChatContentPage {
         this.timer = setInterval(() => {
             this.updateDiff();
         }, 60000);
+
 
 
 
@@ -205,7 +219,7 @@ export class ChatContentPage {
 
             this.startTime();
             this.setVolumeImgSrc(0);
-            this.media_Timer = setInterval(() => {
+            this.media_timer = setInterval(() => {
                 // get media amplitude
                 this.recordFile.getCurrentAmplitude()
                     .then((amp) => {
@@ -218,7 +232,7 @@ export class ChatContentPage {
             }, 200);
 
         } else {
-            clearInterval(this.media_Timer);
+            clearInterval(this.media_timer);
             this.recording = false;
             this.recordFile.stopRecord();
             this.stopTime();
@@ -252,13 +266,14 @@ export class ChatContentPage {
     //录音计时
     startTime() {
         this.recordDuration = 0;
-        this.recordDuration_Timer = setInterval(() => {
+        this.recordDuration_timer = setInterval(() => {
             this.recordDuration++;
         }, 1000);
     }
 
+    //录音停止计时
     stopTime() {
-        clearInterval(this.recordDuration_Timer);
+        clearInterval(this.recordDuration_timer);
     }
 
 
