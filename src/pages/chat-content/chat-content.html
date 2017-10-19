@@ -67,13 +67,13 @@
         <form [formGroup]="form" (ngSubmit)="sendMsg()">
           <!-- <input #input type="text" formControlName="content" (focus)="onInputFocus()" /> -->
           <cy-content-input #input formControlName="content" (focus)="onInputFocus()"></cy-content-input>
-          <a ion-button icon-only outline small (click)="presentActionSheet()">        
+          <a ion-button icon-only clear small (click)="presentActionSheet()">        
             <ion-icon name="image-outline"></ion-icon>
           </a>
-          <a ion-button icon-only outline small (click)="toggleFace()">        
+          <a ion-button icon-only clear small (click)="toggleFace()">        
               <ion-icon [name]="isShowFace?'happy':'happy-outline'"></ion-icon>
             </a>
-          <button type="submit" ion-button [disabled]="form.invalid">发送</button>
+          <button type="submit" ion-button outline [disabled]="form.invalid">发送</button>
         </form>
       </div>
       <!--语音-->

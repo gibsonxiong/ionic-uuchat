@@ -1,10 +1,10 @@
 ## 项目介绍
 
-实时聊天app，部分兼容web端。该项目只是前端部分，所有数据需要请求后端服务器，需要配套[uuchat-api-express-master](https://github.com/gibsonxiong/uuchat-api-express-master)使用。
+实时聊天app，部分兼容web端，基于ionic3，angular4。该项目只是前端部分，所有数据需要请求后端服务器，需要配套[uuchat-api-express-master](https://github.com/gibsonxiong/uuchat-api-express-master)使用。
 
 [项目地址](http://116.62.69.218/)
 
-[android下载](http://116.62.69.218/uuchat.apk)
+[android版下载](http://116.62.69.218/uuchat.apk)
 
 ## 环境依赖
 
@@ -34,10 +34,7 @@ npm install -g cordova ionic
 ```bash
 ionic serve
 ```
-
-### 浏览器访问：http://localhost:8100，
-
-## 注意事项
+浏览器访问：http://localhost:8100，
 
 ## 更新日志
 

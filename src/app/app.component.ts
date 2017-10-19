@@ -8,7 +8,7 @@ import { Storage } from '@ionic/storage';
 import { IndexPage } from '../pages/index/index';
 import { LoginPage } from '../pages/login/login';
 /*test*/
-// import { SignupCompletePage } from '../pages/signup-complete/signup-complete';
+// import { SignupPage } from '../pages/signup/signup';
 // import { TimelineAddPage } from '../pages/timeline-add/timeline-add';
 
 
@@ -36,8 +36,10 @@ export class MyApp {
 			} else {
 				this.rootPage = LoginPage;
 			}
-			// this.rootPage = SignupCompletePage;
+			// this.rootPage = SignupPage;
 			// this.rootPage = TimelineAddPage;
+
+			
 
 		});
 

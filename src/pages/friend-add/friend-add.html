@@ -1,25 +1,34 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>添加朋友</ion-title>
+    <ion-title>添加好友</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
   <form (ngSubmit)="submitForm()">
     <ion-list padding-top>
-      <ion-item >
-        <ion-label>
+      <ion-item>
+        <!-- <ion-label>
           <ion-icon name="search" color="primary"></ion-icon>
-        </ion-label>
-        <ion-input [(ngModel)]="search" type="search" name="search" placeholder="微信号/手机号"></ion-input>
+        </ion-label> -->
+        <ion-input [(ngModel)]="search" type="search" name="search" placeholder="用户名/手机号" [clearInput]="true"></ion-input>
+        <button item-end ion-button icon-only clear type="submit">
+            <ion-icon name="search" color="primary"></ion-icon>
+        </button>
       </ion-item>
-      <button type="submit">搜索</button>
     </ion-list>
   </form>
-  <ion-list margin-top>
+  <ion-list>
+    
     <button ion-item (click)="gotoFriendByContactPage()">
-      <ion-icon item-left name="phone-portrait"></ion-icon>
-      <h2>手机联系人</h2>
-      <ion-note>添加通讯录中的朋友</ion-note>
+      <ion-icon item-left name="md-qr-scanner"></ion-icon>
+      <h2>扫一扫</h2>
+      <ion-note>扫描二维码添加好友</ion-note>
     </button>
+    <button ion-item (click)="gotoFriendByContactPage()">
+        <ion-icon item-left name="phone-portrait"></ion-icon>
+        <h2>手机联系人</h2>
+        <ion-note>手机通讯录添加好友</ion-note>
+      </button>
   </ion-list>
+
 </ion-content>

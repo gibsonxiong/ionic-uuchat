@@ -10,6 +10,7 @@ import { UserValidator } from '../../validators/user';
 import { patterns } from '../../patterns';
 
 import { MyHttp } from '../../providers/my-http';
+import { getErrorMsgByFormGroup } from '../../validators/index';
 
 // declare var cordova: any;
 
@@ -18,9 +19,15 @@ import { MyHttp } from '../../providers/my-http';
 	templateUrl: 'signup.html'
 })
 export class SignupPage {
+	private formLabelMap = {
+		username:'用户名',
+		password:'密码'
+	};
+
 	private form: FormGroup;
 
 	private avatarSrc;
+	
 
 	constructor(
 		private sanitizer: DomSanitizer,
@@ -42,14 +49,27 @@ export class SignupPage {
 			username: ['',
 				[
 					Validators.required,
+					Validators.pattern(/^[a-zA-Z][a-zA-Z0-9_]{5,17}$/)
 				],
 				this.userValidator.existsByUsernameAsync()
 			],
-			password: '',
+			password: ['',
+				[
+					Validators.required,
+					Validators.pattern(/^[a-zA-Z0-9_]{6,18}$/)					
+				]
+			]
 		});
 	}
 
 	signup() {
+
+		if(this.form.invalid){
+			var msg = getErrorMsgByFormGroup(this.form, this.formLabelMap);
+			this.systemService.showToast(msg);
+			return;
+		}
+
 		var formData = this.form.value;
 
 		var obser = this.userService.signup1(formData.mobileToken, formData.username, formData.password);

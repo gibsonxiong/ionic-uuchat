@@ -120,7 +120,7 @@ export class VerifyMobilePage {
 						message: '该手机号码已经注册过，如果是你的号码，你可以直接登录。',
 						buttons: [
 							{
-								text: '重新注册',
+								text: '重新输入',
 								handler: () => {
 									this.form.reset();
 									this.countdown = 0;

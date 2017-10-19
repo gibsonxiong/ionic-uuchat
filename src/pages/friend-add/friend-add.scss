@@ -1,8 +1,7 @@
 cy-friend-add-page{
 	form{
 		button[type="submit"]{
-			position: absolute;
-			visibility: hidden;
+			// display: none;
 		}
 	}
 }

@@ -21,13 +21,14 @@
       </ion-item>
 
     </ion-list>
-    <div padding-horizontal>
+    <div padding-horizontal style="overflow:hidden;">
       <!-- <a ion-button href="javascript:;" (click)="gotoVerifyMobilePage()" >注册</a> -->
-      <a ion-button outline class="signup-btn" (click)="gotoVerifyMobilePage()">注册</a>
+      <a ion-button outline small clear class="signup-btn" (click)="gotoVerifyMobilePage()">没有账号? 去注册</a>
     </div>
+
     <!--<div padding-horizontal><button ion-button block [disabled]="form.invalid" @flyInOut>登录</button></div>-->
     <div padding>
-      <button type="submit" ion-button block icon-start disabled="{{ logining? 'disabled' : '' }}">
+      <button type="submit" ion-button block round icon-start disabled="{{ logining? 'disabled' : '' }}">
           <ion-spinner color="light" style="margin-right:6px;" *ngIf="logining"></ion-spinner>
           登录
       </button>

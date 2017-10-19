@@ -23,9 +23,9 @@
       <h2>{{item._fromUser.nickname}}</h2>
       <p>{{item.requestMsg}}</p>
 
-      <button ion-button item-right *ngIf="!item.confirm" (click)="confirmFriend(item._fromUser._id)">添加</button>
+      <button ion-button outline item-end *ngIf="!item.confirm" (click)="confirmFriend(item._fromUser._id)">添加</button>
 
-      <ion-note item-right *ngIf="item.confirm">已添加</ion-note>
+      <ion-note item-end *ngIf="item.confirm">已添加</ion-note>
     </ion-item>
   </ion-list>
 </ion-content>

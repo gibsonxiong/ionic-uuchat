@@ -281,6 +281,7 @@ export class ChatContentPage {
     switchInput() {
         this.isAudio = !this.isAudio;
         this.cancelRecord();
+        this.hideFace();
     }
 
     ionViewWillEnter() {
@@ -296,9 +297,7 @@ export class ChatContentPage {
     }
 
     scrollToBottom() {
-        setTimeout(() => {
-            this.contentComponent.scrollToBottom();
-        }, 0);
+        this.contentComponent.scrollToBottom();
     }
 
     onInputFocus() {

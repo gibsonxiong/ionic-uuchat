@@ -5,12 +5,12 @@
 </ion-header>
 
 <ion-content>
-  <div padding>
-    <h2>Android版</h2>
+  <h2>Android版</h2>
 
+  <div padding class="qrcode-wrap">
     <cy-qrcode class="qrcode" [text]="android_url"></cy-qrcode>
 
-    <a ion-button block [href]="android_url">下载</a>
+    <a margin-top ion-button block round [href]="android_url">下载</a>
   </div>
 
 </ion-content>

@@ -8,16 +8,16 @@
     <ion-list>
       <ion-item>
         <ion-label>用户名</ion-label>
-        <ion-input type="text" formControlName="username"></ion-input>
+        <ion-input type="text" formControlName="username" placeholder="6-18个字符，字母、数字或_，开头必须为字母"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>密码</ion-label>
-        <ion-input type="password" formControlName="password"></ion-input>
+        <ion-input type="password" formControlName="password" placeholder="6-18个字符，字母、数字或_"></ion-input>
       </ion-item>
     </ion-list>
 
     <div padding-horizontal>
-      <button ion-button block [disabled]="form.invalid">注册</button>
+      <button ion-button block round>注册</button>
     </div>
   </form>
 </ion-content>

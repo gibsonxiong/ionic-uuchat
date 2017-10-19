@@ -15,6 +15,10 @@ var defulatErrorMsgFuncMap = {
 	required(args){
 		return format('{label}不能为空',args);
     },
+
+    pattern(args){
+        return format('{label}格式不正确',args);
+    },
     
     mobile(args){
         return format('{label}不正确',args);
