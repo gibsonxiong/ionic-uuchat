@@ -16,7 +16,7 @@ export class UserDetailPage implements OnInit {
 	private ownId: any;
 	private userId;
 
-	private user: any = {};
+	private user: any;
 	private isFriend: boolean = false;
 	private relationId: string;
 

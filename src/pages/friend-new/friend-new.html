@@ -15,10 +15,10 @@
     没有新好友请求
   </div>
 
-  <ion-list *ngIf="list.length">
+  <ion-list *ngIf="list.length > 0">
     <ion-item *ngFor="let item of list">
       <ion-thumbnail item-left>
-        <img [src]="item._fromUser.avatarSrc">
+        <img [src]="item._fromUser.avatarSrc | avatarSrc">
       </ion-thumbnail>
       <h2>{{item._fromUser.nickname}}</h2>
       <p>{{item.requestMsg}}</p>
