@@ -7,12 +7,12 @@ import {UPLOAD_HOST} from '../config/config';
 })
 export class ImgSrcPipe implements PipeTransform {
 
-  transform(value) {
-    if( value !== null || value !== undefined){
-      return UPLOAD_HOST + value;
+  transform(value, size:number) {
+    if(value === null || value === undefined || value === ''){
+      return 'assets/img/default-avatar.jpg';
     }else{
-      return  './assets/img/default-avatar.jpg';
+      var url = UPLOAD_HOST + value;
+      return size ? url + '@'+ size +'.jpg' : url;
     }
-    
   }
 }

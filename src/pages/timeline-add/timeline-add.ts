@@ -5,6 +5,7 @@ import { NavController, ActionSheetController } from 'ionic-angular';
 import { ImagePicker } from '@ionic-native/image-picker';
 import { Camera } from '@ionic-native/camera';
 import { Crop } from '@ionic-native/crop';
+import { File as CordovaFile, FileEntry, IFile} from '@ionic-native/file';
 import { UserService } from '../../services/user';
 import { TimelineService } from '../../services/timeline';
 import { SystemService } from '../../services/system';
@@ -26,20 +27,29 @@ export class TimelineAddPage {
 		private imagePicker: ImagePicker,
 		private camera: Camera,
 		private crop: Crop,
+		private cordovaFile:CordovaFile,
 		private navCtrl: NavController,
 		private actionSheetCtrl: ActionSheetController,
 		private timelineService: TimelineService,
 		private systemService: SystemService,
 		private myHttp: MyHttp
 	) {
-		this.form = fb.group({
-			content: '',
+
+
+	}
+
+	ngOnInit(){
+		this.form = this.fb.group({
+			content: [
+				'',
+				[
+					Validators.required
+				]
+			]
 		});
 
 
 		this.medias.push(new MediaFile());
-
-
 	}
 
 	publish(): void {
@@ -60,8 +70,13 @@ export class TimelineAddPage {
 
 		obser.subscribe(
 			res => {
-				this.systemService.createToast('发表成功');
-				this.navCtrl.pop();
+				this.systemService.showToast('发表成功');
+				setTimeout(()=>{
+					this.navCtrl.pop({
+						updateUrl:true
+					});
+				},1500);
+				
 			},
 			err => this.myHttp.handleError(err, '发表失败')
 		);
@@ -69,6 +84,7 @@ export class TimelineAddPage {
 	}
 
 	fillMedia(media) {
+		
 		this.presentActionSheet(media);
 	}
 
@@ -94,8 +110,7 @@ export class TimelineAddPage {
 				}, {
 					text: '从手机相册选择',
 					handler: () => {
-						// this.setByAlbum(media);
-
+						this.setByAlbum(media);
 					}
 				}, {
 					text: '取消',
@@ -105,73 +120,84 @@ export class TimelineAddPage {
 			]
 		});
 		actionSheet.present();
+		
 	}
 
 	//通过拍照设置头像
 	setByPhotograph(media: MediaFile) {
 
-		// this.photograph()
-		// 	.then(newImagePath => {
-		// 		return CordovaFile.resolveLocalFilesystemUrl(newImagePath)
-		// 	})
-		// 	.then((fileEntry: FileEntry) => {
-		// 		return new Promise<CordovaFile>((resolve, reject) => {
-		// 			fileEntry.file(
-		// 				file => {
-		// 					resolve(file);
-		// 				},
-		// 				err => {
-		// 					reject(err);
-		// 				}
-		// 			);
-		// 		});
-		// 	})
-		// 	.then((file: CordovaFile) => {
-		// 		var reader = new FileReader();
-		// 		reader.onloadend = (e) => {
-		// 			var Html5File = new Blob([e.target['result']], { type: 'image/png' });
-		// 			let src = this.sanitizer.bypassSecurityTrustUrl(file['localURL']);
-		// 			let isFill = media.isFill();
-		// 			media.set(src, Html5File);
-		// 			//重新编辑不需要增加addbtn
-		// 			if (!isFill) this.medias.push(new MediaFile());
-		// 		};
-		// 		reader.readAsArrayBuffer(file as Blob);
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log('拍照失败！', err);
-		// 	});
+		this.photograph()
+			.then(newImagePath => {
+				return this.cordovaFile.resolveLocalFilesystemUrl(newImagePath)
+			})
+			.then((fileEntry: FileEntry) => {
+				return new Promise<IFile>((resolve, reject) => {
+					fileEntry.file(
+						file => {
+							resolve(file);
+						},
+						err => {
+							reject(err);
+						}
+					);
+				});
+			})
+			.then((file: IFile) => {
+				var reader = new FileReader();
+				reader.onloadend = (e) => {
+					var Html5File = new Blob([e.target['result']], { type: 'image/png' });
+					let src = this.sanitizer.bypassSecurityTrustUrl(file['localURL']);
+					let isFill = media.isFill();
+					media.set(src, Html5File);
+					//重新编辑不需要增加addbtn
+					if (!isFill) this.medias.push(new MediaFile());
+				};
+				reader.readAsArrayBuffer(file);
+			})
+			.catch((err) => {
+				console.log('拍照失败！', err);
+			});
 	}
 
 	//通过手机相册设置头像
-	 setByAlbum() {
-	// 	this.openAlbum()
-	// 		.then((uri) => {
-	// 			return this.cropImg(uri);
-	// 		})
-	// 		.then(newImagePath => {
-
-	// 			CordovaFile.resolveLocalFilesystemUrl(newImagePath)
-	// 				.then(fileEntry => {
-
-	// 					this.avatarSrc = this.sanitizer.bypassSecurityTrustUrl(fileEntry.toInternalURL());
-
-	// 				})
-	// 				.catch(err => {
-	// 					console.log('boooh', err)
-	// 				});
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log('访问手机相册失败！', err);
-	// 		});
+	 setByAlbum(media: MediaFile) {
+		this.openAlbum()
+			.then(newImagePath => {
+				return this.cordovaFile.resolveLocalFilesystemUrl(newImagePath)
+			})
+			.then((fileEntry: FileEntry) => {
+				return new Promise<IFile>((resolve, reject) => {
+					fileEntry.file(
+						file => {
+							resolve(file);
+						},
+						err => {
+							reject(err);
+						}
+					);
+				});
+			})
+			.then((file: IFile) => {
+				var reader = new FileReader();
+				reader.onloadend = (e) => {
+					var Html5File = new Blob([e.target['result']], { type: 'image/png' });
+					let src = this.sanitizer.bypassSecurityTrustUrl(file['localURL']);
+					let isFill = media.isFill();
+					media.set(src, Html5File);
+					//重新编辑不需要增加addbtn
+					if (!isFill) this.medias.push(new MediaFile());
+				};
+				reader.readAsArrayBuffer(file);
+			})
+			.catch((err) => {
+				console.log('访问手机相册失败！', err);
+			});
 	}
 
 	//拍照
 	photograph() {
 		var options = {
 			allowEdit: false,
-			// targetWidth: 400,
-			// targetHeight: 400,
 		};
 
 		return this.camera.getPicture(options);

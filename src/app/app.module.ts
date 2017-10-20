@@ -15,6 +15,7 @@ import { Camera } from '@ionic-native/camera';
 import { Crop } from '@ionic-native/crop';
 import { Keyboard } from '@ionic-native/keyboard';
 import { FileTransfer } from '@ionic-native/file-transfer';
+import { File as CordovaFile } from '@ionic-native/file';
 
 import { MyApp } from './app.component';
 
@@ -170,6 +171,7 @@ import { UserValidator } from '../validators/user';
 		Crop,
 		Keyboard,
 		FileTransfer,
+		CordovaFile,
 
 		{ provide: ErrorHandler, useClass: IonicErrorHandler },
 		SystemService,

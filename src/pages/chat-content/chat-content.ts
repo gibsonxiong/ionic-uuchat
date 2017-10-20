@@ -18,6 +18,7 @@ import { fileUtils } from '../../utils/file-utils';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Keyboard } from '@ionic-native/keyboard';
+import { File as CordovaFile } from '@ionic-native/file';
 
 
 @Component({
@@ -70,6 +71,7 @@ export class ChatContentPage {
         private storage: Storage,
         private media: Media,
         private keyboard: Keyboard,
+        private cordovaFile: CordovaFile,
         private userService: UserService,
         private msgService: MsgService,
         private systemService: SystemService,
@@ -143,7 +145,7 @@ export class ChatContentPage {
                 this.scrollToBottom();
             });
 
-        
+
         this.contentComponent.ionScrollStart.subscribe(
             e => {
                 this.hideFace();
@@ -162,8 +164,8 @@ export class ChatContentPage {
                     this.pageIndexSubject.next(this.pageIndexSubject.getValue() + 1);
                 }
             },
-            err=>{
-
+            err => {
+                console.log(err);
             }
         );
 
@@ -207,37 +209,45 @@ export class ChatContentPage {
         if (!supportCordova) return this.systemService.showToast('该功能暂不支持浏览器，请下载APP体验');
 
         //语音
-        if (this.recordFile) {
-            this.recordFile.release();
-        }
-
-        this.recordFile = this.media.create(this.recordFileSrc);
-
         if (!this.recording) {
-            this.recording = true;
-            this.recordFile.startRecord();
+            this.cordovaFile.createFile(this.cordovaFile.dataDirectory, this.recordFileSrc, true).then(() => {
+                this.recording = true;
 
-            this.startTime();
-            this.setVolumeImgSrc(0);
-            this.media_timer = setInterval(() => {
-                // get media amplitude
-                this.recordFile.getCurrentAmplitude()
-                    .then((amp) => {
-                        console.log(amp * 100);
-                        this.setVolumeImgSrc(amp * 100);
-                    })
-                    .catch(err => {
-                        console.log("Error getting amp=" + err);
-                    });
-            }, 200);
+                this.recordFile = this.media.create(this.cordovaFile.dataDirectory.replace(/^file:\/\//, '') + this.recordFileSrc);
+
+                this.recordFile.startRecord();
+
+                this.startTime();
+                this.setVolumeImgSrc(0);
+
+                this.media_timer = setInterval(() => {
+                    // get media amplitude
+                    this.recordFile.getCurrentAmplitude()
+                        .then((amp) => {
+                            console.log(amp * 100);
+                            this.setVolumeImgSrc(amp * 100);
+                        })
+                        .catch(err => {
+                            console.log("Error getting amp=" + err);
+                        });
+                }, 200);
+            });
 
         } else {
             clearInterval(this.media_timer);
             this.recording = false;
             this.recordFile.stopRecord();
             this.stopTime();
-            this.msgService.sendAudioMsg(this.relationId, this.recordFileSrc, this.recordDuration);
+
+            this.msgService.sendAudioMsg(this.relationId, this.cordovaFile.dataDirectory.replace(/^file:\/\//, '') + this.recordFileSrc, this.recordDuration);
+
+            //释放内存
+            this.recordFile.release();
+            this.cordovaFile.removeFile(this.cordovaFile.dataDirectory, this.recordFileSrc);
+            this.recordFile = null;
         }
+
+
     }
 
 
@@ -393,17 +403,17 @@ export class ChatContentPage {
             });
     }
 
-    showFace(){
+    showFace() {
         this.isShowFace = true;
         this.contentComponent.resize();
     }
 
-    hideFace(){
+    hideFace() {
         this.isShowFace = false;
         this.contentComponent.resize();
     }
 
-    toggleFace(){
+    toggleFace() {
         this.isShowFace = !this.isShowFace;
         this.contentComponent.resize();
     }
@@ -429,7 +439,7 @@ export class ChatContentPage {
     }
 
     decodeMsgContent(content = '') {
-        content = content.replace(/\s/gi, function(match){
+        content = content.replace(/\s/gi, function (match) {
             return '&nbsp;';
         });
         content = content.replace(/\[([^\]]*)\]/gi, (match, name) => {

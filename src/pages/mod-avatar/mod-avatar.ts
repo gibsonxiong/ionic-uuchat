@@ -154,8 +154,10 @@ export class ModAvatarPage {
 
 	//拍照
 	photograph(): Promise<string> {
+		var allowEdit = this.platform.is('ios') ? true : false;
+		
 		var options = {
-			allowEdit: true,
+			allowEdit,
 			targetWidth: 400,
 			targetHeight: 400,
 		};

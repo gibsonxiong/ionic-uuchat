@@ -4,7 +4,7 @@
     <ion-title>记录心情</ion-title>
 
     <ion-buttons end>
-      <button ion-button (click)="publish()">发表</button>
+      <button ion-button (click)="publish()" [disabled]="form.invalid">发表</button>
     </ion-buttons>
   </ion-navbar>
 

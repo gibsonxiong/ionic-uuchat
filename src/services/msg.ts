@@ -310,7 +310,7 @@ export class MsgService {
 
 	//发送语音
 	sendAudioMsg(relationId, audioUri, audioDuration): void {
-		this.myHttp.upload('/sdcard/' + audioUri, 'record.mp3', API_HOST + '/msg/sendAudioMsg', { relationId, audioDuration })
+		this.myHttp.upload(audioUri, 'record.mp3', API_HOST + '/msg/sendAudioMsg', { relationId, audioDuration })
 			.subscribe(res => {
 				this.newMsgSubject.next(res.data);
 			},

@@ -107,18 +107,6 @@ export class TimelineListPage {
 		clearTimeout(this.timer);
 	}
 
-	// ionViewDidEnter() {
-	// 	let obser = this.timelineService.getTimelines();
-	// 	obser = this.systemService.linkLoading(obser);
-
-	// 	obser.subscribe(
-	// 		res => {
-	// 			this.timelines = res.data;
-	// 		},
-	// 		err => this.myHttp.handleError(err, '查看朋友圈出错啦')
-	// 	)
-	// }
-
 	doRefresh(refresher) {
 		this.timelineService.getTimelines()
 			.do(() => {
@@ -129,6 +117,7 @@ export class TimelineListPage {
 			.subscribe(
 			res => {
 				this.timelines = res.data;
+				this.updateDiff();
 			},
 			err => this.myHttp.handleError(err, '查看朋友圈出错啦')
 			)

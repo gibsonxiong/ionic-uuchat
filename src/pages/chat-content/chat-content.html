@@ -32,7 +32,7 @@
 
       <!--图片消息-->
       <p *ngIf="msg.type===1" style="padding: 0 10px;">
-        <cy-img [src]="msg.content | imgSrc" [zoom]="true" style="max-width:100px;max-height:100px;"></cy-img>
+        <cy-img [src]="msg.content | imgSrc:200" [zoom]="true" style="max-width:100px;max-height:100px;"></cy-img>
       </p>
 
       <!--语音消息-->

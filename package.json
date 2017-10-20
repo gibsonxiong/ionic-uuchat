@@ -23,6 +23,7 @@
     "@ionic-native/contacts": "^4.3.1",
     "@ionic-native/core": "4.3.0",
     "@ionic-native/crop": "^4.3.1",
+    "@ionic-native/file": "^4.3.2",
     "@ionic-native/file-transfer": "^4.3.1",
     "@ionic-native/image-picker": "^4.3.1",
     "@ionic-native/keyboard": "^4.3.1",

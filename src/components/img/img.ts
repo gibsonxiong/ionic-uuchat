@@ -173,7 +173,11 @@ export class ImgComponent {
 					left: endLeft,
 					width: endWidth,
 					height: endHeight
-				}, 200);
+				}, 200,function(){
+					//显示原图
+					var src = clone.children('img').attr('src');
+					clone.children('img').attr('src',src.substring(0,src.lastIndexOf('@')) );
+				});
 
 			
 		}
