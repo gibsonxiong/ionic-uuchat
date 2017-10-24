@@ -32,7 +32,6 @@ import { ModAvatarPage } from '../pages/mod-avatar/mod-avatar';
 import { ModNicknamePage } from '../pages/mod-nickname/mod-nickname';
 import { ModGenderPage } from '../pages/mod-gender/mod-gender';
 import { ModMottoPage } from '../pages/mod-motto/mod-motto';
-import { QuestionPage } from '../pages/question/question';
 import { ShopPage } from '../pages/shop/shop';
 import { FriendAddPage } from '../pages/friend-add/friend-add';
 import { UserDetailPage } from '../pages/user-detail/user-detail';
@@ -89,7 +88,6 @@ import { UserValidator } from '../validators/user';
 		ModNicknamePage,
 		ModGenderPage,
 		ModMottoPage,
-		QuestionPage,
 		ShopPage,
 		FriendAddPage,
 		FriendRequestPage,
@@ -139,7 +137,6 @@ import { UserValidator } from '../validators/user';
 		ModNicknamePage,
 		ModMottoPage,
 		ModGenderPage,
-		QuestionPage,
 		ShopPage,
 		FriendAddPage,
 		FriendRequestPage,

@@ -1,6 +1,6 @@
 import { Component, ViewChild, Renderer, ChangeDetectorRef, NgZone } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { Platform, App, NavController, NavParams, Content } from 'ionic-angular';
+import { Platform, App, NavController, NavParams, Content, ActionSheetController } from 'ionic-angular';
 import { Media, MediaObject } from '@ionic-native/media';
 import { MsgService } from '../../services/msg';
 import { UserService } from '../../services/user';
@@ -64,6 +64,7 @@ export class ChatContentPage {
         private _ngZone: NgZone,
         private _ref: ChangeDetectorRef,
         private navCtrl: NavController,
+        private actionSheetCtrl: ActionSheetController,
         private params: NavParams,
         private fb: FormBuilder,
         private renderer: Renderer,
@@ -99,7 +100,6 @@ export class ChatContentPage {
             });
         }
 
-        var first = true;
 
         this.msgListSubscription =
             Observable.combineLatest(
@@ -179,6 +179,32 @@ export class ChatContentPage {
 
     }
 
+    // ngAfterViewInit() {
+    //     //input自动得焦
+    //     setTimeout(() => {
+    //         this.renderer.setElementAttribute(this.input.input.nativeElement, 'autofocus','autofocus');
+    //         this.renderer.invokeElementMethod(this.input.input.nativeElement, 'focus');
+    //     }, 1000);
+
+    // }
+
+    ngOnDestroy() {
+        this.msgListSubscription.unsubscribe();
+        this.newMsgSubscription.unsubscribe();
+
+        clearInterval(this.timer);
+    }
+
+    ionViewWillEnter() {
+        //读取消息
+        this.msgService.readChat(this.relationId);
+    }
+
+    ionViewWillLeave() {
+        //取消已读
+        this.msgService.stopReadChat();
+    }
+
     updateDiff() {
         this.msgList.forEach(function (item) {
             item['timediff'] = getDiff(item.sendTime);
@@ -186,21 +212,7 @@ export class ChatContentPage {
         });
     }
 
-    ngAfterViewInit() {
-        setTimeout(() => {
-            this.renderer.invokeElementMethod(this.input.input.nativeElement, 'focus');
-        }, 300);
 
-    }
-
-
-    ngOnDestroy() {
-        // this.userSubscription.unsubscribe();
-        this.msgListSubscription.unsubscribe();
-        this.newMsgSubscription.unsubscribe();
-
-        clearInterval(this.timer);
-    }
 
     //语音
     recordToggle() {
@@ -294,17 +306,7 @@ export class ChatContentPage {
         this.hideFace();
     }
 
-    ionViewWillEnter() {
-        //读取消息
-        this.msgService.readChat(this.relationId);
 
-        // this.scrollToBottom();
-    }
-
-    ionViewWillLeave() {
-        //取消已读
-        this.msgService.stopReadChat();
-    }
 
     scrollToBottom() {
         this.contentComponent.scrollToBottom();
@@ -354,38 +356,34 @@ export class ChatContentPage {
 
     //上传图片
     presentActionSheet() {
-        // let supportCordova = this.platform.is('cordova');
-
-        // if (supportCordova) {
-        // 	let buttons = [
-        // 		{
-        // 			text: '拍照',
-        // 			handler: () => {
-        // 				this.setByPhotograph();
-        // 			}
-        // 		}, {
-        // 			text: '从手机相册选择',
-        // 			handler: () => {
-        // 				this.setByAlbum();
-
-        // 			}
-        // 		}, {
-        // 			text: '取消',
-        // 			role: 'cancel',
-        // 			handler: () => {
-
-        // 			}
-        // 		}
-        // 	];
-
-        // 	let actionSheet = this.actionSheetCtrl.create({
-        // 		buttons: buttons
-        // 	});
-        // 	actionSheet.present();
-        // }else{
-        this.setByAlbum_html5();
-        // }
-
+        if (this.platform.is('cordova')) {
+        	let actionSheet = this.actionSheetCtrl.create({
+        		buttons: [
+                    {
+                        text: '拍照',
+                        handler: () => {
+                            this.setByPhotograph();
+                        }
+                    }, {
+                        text: '从手机相册选择',
+                        handler: () => {
+                            this.setByAlbum();
+    
+                        }
+                    }, {
+                        text: '取消',
+                        role: 'cancel',
+                        handler: () => {
+    
+                        }
+                    }
+                ]
+        	});
+            actionSheet.present();
+            
+        }else{
+            this.setByAlbum_html5();
+        }
     }
 
     //通过拍照设置头像

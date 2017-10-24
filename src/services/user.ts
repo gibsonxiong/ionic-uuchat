@@ -85,9 +85,14 @@ export class UserService {
 
 	getOwn(): void {
 		this.myHttp.get(API_HOST + '/user/getOwn')
-			.subscribe(res => {
+			.subscribe(
+			res => {
 				this.ownSubject.next(res.data);
-			});
+			},
+			err => {
+				console.log(err);
+			}
+			);
 	}
 
 	//获取关系列表
@@ -138,7 +143,7 @@ export class UserService {
 	}
 
 	signup1(mobileToken, username, password): Observable<any> {
-		var postData = { mobileToken, username, password};
+		var postData = { mobileToken, username, password };
 		return this.myHttp.post(API_HOST + '/user/signup1', postData);
 	}
 
@@ -177,15 +182,23 @@ export class UserService {
 	}
 
 	//修改头像
-	modAvatar2(file:File): Observable<any> {
-		var formData = new FormData();
+	modAvatar2(file: File | Blob): Observable<any> {
+		let formData = new FormData();
+		let observable;
 
-		formData.append('file',file);
+		formData.append('file', file);
 
-		return	this.myHttp.post(API_HOST + '/user/modAvatar',formData)
-			.do(res => {
+		observable = this.myHttp.post(API_HOST + '/user/modAvatar', formData)
+			.subscribe(
+			res => {
 				this.ownSubject.next(res.data);
-			});
+			},
+			err => {
+				console.log(err);
+			}
+			);
+
+		return observable;
 	}
 
 
@@ -200,7 +213,6 @@ export class UserService {
 			err => {
 				console.log(err);
 			}
-
 		);
 
 		return observable;

@@ -14,6 +14,41 @@ import 'rxjs/add/operator/toPromise';
 
 import { API_HOST } from '../../config/config';
 import { fileUtils } from '../../utils/file-utils';
+import { File as FileCordova, FileEntry, IFile } from '@ionic-native/file';
+
+function FileEntry2Blob(fileEntry: FileEntry) {
+	return new Promise<IFile>((resolve, reject) => {
+		fileEntry.file(
+			file => {
+				resolve(file);
+			},
+			err => {
+				reject(err);
+			}
+		);
+	})
+		.then((iFile: IFile) => {
+			return new Promise<Blob>((resolve, reject) => {
+				var reader = new FileReader();
+
+				reader.onloadend = (e) => {
+					var Html5File = new Blob([e.target['result']], { type: 'image/png' });
+					Html5File['name'] = 'avatar.png';
+					resolve(Html5File);
+				};
+
+				reader.onerror = (err) => {
+					reject(err);
+				};
+
+				reader.readAsArrayBuffer(iFile);
+			});
+		});
+}
+
+
+
+
 
 @Component({
 	selector: 'cy-mod-avatar-page',
@@ -32,6 +67,7 @@ export class ModAvatarPage {
 		private imagePicker: ImagePicker,
 		private camera: Camera,
 		private crop: Crop,
+		private fileCordova: FileCordova,
 		private actionSheetCtrl: ActionSheetController,
 		private userService: UserService,
 		private systemService: SystemService,
@@ -77,7 +113,7 @@ export class ModAvatarPage {
 				buttons: buttons
 			});
 			actionSheet.present();
-		}else{
+		} else {
 			this.setByAlbum_html5();
 		}
 
@@ -89,23 +125,20 @@ export class ModAvatarPage {
 
 		if (!supportCordova) return this.systemService.showToast('该功能暂不支持浏览器，请下载APP体验');
 
-		let loading;
 		this.photograph()
 			.then((fileURI) => {
 				return this.cropImg(fileURI);
 			})
 			.then(newImagePath => {
-				loading = this.systemService.showLoading();
-				return this.userService.modAvatar(newImagePath).toPromise();
+				return this.fileCordova.resolveLocalFilesystemUrl(newImagePath)
 			})
-			.then(res => {
-				this.systemService.closeLoading(loading);
-				this.avatarSrc = res.data.avatarSrc;
+			.then((fileEntry: FileEntry) => {
+				return FileEntry2Blob(fileEntry);
 			})
-			.catch(err => {
-				this.systemService.closeLoading(loading);
-				this.myHttp.handleError(err, '设置头像失败')
-			});
+			.then((file: Blob) => {
+				this.userService.modAvatar2(file);
+			})
+			.catch((err) => this.myHttp.handleError(err, '设置头像失败'));
 	}
 
 	//通过手机相册设置头像
@@ -114,22 +147,69 @@ export class ModAvatarPage {
 
 		if (!supportCordova) return this.systemService.showToast('该功能暂不支持浏览器，请下载APP体验');
 
-		let loading;
 		this.openAlbum()
 			.then((fileURI) => {
 				return this.cropImg(fileURI);
 			})
 			.then(newImagePath => {
-				loading = this.systemService.showLoading();
-				return this.userService.modAvatar(newImagePath).toPromise();
+				return this.fileCordova.resolveLocalFilesystemUrl(newImagePath)
 			})
-			.then(res => {
-				this.systemService.closeLoading(loading);
-				this.avatarSrc = res['data'].avatarSrc;
+			.then((fileEntry: FileEntry) => {
+				return FileEntry2Blob(fileEntry);
 			})
-			.catch(err => this.myHttp.handleError(err, '设置头像失败'));
-
+			.then((file: Blob) => {
+				this.userService.modAvatar2(file);
+			})
+			.catch((err) => this.myHttp.handleError(err, '设置头像失败'));
 	}
+
+	// //通过拍照设置头像
+	// setByPhotograph() {
+	// 	let supportCordova = this.platform.is('cordova');
+
+	// 	if (!supportCordova) return this.systemService.showToast('该功能暂不支持浏览器，请下载APP体验');
+
+	// 	let loading;
+	// 	this.photograph()
+	// 		.then((fileURI) => {
+	// 			return this.cropImg(fileURI);
+	// 		})
+	// 		.then(newImagePath => {
+	// 			loading = this.systemService.showLoading();
+	// 			return this.userService.modAvatar(newImagePath).toPromise();
+	// 		})
+	// 		.then(res => {
+	// 			this.systemService.closeLoading(loading);
+	// 			this.avatarSrc = res.data.avatarSrc;
+	// 		})
+	// 		.catch(err => {
+	// 			this.systemService.closeLoading(loading);
+	// 			this.myHttp.handleError(err, '设置头像失败')
+	// 		});
+	// }
+
+	// //通过手机相册设置头像
+	// setByAlbum() {
+	// 	let supportCordova = this.platform.is('cordova');
+
+	// 	if (!supportCordova) return this.systemService.showToast('该功能暂不支持浏览器，请下载APP体验');
+
+	// 	let loading;
+	// 	this.openAlbum()
+	// 		.then((fileURI) => {
+	// 			return this.cropImg(fileURI);
+	// 		})
+	// 		.then(newImagePath => {
+	// 			loading = this.systemService.showLoading();
+	// 			return this.userService.modAvatar(newImagePath).toPromise();
+	// 		})
+	// 		.then(res => {
+	// 			this.systemService.closeLoading(loading);
+	// 			this.avatarSrc = res['data'].avatarSrc;
+	// 		})
+	// 		.catch(err => this.myHttp.handleError(err, '设置头像失败'));
+
+	// }
 
 	setByAlbum_html5() {
 		var that = this;
@@ -145,17 +225,14 @@ export class ModAvatarPage {
 				return fileUtils.imgDataURL2File(dataURL, file.name)
 			})
 			.then(function (_file) {
-				that.userService.modAvatar2(_file)
-					.subscribe(
-					res => { }
-					);
+				that.userService.modAvatar2(_file);
 			});
 	}
 
 	//拍照
 	photograph(): Promise<string> {
 		var allowEdit = this.platform.is('ios') ? true : false;
-		
+
 		var options = {
 			allowEdit,
 			targetWidth: 400,

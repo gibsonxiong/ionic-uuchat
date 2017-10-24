@@ -80,9 +80,54 @@ export class BackEnd {
 
     private connectSocket(token): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.socket = io.connect(HOST);
+            this.socket = io.connect(HOST,{
+                query:{
+                    token:this.token
+                }
+            });
 
             let init = () => {
+
+                this.socket.on('connect', msg => {
+                    this.stateSubject.next(2);
+                    console.log('connect:连接成功'); 
+                });
+
+                this.socket.on('connect_error', msg => {
+                    this.stateSubject.next(0);
+                    console.log('connect_error:连接失败'); 
+                });
+
+                this.socket.on('connect_timeout', msg => {
+                    this.stateSubject.next(0);
+                    console.log('connect_timeout:连接超时'); 
+                });
+
+                this.socket.on('disconnect', msg => {
+                    this.stateSubject.next(0);
+                    console.log('disconnect:断开连接'); 
+                });
+
+                this.socket.on('reconnect_attempt', msg => {
+                    this.stateSubject.next(1);
+                    console.log('reconnect_attempt:尝试重连');
+                });
+                
+                this.socket.on('reconnecting', msg => {
+                    this.stateSubject.next(1);
+                    console.log('reconnecting:重连中');
+                });
+                
+                this.socket.on('reconnect', msg => {
+                    this.stateSubject.next(2);
+                    console.log('reconnect:重连成功');
+                });
+
+                this.socket.on('reconnect_error', msg => {
+                    this.stateSubject.next(0);
+                    console.log('reconnect_error:重连失败');
+                });
+
                 //推送消息
                 this.socket.on('pushMsg', (msgs, ask) => {
                     //如果是多条消息
@@ -103,29 +148,16 @@ export class BackEnd {
                     this.pushUserModedSubject.next(user);
                 });
 
-                this.socket.on('disconnect', msg => {
-                    this.stateSubject.next(0);
-                    console.log('断开连接'); //todo 重连
-                });
-
-                this.socket.on('reconnect', msg => {
-                    console.log('重连');
-                });
-
-                this.socket.on('reconnect_attempt', msg => {
-                    console.log('reconnect_attempt');
-                });
-
-                this.socket.on('reconnecting', msg => {
-                    console.log('reconnecting');
-                });
 
                 //强迫下线
                 this.socket.on('forceQuit', msg => {
                     this.onForceQuitSubject.next();
+                    this.socket.close();
                 });
+
             }
             init();
+            // this.socket.open();
 
 
             //登录
@@ -133,12 +165,16 @@ export class BackEnd {
                 this.stateSubject.next(2);
                 resolve();
             });
+
         });
 
     }
 
     private disconnectSocket() {
-        this.socket && this.socket.close();
+        if(this.socket){
+            this.socket.close();
+            this.socket.off();
+        }
     }
 
 }

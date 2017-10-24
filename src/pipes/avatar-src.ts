@@ -6,7 +6,7 @@ import { UPLOAD_HOST } from '../config/config';
 })
 export class AvatarSrcPipe implements PipeTransform {
 
-  transform(value, size:number=50) {
+  transform(value, size:number=100) {
     if(value === null || value === undefined || value === ''){
       return 'assets/img/default-avatar.jpg';
     }else{

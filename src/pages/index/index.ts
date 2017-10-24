@@ -107,7 +107,7 @@ export class IndexPage {
                             this.backEnd.connect(token, ownId);
                             shouldInitData && this.initData();
                         },
-                        err => this.myHttp.handleError(err, '出错啦')
+                        err => this.myHttp.handleError(err)
                     )
 
                 } else {
@@ -115,6 +115,7 @@ export class IndexPage {
                     this.gotoLoginPage();
                 }
             })
+            .catch(err=>this.myHttp.handleError(err));
     }
 
     getToken(): Promise<any[]> {
@@ -157,15 +158,13 @@ export class IndexPage {
 
         if (ownId === msg.fromUserId) return;
 
-        var content = msg.type === 0 ? msg.content : '[语音]';
+        let content = msg.type === 0 ? msg.content : msg.type === 1 ? '[图片]' : '[语音]';
         
         //通知
         this.localNotifications.schedule({
             id: msg._id,
             title: msg._fromUser.nickname,
             text: content,
-            // icon: 'http://www.classscript.com/static/img/avatar2.png',
-            // smallIcon: 'http://www.classscript.com/static/img/avatar2.png',
         });
 
         //震动
@@ -201,54 +200,4 @@ export class IndexPage {
         this.navCtrl.setRoot(LoginPage);
     }
 
-
-    //   //比 ngOnInit 快
-    //   ionViewWillLoad(){
-    //       console.log('ionViewWillLoad');
-    //   }
-
-    //   ngOnInit(){
-    //       console.log('ngOnInit');
-    //   }
-
-    //   ngAfterContentInit(){
-    //       console.log('ngAfterContentInit');
-    //   }
-
-
-    //   ngAfterViewInit(){
-    //       console.log('ngAfterViewInit');
-    //   }
-
-    // ngOnDestroy() {
-    //     console.log('ngOnDestroy');
-    // }
-
-    //   ionViewDidLoad(){
-    //       console.log('ionViewDidLoad');
-    //   }
-
-    //   ionViewWillEnter(){
-    //       console.log('ionViewWillEnter');
-    //   }
-
-    //   ionViewDidEnter(){
-    //       console.log('ionViewDidEnter');
-    //   }
-
-    //   ionViewWillLeave(){
-    //       console.log('ionViewWillLeave');
-    //   }
-
-    //   ionViewDidLeave(){
-    //       console.log('ionViewDidLeave');
-    //   }
-
-    //    ionViewWillUnload(){
-    //       console.log('ionViewWillUnload');
-    //   }
-
-    //   ionViewDidUnload(){
-    //       console.log('ionViewDidUnload');
-    //   }
 }

@@ -8,14 +8,14 @@
 
 
 <ion-content>
-  <div *ngIf="!list.length" class="no-friend-request-tip">
+  <div *ngIf="list && !list.length === 0" class="no-friend-request-tip">
     <div>
       <ion-icon name="sad" class="tip-icon"></ion-icon>
     </div>
     没有新好友请求
   </div>
 
-  <ion-list *ngIf="list.length > 0">
+  <ion-list *ngIf="list && list.length > 0">
     <ion-item *ngFor="let item of list">
       <ion-thumbnail item-left>
         <img [src]="item._fromUser.avatarSrc | avatarSrc">

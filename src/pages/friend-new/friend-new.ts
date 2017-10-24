@@ -11,7 +11,7 @@ import { MyHttp } from '../../providers/my-http';
 })
 export class FriendNewPage implements OnInit {
 
-	list: any[] = [];
+	list: any[];
 
 	constructor(
 		private userService: UserService,

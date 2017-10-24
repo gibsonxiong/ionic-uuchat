@@ -17,7 +17,6 @@ export class MyHttp extends Http {
 	private requestCount = 0;
 
 	private timeoutLimit = 12000;
-	private timeoutErrorMsg = '$$timeout';
 
 	constructor(
 		_backend: ConnectionBackend,
@@ -30,9 +29,17 @@ export class MyHttp extends Http {
 	}
 
 	// request(url: string | Request, options?: RequestOptionsArgs): Observable<Response> {
-
 	// 	return super.request(url, options)
-
+	// 				.timeout(this.timeoutLimit)
+	// 				.do(
+	// 					()=>{
+	// 						// debugger;
+	// 					},
+	// 					()=>{
+	// 						// debugger;
+	// 					}
+	// 				)
+	// 				.map(this.convertResponse)
 	// }
 
 
@@ -142,17 +149,20 @@ export class MyHttp extends Http {
 	}
 
 	handleError(err, defaultMsg: string = '出错啦') {
-		if (err.message == '$$timeout') {
-			return this.systemService.showToast('请求超时');
-		}
 
-		else if (err.status === 0) {
+		
+		if (err && err.status === 0) {
 			return this.systemService.showToast('网络不通');
 		}
 
+		//请求超时
+		if (err && err.name == 'TimeoutError') {
+			return this.systemService.showToast('请求超时');
+		}
+		
 		//程序错误(自定义)
 		else if (err.$custom) {
-			return this.systemService.showToast(err.msg || '出错啦');
+			return this.systemService.showToast(err.msg || defaultMsg);
 		}
 
 		//取消动作不提示
