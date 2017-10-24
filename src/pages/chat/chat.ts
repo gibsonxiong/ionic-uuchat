@@ -43,19 +43,18 @@ export class ChatPage implements OnInit {
 
 		);
 
-		this.updateDiff();
-		this.timer = setInterval(() => {
-			this.updateDiff();
-		}, 60000);
-
-
 		this.subscriptions.add(
 			this.msgService.chatList$.subscribe(
 				chatList => {
 					this.chatList = chatList;
+					this.updateDiff();
 				}
 			)
 		);
+
+		this.timer = setInterval(() => {
+			this.updateDiff();
+		}, 60000);
 
 	}
 

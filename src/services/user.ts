@@ -174,15 +174,7 @@ export class UserService {
 	}
 
 	//修改头像
-	modAvatar(imgURI): Observable<any> {
-		return this.myHttp.upload(imgURI, 'avatar.png', API_HOST + '/user/modAvatar')
-			.do(res => {
-				this.ownSubject.next(res.data);
-			});
-	}
-
-	//修改头像
-	modAvatar2(file: File | Blob): Observable<any> {
+	modAvatar(file: File | Blob): Observable<any> {
 		let formData = new FormData();
 		let observable;
 

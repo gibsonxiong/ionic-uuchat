@@ -136,7 +136,7 @@ export class ModAvatarPage {
 				return FileEntry2Blob(fileEntry);
 			})
 			.then((file: Blob) => {
-				this.userService.modAvatar2(file);
+				this.userService.modAvatar(file);
 			})
 			.catch((err) => this.myHttp.handleError(err, '设置头像失败'));
 	}
@@ -158,58 +158,10 @@ export class ModAvatarPage {
 				return FileEntry2Blob(fileEntry);
 			})
 			.then((file: Blob) => {
-				this.userService.modAvatar2(file);
+				this.userService.modAvatar(file);
 			})
 			.catch((err) => this.myHttp.handleError(err, '设置头像失败'));
 	}
-
-	// //通过拍照设置头像
-	// setByPhotograph() {
-	// 	let supportCordova = this.platform.is('cordova');
-
-	// 	if (!supportCordova) return this.systemService.showToast('该功能暂不支持浏览器，请下载APP体验');
-
-	// 	let loading;
-	// 	this.photograph()
-	// 		.then((fileURI) => {
-	// 			return this.cropImg(fileURI);
-	// 		})
-	// 		.then(newImagePath => {
-	// 			loading = this.systemService.showLoading();
-	// 			return this.userService.modAvatar(newImagePath).toPromise();
-	// 		})
-	// 		.then(res => {
-	// 			this.systemService.closeLoading(loading);
-	// 			this.avatarSrc = res.data.avatarSrc;
-	// 		})
-	// 		.catch(err => {
-	// 			this.systemService.closeLoading(loading);
-	// 			this.myHttp.handleError(err, '设置头像失败')
-	// 		});
-	// }
-
-	// //通过手机相册设置头像
-	// setByAlbum() {
-	// 	let supportCordova = this.platform.is('cordova');
-
-	// 	if (!supportCordova) return this.systemService.showToast('该功能暂不支持浏览器，请下载APP体验');
-
-	// 	let loading;
-	// 	this.openAlbum()
-	// 		.then((fileURI) => {
-	// 			return this.cropImg(fileURI);
-	// 		})
-	// 		.then(newImagePath => {
-	// 			loading = this.systemService.showLoading();
-	// 			return this.userService.modAvatar(newImagePath).toPromise();
-	// 		})
-	// 		.then(res => {
-	// 			this.systemService.closeLoading(loading);
-	// 			this.avatarSrc = res['data'].avatarSrc;
-	// 		})
-	// 		.catch(err => this.myHttp.handleError(err, '设置头像失败'));
-
-	// }
 
 	setByAlbum_html5() {
 		var that = this;
@@ -225,7 +177,7 @@ export class ModAvatarPage {
 				return fileUtils.imgDataURL2File(dataURL, file.name)
 			})
 			.then(function (_file) {
-				that.userService.modAvatar2(_file);
+				that.userService.modAvatar(_file);
 			});
 	}
 
