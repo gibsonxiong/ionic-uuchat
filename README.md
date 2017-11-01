@@ -36,5 +36,11 @@ ionic serve
 ```
 浏览器访问：http://localhost:8100，
 
+### build
+
+```bash
+ionic build --prod
+```
+
 ## 更新日志
 

@@ -35,10 +35,15 @@ export class ContentInputComponent implements ControlValueAccessor {
 	}
 
 	saveLastEditRange(){
-		// 获取选定对象
-		var selection = getSelection();
-		// 设置最后光标对象
-		this.lastEditRange = selection.getRangeAt(0);
+		try{
+			// 获取选定对象
+			var selection = getSelection();
+			// 设置最后光标对象
+			this.lastEditRange = selection.getRangeAt(0);
+		}catch(e){
+			console.log(e);
+		}
+		
 	}
 
 	onKeypress(e){
@@ -63,23 +68,19 @@ export class ContentInputComponent implements ControlValueAccessor {
 		var img = new Image();
 		img.src = src;
 
-		// 编辑框设置焦点
-		inputEl.focus();
+		var range = this.lastEditRange;
 
-		// 获取选定对象
-		var selection = getSelection();
 		// 判断是否有最后光标对象存在
-		if (this.lastEditRange) {
-			// 存在最后光标对象，选定对象清除所有光标并添加最后光标还原之前的状态
-			selection.removeAllRanges();
-			selection.addRange(this.lastEditRange);
+		if (!range) {
+			range = document.createRange();
+			range.setStart(inputEl,0);
 		}
 
 		// 判断选定对象范围是编辑框还是文本节点
-		if (selection.anchorNode.nodeName != '#text') {
+		if (range.startContainer.nodeName != '#text') {
 			var childNodes = inputEl.childNodes;
-			var anchorOffset = selection.anchorOffset;
-			var extentOffset = selection.extentOffset;
+			var anchorOffset = range.startOffset;
+			var extentOffset = range.endOffset;
 
 			//移除选中部分
 			for (var i = anchorOffset; i < extentOffset; i++) {
@@ -103,20 +104,11 @@ export class ContentInputComponent implements ControlValueAccessor {
 				inputEl.appendChild(img);
 			}
 			// 创建新的光标对象
-			var range = document.createRange()
-			// 光标对象的范围界定为新建的表情节点
-			range.selectNodeContents(inputEl)
+			range = document.createRange();
 			// 光标位置定位在表情节点的最大长度
 			range.setStart(inputEl, anchorOffset + 1);
-			// 使光标开始和光标结束重叠
-			range.collapse(true)
-			// 清除选定对象的所有光标对象
-			selection.removeAllRanges()
-			// 插入新的光标对象
-			selection.addRange(range)
+
 		} else {
-			// 如果是文本节点则先获取光标对象
-			var range = selection.getRangeAt(0)
 			// 获取光标对象的范围界定对象，一般就是textNode对象
 			var textNode = <Text>range.startContainer;
 			// 获取光标位置
@@ -130,15 +122,9 @@ export class ContentInputComponent implements ControlValueAccessor {
 
 			// 光标移动到到原来的位置加上新内容的长度
 			range.setStart(textNodeSplited, 0);
-			// 光标开始和光标结束重叠
-			range.collapse(true)
-			// 清除选定对象的所有光标对象
-			selection.removeAllRanges();
-			// 插入新的光标对象
-			selection.addRange(range);
 		}
 		// 无论如何都要记录最后光标对象
-		this.lastEditRange = selection.getRangeAt(0);
+		this.lastEditRange = range;
 
 		this._onChange(inputEl.innerHTML);
 
