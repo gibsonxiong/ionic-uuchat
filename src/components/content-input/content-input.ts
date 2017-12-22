@@ -83,7 +83,7 @@ export class ContentInputComponent implements ControlValueAccessor {
 			var extentOffset = range.endOffset;
 
 			//移除选中部分
-			for (var i = anchorOffset; i < extentOffset; i++) {
+			for (let i = anchorOffset; i < extentOffset; i++) {
 				inputEl.removeChild(childNodes[i]);
 				i--;
 				extentOffset--;
@@ -92,7 +92,7 @@ export class ContentInputComponent implements ControlValueAccessor {
 			// 如果文本框的子元素大于0，则表示有其他元素，则按照位置插入表情节点
 			if (inputEl.childNodes.length > 0 && childNodes.length > anchorOffset) {
 
-				for (var i = 0; i < childNodes.length; i++) {
+				for (let i = 0; i < childNodes.length; i++) {
 					if (i == anchorOffset) {
 						inputEl.insertBefore(img, childNodes[i]);
 						break;
