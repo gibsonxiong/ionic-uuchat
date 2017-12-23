@@ -1,6 +1,6 @@
 ## 项目介绍
 
-实时聊天app，部分兼容web端，基于ionic3，angular4。该项目只是前端部分，所有数据需要请求后端服务器，需要配套[uuchat-api-express-master](https://github.com/gibsonxiong/uuchat-api-express-master)使用。
+实时聊天app，兼容web端，基于ionic3，angular4。该项目只是前端部分，所有数据需要请求后端服务器，需要配套[express-uuchat-api](https://github.com/gibsonxiong/express-uuchat-api)使用。
 
 [项目地址](http://116.62.69.218/)
 
@@ -14,8 +14,8 @@ nodejs
 
 
 ```bash
-git clone git@github.com:gibsonxiong/uuchat-api-express-master.git
-cd uuchat-api-express-master
+git clone https://github.com/gibsonxiong/ionic-uuchat.git
+cd ionic-uuchat
 ```
 
 ### 安装项目依赖
