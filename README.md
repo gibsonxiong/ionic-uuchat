@@ -2,9 +2,9 @@
 
 实时聊天app，兼容web端，基于ionic3，angular4。该项目只是前端部分，所有数据需要请求后端服务器，需要配套[express-uuchat-api](https://github.com/gibsonxiong/express-uuchat-api)使用。
 
-[项目地址](http://116.62.69.218/)
+[预览地址](http://120.78.63.238/)
 
-[android版下载](http://116.62.69.218/uuchat.apk)
+[android版下载](http://120.78.63.238/ionic-uuchat.apk)
 
 ## 环境依赖
 
