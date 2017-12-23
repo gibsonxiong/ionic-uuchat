@@ -15,6 +15,9 @@ export class TimelineService {
 
 	private commentsCache = {};
 
+	private onRefreshSubject = new Subject();
+	public onRefresh = this.onRefreshSubject.asObservable();
+
 	constructor(
 		private myHttp: MyHttp,
 		private backEnd: BackEnd
@@ -68,6 +71,10 @@ export class TimelineService {
 
 	removeCacheComment(timelineId, atUserId = '') {
 		delete this.commentsCache[timelineId + '/' + atUserId];
+	}
+
+	refresh() {
+		this.onRefreshSubject.next();
 	}
 
 

@@ -49,7 +49,7 @@ export class TimelineListPage {
 	) {
 		this.form = fb.group({
 			content: ''
-		})
+		});
 
 	}
 
@@ -81,15 +81,24 @@ export class TimelineListPage {
 				this.hideCommentInput();
 			},
 			err => {
-
+				console.log(err);
 			}
 		);
 
-		
-        this.timer = setInterval(() => {
-            this.updateDiff();
-        }, 60000);
 
+		this.timer = setInterval(() => {
+			this.updateDiff();
+		}, 60000);
+
+
+		this.timelineService.onRefresh.subscribe(
+			() => {
+				this.doRefresh();
+			},
+			err => {
+				console.log(err);
+			}
+		)
 		// document.addEventListener("resize", () => {
 		// 	console.log(123123);
 		// 	this.contentComponent.resize();
@@ -97,22 +106,22 @@ export class TimelineListPage {
 	}
 
 	updateDiff() {
-        this.timelines.forEach(function (item) {
-            item['timediff'] = getDiff(item.publishTime);
-            return item;
-        });
-    }
+		this.timelines.forEach(function (item) {
+			item['timediff'] = getDiff(item.publishTime);
+			return item;
+		});
+	}
 
 	ngOnDestroy() {
 		clearTimeout(this.timer);
 	}
 
-	doRefresh(refresher) {
+	doRefresh(refresher?) {
 		this.timelineService.getTimelines()
 			.do(() => {
-				refresher.complete();
+				refresher && refresher.complete();
 			}, () => {
-				refresher.complete();
+				refresher && refresher.complete();
 			})
 			.subscribe(
 			res => {

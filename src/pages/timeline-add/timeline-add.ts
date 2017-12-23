@@ -5,7 +5,7 @@ import { NavController, ActionSheetController } from 'ionic-angular';
 import { ImagePicker } from '@ionic-native/image-picker';
 import { Camera } from '@ionic-native/camera';
 import { Crop } from '@ionic-native/crop';
-import { File as CordovaFile, FileEntry, IFile} from '@ionic-native/file';
+import { File as CordovaFile, FileEntry, IFile } from '@ionic-native/file';
 import { UserService } from '../../services/user';
 import { TimelineService } from '../../services/timeline';
 import { SystemService } from '../../services/system';
@@ -27,7 +27,7 @@ export class TimelineAddPage {
 		private imagePicker: ImagePicker,
 		private camera: Camera,
 		private crop: Crop,
-		private cordovaFile:CordovaFile,
+		private cordovaFile: CordovaFile,
 		private navCtrl: NavController,
 		private actionSheetCtrl: ActionSheetController,
 		private timelineService: TimelineService,
@@ -38,7 +38,7 @@ export class TimelineAddPage {
 
 	}
 
-	ngOnInit(){
+	ngOnInit() {
 		this.form = this.fb.group({
 			content: [
 				'',
@@ -71,12 +71,11 @@ export class TimelineAddPage {
 		obser.subscribe(
 			res => {
 				this.systemService.showToast('发表成功');
-				setTimeout(()=>{
-					this.navCtrl.pop({
-						updateUrl:true
-					});
-				},1500);
-				
+				setTimeout(() => {
+					this.timelineService.refresh();
+					this.navCtrl.pop();
+				}, 1500);
+
 			},
 			err => this.myHttp.handleError(err, '发表失败')
 		);
@@ -84,7 +83,7 @@ export class TimelineAddPage {
 	}
 
 	fillMedia(media) {
-		
+
 		this.presentActionSheet(media);
 	}
 
@@ -120,7 +119,7 @@ export class TimelineAddPage {
 			]
 		});
 		actionSheet.present();
-		
+
 	}
 
 	//通过拍照设置头像
@@ -160,7 +159,7 @@ export class TimelineAddPage {
 	}
 
 	//通过手机相册设置头像
-	 setByAlbum(media: MediaFile) {
+	setByAlbum(media: MediaFile) {
 		this.openAlbum()
 			.then(newImagePath => {
 				return this.cordovaFile.resolveLocalFilesystemUrl(newImagePath)
