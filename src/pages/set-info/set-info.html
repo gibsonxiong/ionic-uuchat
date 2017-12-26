@@ -1,0 +1,37 @@
+<ion-header no-border>
+	<ion-navbar color="transparent">
+		<ion-buttons end>
+			<button ion-button icon-only (click)="skip()">
+				跳过,以后设置
+			</button>
+		</ion-buttons>
+	</ion-navbar>
+</ion-header>
+<ion-content>
+
+	<form [formGroup]="form" (ngSubmit)="setInfo()">
+		<h2 class="tip">完善个人资料</h2>
+		<div class="avatar-wrap">
+			<img [src]="avatarSrc | avatarSrc" (click)="presentActionSheet()" />
+			<p class="avatar-tip">点击图片，上传头像</p>
+		</div>
+		<ion-list>
+			<button ion-item (click)="selectGender($event)">
+				<ion-label>性别</ion-label>
+				<ion-note item-right>{{form.value.gender | gender}}</ion-note>
+			</button>
+			<ion-item>
+				<ion-label>昵称</ion-label>
+				<ion-input type="text" formControlName="nickname"></ion-input>
+			</ion-item>
+
+			<ion-item>
+				<ion-label>个性签名</ion-label>
+				<ion-textarea type="text" formControlName="motto"></ion-textarea>
+			</ion-item>
+		</ion-list>
+		<div padding-horizontal>
+			<button ion-button block>保存</button>
+		</div>
+	</form>
+</ion-content>

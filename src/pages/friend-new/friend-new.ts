@@ -34,12 +34,15 @@ export class FriendNewPage implements OnInit {
 
 		this.userService.confirmFriend(userId).subscribe(
 			res => {
-				var i = this.list.forEach(item => {
+				this.list.forEach(item => {
 					if (item.fromUserId === userId) {
 						item.confirm = true;
 						return false;
 					}
 				});
+
+				//刷新朋友列表
+				this.userService.getRelationList();
 
 			},
 			err => this.myHttp.handleError('添加失败')

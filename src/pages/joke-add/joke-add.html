@@ -1,0 +1,22 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>发表笑话</ion-title>
+
+    <ion-buttons end>
+      <button ion-button (click)="publish()" [disabled]="form.invalid">发表</button>
+    </ion-buttons>
+  </ion-navbar>
+
+
+
+</ion-header>
+<ion-content>
+  <form [formGroup]="form" (ngSubmit)="publish()">
+    <ion-list class="input-wrap">
+      <ion-item>
+        <ion-textarea type="text" placeholder="来一段" formControlName="content"></ion-textarea>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>

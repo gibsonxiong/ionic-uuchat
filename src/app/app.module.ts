@@ -37,6 +37,7 @@ import { FriendAddPage } from '../pages/friend-add/friend-add';
 import { UserDetailPage } from '../pages/user-detail/user-detail';
 import { VerifyMobilePage } from '../pages/verifymobile/verifymobile';
 import { SignupPage } from '../pages/signup/signup';
+import { SetInfoPage } from '../pages/set-info/set-info';
 import { LoginPage } from '../pages/login/login';
 import { FriendListPage } from '../pages/friend-list/friend-list';
 import { FriendNewPage } from '../pages/friend-new/friend-new';
@@ -47,6 +48,8 @@ import { DownloadPage } from '../pages/download/download';
 import { SettingPage } from '../pages/setting/setting';
 import { TimelineListPage } from '../pages/timeline-list/timeline-list';
 import { TimelineAddPage } from '../pages/timeline-add/timeline-add';
+import { JokeListPage } from '../pages/joke-list/joke-list';
+import { JokeAddPage } from '../pages/joke-add/joke-add';
 import { QRcodePage } from '../pages/qrcode/qrcode';
 
 import { myHttpFactory } from '../factorys';
@@ -61,6 +64,7 @@ import { PipesModule } from '../pipes/pipes.module';
 import { UserService } from '../services/user';
 import { MsgService } from '../services/msg';
 import { TimelineService } from '../services/timeline';
+import { JokeService } from '../services/joke';
 import { SystemService } from '../services/system';
 
 
@@ -94,6 +98,7 @@ import { UserValidator } from '../validators/user';
 		FriendByContactPage,
 		UserDetailPage,
 		SignupPage,
+		SetInfoPage,
 		VerifyMobilePage,
 		LoginPage,
 		FriendListPage,
@@ -103,6 +108,8 @@ import { UserValidator } from '../validators/user';
 		SettingPage,
 		TimelineListPage,
 		TimelineAddPage,
+		JokeListPage,
+		JokeAddPage,
 		QRcodePage,
 	],
 	imports: [
@@ -143,6 +150,7 @@ import { UserValidator } from '../validators/user';
 		FriendByContactPage,
 		UserDetailPage,
 		SignupPage,
+		SetInfoPage,
 		VerifyMobilePage,
 		LoginPage,
 		FriendListPage,
@@ -152,6 +160,8 @@ import { UserValidator } from '../validators/user';
 		SettingPage,
 		TimelineListPage,
 		TimelineAddPage,
+		JokeListPage,
+		JokeAddPage,
 		QRcodePage
 
 	],
@@ -175,6 +185,7 @@ import { UserValidator } from '../validators/user';
 		MsgService,
 		UserService,
 		TimelineService,
+		JokeService,
 		BackEnd,
 
 		{

@@ -9,7 +9,7 @@ import { IndexPage } from '../pages/index/index';
 import { LoginPage } from '../pages/login/login';
 /*test*/
 // import { SignupPage } from '../pages/signup/signup';
-// import { TimelineAddPage } from '../pages/timeline-add/timeline-add';
+// import { SetInfoPage } from '../pages/set-info/set-info';
 
 
 @Component({
@@ -38,6 +38,7 @@ export class MyApp {
 			}
 			// this.rootPage = SignupPage;
 			// this.rootPage = TimelineAddPage;
+			// this.rootPage = SetInfoPage;
 
 			
 

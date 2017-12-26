@@ -11,6 +11,7 @@ import { patterns } from '../../patterns';
 
 import { MyHttp } from '../../providers/my-http';
 import { getErrorMsgByFormGroup } from '../../validators/index';
+import { SetInfoPage } from '../set-info/set-info';
 
 // declare var cordova: any;
 
@@ -20,14 +21,14 @@ import { getErrorMsgByFormGroup } from '../../validators/index';
 })
 export class SignupPage {
 	private formLabelMap = {
-		username:'用户名',
-		password:'密码'
+		username: '用户名',
+		password: '密码'
 	};
 
 	private form: FormGroup;
 
 	private avatarSrc;
-	
+
 
 	constructor(
 		private sanitizer: DomSanitizer,
@@ -39,7 +40,7 @@ export class SignupPage {
 		private userService: UserService,
 		private userValidator: UserValidator,
 		private systemService: SystemService,
-		private myHttp:MyHttp
+		private myHttp: MyHttp
 
 	) {
 		let mobileToken = navParams.data['mobileToken'];
@@ -49,14 +50,14 @@ export class SignupPage {
 			username: ['',
 				[
 					Validators.required,
-					Validators.pattern(/^[a-zA-Z][a-zA-Z0-9_]{5,17}$/)
+					Validators.pattern(patterns.username)
 				],
 				this.userValidator.existsByUsernameAsync()
 			],
 			password: ['',
 				[
 					Validators.required,
-					Validators.pattern(/^[a-zA-Z0-9_]{6,18}$/)					
+					Validators.pattern(patterns.password)
 				]
 			]
 		});
@@ -64,7 +65,7 @@ export class SignupPage {
 
 	signup() {
 
-		if(this.form.invalid){
+		if (this.form.invalid) {
 			var msg = getErrorMsgByFormGroup(this.form, this.formLabelMap);
 			this.systemService.showToast(msg);
 			return;
@@ -72,17 +73,12 @@ export class SignupPage {
 
 		var formData = this.form.value;
 
-		var obser = this.userService.signup1(formData.mobileToken, formData.username, formData.password);
+		var obser = this.userService.signup(formData.mobileToken, formData.username, formData.password);
 		obser = this.systemService.linkLoading(obser);
 
 		obser.subscribe(
 			res => {
-				this.systemService.showToast('注册成功');
-
-				setTimeout(() => {
-					this.navCtrl.popToRoot();
-				}, 2000);
-
+				this.navCtrl.push(SetInfoPage, { mobileToken: formData.mobileToken });
 			},
 			err => this.myHttp.handleError(err, '注册失败')
 		);

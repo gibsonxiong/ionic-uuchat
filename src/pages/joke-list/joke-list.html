@@ -1,0 +1,55 @@
+<ion-header>
+	<ion-navbar>
+		<ion-title>笑话</ion-title>
+
+		<ion-buttons end>
+			<button ion-button icon-only (click)="gotoJokeAddPage()">
+				<ion-icon name="create"></ion-icon>
+			</button>
+		</ion-buttons>
+	</ion-navbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true">
+	<ion-refresher (ionRefresh)="doRefresh($event)">
+		<ion-refresher-content></ion-refresher-content>
+	</ion-refresher>
+
+	<ion-card *ngFor="let joke of jokes">
+
+		<ion-item>
+			<ion-avatar item-start>
+				<img [src]="joke._user.avatarSrc | avatarSrc" />
+			</ion-avatar>
+			<h2>
+				<ion-icon name="male" color="primary" *ngIf="joke._user.gender===0"></ion-icon>
+				<ion-icon name="female" color="fourthly" *ngIf="joke._user.gender===1"></ion-icon>
+				{{joke._user.nickname}}
+			</h2>
+			<p>{{joke.publishTime | date:'yyyy-MM-dd hh:mm:ss'}}</p>
+		</ion-item>
+
+		<img src="img/advance-card-bttf.png">
+
+		<ion-card-content>
+			<p>{{ joke.content }}</p>
+		</ion-card-content>
+
+		<ion-row>
+			<ion-col>
+				<button ion-button icon-left clear small (click)="likeJoke(joke, !joke._isLike)">
+					<ion-icon [name]="joke._isLike ? 'happy' : 'happy-outline'"></ion-icon>
+					<div>{{ joke._likeCount}}</div>
+				</button>
+
+				<button ion-button icon-left clear small (click)="dislikeJoke(joke, !joke._isDislike)">
+					<ion-icon [name]="joke._isDislike ? 'sad' : 'sad-outline'"></ion-icon>
+					<div>{{ joke._dislikeCount}}</div>
+				</button>
+			</ion-col>
+		</ion-row>
+
+	</ion-card>
+
+</ion-content>

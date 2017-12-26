@@ -1,16 +1,22 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>发现</ion-title>
-  </ion-navbar>
+	<ion-navbar>
+		<ion-title>发现</ion-title>
+	</ion-navbar>
 </ion-header>
 
 <ion-content>
-  <ion-list margin-top>
-    <button ion-item (click)="gotoTimelineListPage()">
-      <ion-icon name="send" item-left></ion-icon>
-        朋友圈
-    </button>
-  </ion-list>
+	<ion-list margin-top>
+		<button ion-item (click)="gotoTimelineListPage()">
+			<ion-icon name="send" item-left></ion-icon>
+			朋友圈
+		</button>
+	</ion-list>
 
+	<ion-list margin-top>
+		<button ion-item (click)="gotoJokeListPage()">
+			<ion-icon name="happy" item-left></ion-icon>
+			笑话
+		</button>
+	</ion-list>
 
 </ion-content>

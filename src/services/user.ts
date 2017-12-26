@@ -138,13 +138,14 @@ export class UserService {
 	}
 
 	//注册
-	signup(formData): Observable<any> {
-		return this.myHttp.post(API_HOST + '/user/signup', formData);
+	signup(mobileToken, username, password): Observable<any> {
+		var postData = { mobileToken, username, password };
+		return this.myHttp.post(API_HOST + '/user/signup', postData);
 	}
 
-	signup1(mobileToken, username, password): Observable<any> {
-		var postData = { mobileToken, username, password };
-		return this.myHttp.post(API_HOST + '/user/signup1', postData);
+	//完善资料
+	setInfo(formData): Observable<any> {
+		return this.myHttp.post(API_HOST + '/user/setInfo', formData);
 	}
 
 	//搜索用户

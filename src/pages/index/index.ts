@@ -107,7 +107,14 @@ export class IndexPage {
                             this.backEnd.connect(token, ownId);
                             shouldInitData && this.initData();
                         },
-                        err => this.myHttp.handleError(err)
+                        err => {
+                            if (err && err.$custom) {
+                                this.systemService.showToast(err.msg);
+                                this.gotoLoginPage();
+                                return;
+                            }
+                            this.myHttp.handleError(err);
+                        }
                     )
 
                 } else {
@@ -115,7 +122,7 @@ export class IndexPage {
                     this.gotoLoginPage();
                 }
             })
-            .catch(err=>this.myHttp.handleError(err));
+            .catch(err => this.myHttp.handleError(err));
     }
 
     getToken(): Promise<any[]> {
@@ -159,7 +166,7 @@ export class IndexPage {
         if (ownId === msg.fromUserId) return;
 
         let content = msg.type === 0 ? msg.content : msg.type === 1 ? '[图片]' : '[语音]';
-        
+
         //通知
         this.localNotifications.schedule({
             id: msg._id,

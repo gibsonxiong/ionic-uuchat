@@ -1,5 +1,5 @@
 //服务器地址
-// export const HOST = 'http://192.168.0.105:3000';
+// export const HOST = 'http://192.168.0.106:3000';
 export const HOST = 'http://120.78.63.238';
 //api根地址
 export const API_HOST = HOST + '/api';

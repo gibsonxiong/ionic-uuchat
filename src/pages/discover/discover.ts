@@ -1,24 +1,28 @@
 import { Component } from '@angular/core';
-import { NavController,App } from 'ionic-angular';
+import { NavController, App } from 'ionic-angular';
 
 import { TimelineListPage } from '../timeline-list/timeline-list';
-// import { ShopPage } from '../shop/shop';  
+import { JokeListPage } from '../joke-list/joke-list';
+
 
 @Component({
-  selector:'cy-discover-page',
+  selector: 'cy-discover-page',
   templateUrl: 'discover.html',
 })
 export class DiscoverPage {
-	
+
   constructor(
-    public navCtrl : NavController,
-    public appCtrl  : App
+    public navCtrl: NavController,
+    public appCtrl: App
   ) {
-    
+
   }
 
-  gotoTimelineListPage(){
+  gotoTimelineListPage() {
     this.appCtrl.getRootNav().push(TimelineListPage);
   }
 
+  gotoJokeListPage() {
+    this.appCtrl.getRootNav().push(JokeListPage);
+  }
 }
